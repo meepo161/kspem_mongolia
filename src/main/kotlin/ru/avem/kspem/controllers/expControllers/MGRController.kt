@@ -32,12 +32,10 @@ class MGRController : CustomController() {
         }
 
         if (isExperimentRunning) {
+            pr102.shunt(true)
             pr102.ground(true)
             pr102.mgr(true)
-        }
-
-        if (isExperimentRunning) {
-            pr102.shunt(true)
+            pr102.shunt(false)
             sleep(3000)
         }
 
