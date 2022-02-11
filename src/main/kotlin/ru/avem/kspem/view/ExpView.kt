@@ -1,17 +1,22 @@
 package ru.avem.kspem.view
 
+import de.jensd.fx.glyphs.materialdesignicons.MaterialDesignIcon
+import de.jensd.fx.glyphs.materialdesignicons.MaterialDesignIconView
 import javafx.geometry.Pos
 import javafx.scene.control.Button
+import javafx.scene.control.ScrollPane
+import javafx.scene.layout.HBox
 import javafx.scene.layout.Priority
 import javafx.scene.layout.VBox
 import javafx.scene.paint.Color
 import javafx.scene.shape.Circle
+import ru.avem.kspem.controllers.CustomController
 import ru.avem.kspem.controllers.MainViewController
 import ru.avem.kspem.utils.Singleton
 import ru.avem.kspem.utils.State
 import tornadofx.*
 
-class ExpView() : View("Окно испытания") {
+class ExpView : View("Окно испытания") {
     var vBoxLog: VBox by singleAssign()
 
     var circlePR200: Circle by singleAssign()
@@ -20,11 +25,15 @@ class ExpView() : View("Окно испытания") {
     var circleLATR: Circle by singleAssign()
 
     val controller: MainViewController by inject()
+    val customController: CustomController by inject()
     var btnStart: Button by singleAssign()
     var btnExit: Button by singleAssign()
+    var btnHideFirst: Button by singleAssign()
+    var btnHideSecond: Button by singleAssign()
     var btnNext: Button by singleAssign()
     var btnStop: Button by singleAssign()
     var vboxExp: VBox by singleAssign()
+    var hboxLog: HBox by singleAssign()
 
     override fun onDock() {
         super.onDock()
@@ -47,11 +56,9 @@ class ExpView() : View("Окно испытания") {
                     bottomAnchor = 4.0
                 }
                 vbox(16.0, Pos.CENTER) {
-                    minHeight = 684.0
-                    maxHeight = 684.0
                     vboxExp = vbox {}
                 }
-                hbox(16.0, Pos.CENTER) {
+                hboxLog = hbox(16.0, Pos.CENTER) {
                     scrollpane {
                         hboxConstraints {
                             hgrow = Priority.ALWAYS
@@ -71,6 +78,23 @@ class ExpView() : View("Окно испытания") {
                     }
                     vbox(8.0, Pos.CENTER_RIGHT) {
                         minWidth = 167.0
+                        btnHideFirst = button("") {
+                            graphic = MaterialDesignIconView(MaterialDesignIcon.ARROW_DOWN).apply {
+                                glyphSize = 48
+                                fill = c("#FFFFFF")
+                            }
+                            action {
+                                hboxLog.hide()
+                                btnHideSecond.show()
+                                show()
+                                try {
+                                    val scrollPane = vboxExp.children[0] as ScrollPane
+                                    scrollPane.vvalue = scrollPane.vmax
+                                } catch (ignored: Exception) {
+
+                                }
+                            }
+                        }
                         label("Состояние приборов")
                         hbox(16.0) {
                             label("ПР102") {
@@ -117,29 +141,46 @@ class ExpView() : View("Окно испытания") {
                     }
                 }
                 hbox(16.0, Pos.CENTER) {
-                    btnExit = button("Выход") {
-                        action {
-                            controller.exit()
+                    hbox(16.0, Pos.CENTER) {
+                        minWidth = 1800.0
+                        btnExit = button("Выход") {
+                            action {
+                                controller.exit()
+                            }
                         }
-                    }
-                    btnStart = button("Старт") {
-                        action {
-                            controller.startExperiment()
+                        btnStart = button("Старт") {
+                            action {
+                                controller.startExperiment()
+                            }
                         }
-                    }
-                    btnStop = button("Стоп") {
-                        action {
-                            controller.stopExperiment()
+                        btnStop = button("Стоп") {
+                            action {
+                                controller.stopExperiment()
+                            }
                         }
-                    }
 //                    label("            ")
-                    btnNext = button("Вперед") {
-                        action {
-                            controller.next()
+                        btnNext = button("Вперед") {
+                            action {
+                                controller.next()
+                            }
+                        }
+                    }
+                    hbox(alignment = Pos.CENTER_RIGHT) {
+                        btnHideSecond = button("") {
+
+                            graphic = MaterialDesignIconView(MaterialDesignIcon.ARROW_UP).apply {
+                                glyphSize = 48
+                                fill = c("#FFFFFF")
+                            }
+                            hide()
+                            action {
+                                hboxLog.show()
+                                btnHideFirst.show()
+                                hide()
+                            }
                         }
                     }
                 }
-            }.addClass(Styles.expTheme)
-        }
-
+            }
+        }.addClass(Styles.expTheme)
 }

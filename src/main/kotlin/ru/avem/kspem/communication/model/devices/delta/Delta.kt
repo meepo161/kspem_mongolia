@@ -6,7 +6,6 @@ import ru.avem.kserialpooler.communication.utils.TransportException
 import ru.avem.kspem.communication.model.DeviceRegister
 import ru.avem.kspem.communication.model.IDeviceController
 import ru.avem.kspem.communication.model.devices.delta.DeltaModel.Companion.CONTROL_REGISTER
-import ru.avem.kspem.communication.model.devices.delta.DeltaModel.Companion.CURRENT_FREQUENCY_INPUT_REGISTER
 import ru.avem.kspem.communication.model.devices.delta.DeltaModel.Companion.CURRENT_FREQUENCY_OUTPUT_REGISTER
 import ru.avem.kspem.communication.model.devices.delta.DeltaModel.Companion.ERRORS_REGISTER
 import ru.avem.kspem.communication.model.devices.delta.DeltaModel.Companion.MAX_FREQUENCY_REGISTER
@@ -172,18 +171,17 @@ class Delta(
         }
     }
 
-    fun setObjectParamsRun(fOut: Number, voltageP1: Double) {
-         val maxVolt = if (voltageP1 > 260) 420.0 else voltageP1 * 1.5
+    fun setObjectParamsRun(fOut: Number = 50, voltageP1: Number = 10, fP1: Number = 50) {
         try {
-            writeRegister(getRegisterById(MAX_VOLTAGE_REGISTER), ((maxVolt).v() + 1).toShort())
-            writeRegister(getRegisterById(MAX_FREQUENCY_REGISTER), (65.hz() + 0).toShort())
-            writeRegister(getRegisterById(NOM_FREQUENCY_REGISTER), (65.hz() + 0).toShort())
+            writeRegister(getRegisterById(MAX_VOLTAGE_REGISTER), (494.v() + 1).toShort())
+            writeRegister(getRegisterById(MAX_FREQUENCY_REGISTER), (65.hz() + 1).toShort())
+            writeRegister(getRegisterById(NOM_FREQUENCY_REGISTER), (65.hz() + 1).toShort())
 
             writeRegister(getRegisterById(POINT_1_VOLTAGE_REGISTER), voltageP1.v())
-            writeRegister(getRegisterById(POINT_1_FREQUENCY_REGISTER), 60.hz())
+            writeRegister(getRegisterById(POINT_1_FREQUENCY_REGISTER), fP1.hz())
 
-            writeRegister(getRegisterById(POINT_2_VOLTAGE_REGISTER), voltageP1.v())
-            writeRegister(getRegisterById(POINT_2_FREQUENCY_REGISTER), 50.hz())
+            writeRegister(getRegisterById(POINT_2_VOLTAGE_REGISTER), 1.v())
+            writeRegister(getRegisterById(POINT_2_FREQUENCY_REGISTER), 1.hz())
 
             writeRegister(getRegisterById(CURRENT_FREQUENCY_OUTPUT_REGISTER), fOut.hz())
         } catch (e: Exception) {
@@ -199,17 +197,12 @@ class Delta(
         writeRegister(getRegisterById(POINT_1_VOLTAGE_REGISTER), voltageMax.v())
     }
 
-    fun setObjectURun(voltageMax: Number) {
-        writeRegister(getRegisterById(POINT_2_VOLTAGE_REGISTER), voltageMax.v())
-    }
-
-    fun setObjectURunN(voltageMax: Number) {
-        writeRegister(getRegisterById(POINT_2_VOLTAGE_REGISTER), voltageMax.v())
-        writeRegister(getRegisterById(POINT_1_VOLTAGE_REGISTER), voltageMax.v())
-    }
-
     fun setObjectF(fOut: Number) {
         writeRegister(getRegisterById(CURRENT_FREQUENCY_OUTPUT_REGISTER), fOut.hz())
+    }
+
+    fun setObjectUMax(voltageMax: Number) {
+        writeRegister(getRegisterById(POINT_1_VOLTAGE_REGISTER), voltageMax.v())
     }
 }
 

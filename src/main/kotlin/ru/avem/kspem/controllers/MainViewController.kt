@@ -39,10 +39,10 @@ class MainViewController : Controller() {
 
 
     lateinit var currentExp: CustomController
-    var listDPT = mutableListOf<CustomController>(mgr, viu, ikas,/* n,*/ hh/*, load*/)
+    var listDPT = mutableListOf<CustomController>(mgr, viu, ikas, nMPT, hhMPT, loadMPT)
     var listGPT = mutableListOf<CustomController>(/*mgr, viu, ikas,n*/)
-    var listSD = mutableListOf<CustomController>(/*mgr, viu, ikas, n*/)
-    var listSG = mutableListOf<CustomController>(/*mgr, viu, ikas, n, h_hh, kz*/)
+    var listSD = mutableListOf<CustomController>(mgr, viu, ikas, nSD)
+    var listSG = mutableListOf<CustomController>(mgr, viu, ikas, nSG, h_hhSG, kzSG)
 
     @Volatile
     var isExperimentRunning: Boolean = false
@@ -129,8 +129,10 @@ class MainViewController : Controller() {
             currentExp.start()
         }
     }
+
     fun exit() {
-        showTwoWayDialog(title = "Внимание!",
+        showTwoWayDialog(
+            title = "Внимание!",
             text = "Текущий протокол будет сохранен и очищен",
             way1Title = "Подтвердить",
             way2Title = "Отменить",
@@ -141,7 +143,8 @@ class MainViewController : Controller() {
             },
             way2 = {
             },
-            currentWindow = primaryStage.scene.window)
+            currentWindow = primaryStage.scene.window
+        )
     }
 
     fun stopExperiment() {
@@ -375,9 +378,21 @@ class MainViewController : Controller() {
                     newList.add(hh)
                     expListRaw.remove(hh)
                 }
+                expListRaw.contains(hhMPT) -> {
+                    newList.add(hhMPT)
+                    expListRaw.remove(hhMPT)
+                }
+                expListRaw.contains(h_hhSG) -> {
+                    newList.add(h_hhSG)
+                    expListRaw.remove(h_hhSG)
+                }
                 expListRaw.contains(load) -> {
                     newList.add(load)
                     expListRaw.remove(load)
+                }
+                expListRaw.contains(loadMPT) -> {
+                    newList.add(loadMPT)
+                    expListRaw.remove(loadMPT)
                 }
 //                expListRaw.contains(h_hh) -> {
 //                    newList.add(h_hh)
@@ -386,6 +401,18 @@ class MainViewController : Controller() {
                 expListRaw.contains(n) -> {
                     newList.add(n)
                     expListRaw.remove(n)
+                }
+                expListRaw.contains(nSD) -> {
+                    newList.add(nSD)
+                    expListRaw.remove(nSD)
+                }
+                expListRaw.contains(nSG) -> {
+                    newList.add(nSG)
+                    expListRaw.remove(nSG)
+                }
+                expListRaw.contains(nMPT) -> {
+                    newList.add(nMPT)
+                    expListRaw.remove(nMPT)
                 }
                 expListRaw.contains(ktr) -> {
                     newList.add(ktr)
@@ -398,6 +425,10 @@ class MainViewController : Controller() {
                 expListRaw.contains(kz) -> {
                     newList.add(kz)
                     expListRaw.remove(kz)
+                }
+                expListRaw.contains(kzSG) -> {
+                    newList.add(kzSG)
+                    expListRaw.remove(kzSG)
                 }
             }
         }
@@ -472,6 +503,7 @@ class MainViewController : Controller() {
             }
         }
     }
+
     fun clearProtocol() {
 
         protocolModel.objectName = ""
@@ -492,7 +524,7 @@ class MainViewController : Controller() {
         protocolModel.mgrR60 = ""
         protocolModel.mgrkABS = ""
         protocolModel.mgrTemp = ""
-        protocolModel.mgrResult  = ""
+        protocolModel.mgrResult = ""
         //VIU//
         protocolModel.viuU = ""
         protocolModel.viuI = ""
@@ -502,7 +534,7 @@ class MainViewController : Controller() {
         protocolModel.ikasR1 = ""
         protocolModel.ikasR2 = ""
         protocolModel.ikasR3 = ""
-        protocolModel.ikasResult  = ""
+        protocolModel.ikasResult = ""
         //HH//
         protocolModel.hhUAB = ""
         protocolModel.hhUBC = ""
@@ -604,7 +636,7 @@ class MainViewController : Controller() {
         protocolModel.ktrUAVG1 = ""
         protocolModel.ktrUAVG2 = ""
         protocolModel.ktrKTR = ""
-        protocolModel.ktrResult  = ""
+        protocolModel.ktrResult = ""
         //N//
         protocolModel.nUAB = ""
         protocolModel.nUBC = ""
@@ -614,7 +646,7 @@ class MainViewController : Controller() {
         protocolModel.nIC = ""
         protocolModel.nSpeed = ""
         protocolModel.nF = ""
-        protocolModel.nResult  = ""
+        protocolModel.nResult = ""
         //MV//
         protocolModel.mvUAB1 = ""
         protocolModel.mvUBC1 = ""
@@ -629,7 +661,7 @@ class MainViewController : Controller() {
         protocolModel.mvIB2 = ""
         protocolModel.mvIC2 = ""
         protocolModel.mvDeviation = ""
-        protocolModel.mvResult  = ""
+        protocolModel.mvResult = ""
         //KZ//
         protocolModel.kzUAB = ""
         protocolModel.kzUBC = ""

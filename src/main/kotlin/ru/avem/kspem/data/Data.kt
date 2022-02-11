@@ -3,6 +3,12 @@ package ru.avem.kspem.data
 import javafx.beans.property.SimpleStringProperty
 import javafx.beans.property.StringProperty
 import ru.avem.kspem.controllers.expControllers.*
+import ru.avem.kspem.controllers.expControllersMPT.HHControllerMPT
+import ru.avem.kspem.controllers.expControllersMPT.LoadControllerMPT
+import ru.avem.kspem.controllers.expControllersSD.NControllerSD
+import ru.avem.kspem.controllers.expControllersSG.H_HHControllerSG
+import ru.avem.kspem.controllers.expControllersSG.KZControllerSG
+import ru.avem.kspem.controllers.expControllersSG.NControllerSG
 import ru.avem.kspem.database.entities.TestObjects
 
 data class MainViewTable(
@@ -34,13 +40,26 @@ data class SchemeType(
 val mgr = MGRController()
 val viu = VIUController()
 val ikas = IKASController()
+
+val nSD = NControllerSD()
+val nSG = NControllerSG()
+val nMPT = NControllerSG()
+
 val hh = HHController()
-val load = LoadController()
+val hhMPT = HHControllerMPT()
+
 val h_hh = H_HHController()
+val h_hhSG = H_HHControllerSG()
+
+val load = LoadController()
+val loadMPT = LoadControllerMPT()
+
 val n = NController()
 val ktr = KTRController()
 val mv = MVController()
+
 val kz = KZController()
+val kzSG = KZControllerSG()
 
 val protocolModel = ProtocolModel()
 data class ProtocolModel(

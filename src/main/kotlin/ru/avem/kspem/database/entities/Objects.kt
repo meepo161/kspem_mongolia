@@ -37,7 +37,7 @@ class TestObjects(id: EntityID<Int>) : IntEntity(id) {
     var name by Objects.name
     var type by Objects.type
     var p2 by Objects.p2
-    var uN by Objects.uN
+    var uNom by Objects.uN
     var iN by Objects.iN
     var nAsync by Objects.nAsync
     var kpd by Objects.kpd

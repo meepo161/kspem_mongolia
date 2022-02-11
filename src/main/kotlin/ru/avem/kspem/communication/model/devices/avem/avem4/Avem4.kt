@@ -3,52 +3,41 @@ package ru.avem.kspem.communication.model.devices.avem.avem4
 import ru.avem.kserialpooler.communication.adapters.modbusrtu.ModbusRTUAdapter
 import ru.avem.kserialpooler.communication.adapters.utils.ModbusRegister
 import ru.avem.kserialpooler.communication.utils.TransportException
-import ru.avem.kserialpooler.communication.utils.allocateOrderedByteBuffer
+import ru.avem.kspem.communication.model.DeviceController
 import ru.avem.kspem.communication.model.DeviceRegister
-import ru.avem.kspem.communication.model.IDeviceController
+import ru.avem.stand.utils.second
 import java.nio.ByteBuffer
-import java.nio.ByteOrder
 
 class Avem4(
     override val name: String,
     override val protocolAdapter: ModbusRTUAdapter,
     override val id: Byte
-) : IDeviceController {
-    private val model = Avem4Model()
-    override var isResponding = false
+) : DeviceController() {
+    val model = Avem4Model()
     override var requestTotalCount = 0
     override var requestSuccessCount = 0
     override val pollingRegisters = mutableListOf<DeviceRegister>()
+
     override val writingRegisters = mutableListOf<Pair<DeviceRegister, Number>>()
 
     override fun readRegister(register: DeviceRegister) {
         isResponding = try {
             transactionWithAttempts {
-                when (register.valueType) {
+                register.value = when (register.valueType) {
                     DeviceRegister.RegisterValueType.SHORT -> {
-                        val value =
-                            protocolAdapter.readHoldingRegisters(id, register.address, 1).first().toShort()
-                        register.value = value
+                        protocolAdapter.readInputRegisters(id, register.address, 1).map(ModbusRegister::toShort).first()
                     }
                     DeviceRegister.RegisterValueType.FLOAT -> {
                         val modbusRegister =
-                            protocolAdapter.readHoldingRegisters(id, register.address, 2).map(ModbusRegister::toShort)
-                        register.value =
-                            allocateOrderedByteBuffer(
-                                modbusRegister,
-                                ru.avem.kserialpooler.communication.utils.TypeByteOrder.BIG_ENDIAN,
-                                4
-                            ).float
+                            protocolAdapter.readInputRegisters(id, register.address, 2).map(ModbusRegister::toShort)
+                        ByteBuffer.allocate(4).putShort(modbusRegister.first()).putShort(modbusRegister.second())
+                            .also { it.flip() }.float
                     }
                     DeviceRegister.RegisterValueType.INT32 -> {
                         val modbusRegister =
-                            protocolAdapter.readHoldingRegisters(id, register.address, 2).map(ModbusRegister::toShort)
-                        register.value =
-                            allocateOrderedByteBuffer(
-                                modbusRegister,
-                                ru.avem.kserialpooler.communication.utils.TypeByteOrder.BIG_ENDIAN,
-                                4
-                            ).int
+                            protocolAdapter.readInputRegisters(id, register.address, 2).map(ModbusRegister::toShort)
+                        ByteBuffer.allocate(4).putShort(modbusRegister.first()).putShort(modbusRegister.second())
+                            .also { it.flip() }.int
                     }
                 }
             }
@@ -64,19 +53,20 @@ class Avem4(
         }
     }
 
+    @Synchronized
     override fun <T : Number> writeRegister(register: DeviceRegister, value: T) {
         isResponding = try {
             when (value) {
                 is Float -> {
-                    val bb = ByteBuffer.allocate(4).putFloat(value).order(ByteOrder.BIG_ENDIAN)
-                    val registers = listOf(ModbusRegister(bb.getShort(2)), ModbusRegister(bb.getShort(0)))
+                    val bb = ByteBuffer.allocate(4).putFloat(value).also { it.flip() }
+                    val registers = listOf(ModbusRegister(bb.short), ModbusRegister(bb.short))
                     transactionWithAttempts {
                         protocolAdapter.presetMultipleRegisters(id, register.address, registers)
                     }
                 }
                 is Int -> {
-                    val bb = ByteBuffer.allocate(4).putInt(value).order(ByteOrder.BIG_ENDIAN)
-                    val registers = listOf(ModbusRegister(bb.getShort(2)), ModbusRegister(bb.getShort(0)))
+                    val bb = ByteBuffer.allocate(4).putInt(value).also { it.flip() }
+                    val registers = listOf(ModbusRegister(bb.short), ModbusRegister(bb.short))
                     transactionWithAttempts {
                         protocolAdapter.presetMultipleRegisters(id, register.address, registers)
                     }
@@ -108,18 +98,11 @@ class Avem4(
         }
     }
 
-    override fun getRegisterById(idRegister: String) = model.getRegisterById(idRegister)
-
     override fun checkResponsibility() {
         model.registers.values.firstOrNull()?.let {
             readRegister(it)
         }
     }
 
-    fun toggleProgrammingMode() {
-        val serialNumberRegister = getRegisterById(Avem4Model.SERIAL_NUMBER)
-        readRegister(serialNumberRegister)
-        val serialNumber = serialNumberRegister.value.toShort()
-        writeRegister(serialNumberRegister, serialNumber)
-    }
+    override fun getRegisterById(idRegister: String) = model.getRegisterById(idRegister)
 }

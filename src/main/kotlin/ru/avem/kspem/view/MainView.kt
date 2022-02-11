@@ -18,7 +18,9 @@ import ru.avem.kspem.data.motorType
 import ru.avem.kspem.data.objectModel
 import ru.avem.kspem.data.protocolModel
 import ru.avem.kspem.database.entities.TestObjects
-import ru.avem.kspem.utils.*
+import ru.avem.kspem.utils.Singleton
+import ru.avem.kspem.utils.State
+import ru.avem.kspem.utils.Toast
 import ru.avem.kspem.view.Styles.Companion.mainTheme
 import tornadofx.*
 import tornadofx.controlsfx.errorNotification
@@ -54,6 +56,12 @@ class MainView : View("КСПЭМ") {
     private var vBoxExps: VBox by singleAssign()
 
     override val configPath: Path = Paths.get("cfg/app.properties")
+
+    private var someThing: Double = 0.0
+        set(value) {
+            println("111")
+            field = value
+        }
 
     @OptIn(ExperimentalTime::class)
     override fun onDock() {
@@ -322,13 +330,16 @@ class MainView : View("КСПЭМ") {
                             if (controller.expListRaw.size > 0) {
                                 controller.clearProtocol()
                                 objectModel = cbObjects.selectionModel.selectedItem
-                                protocolModel.date = SimpleDateFormat("dd.MM.y").format(System.currentTimeMillis()).toString()
-                                protocolModel.time = SimpleDateFormat("HH:mm:ss").format(System.currentTimeMillis()).toString()
+                                protocolModel.date =
+                                    SimpleDateFormat("dd.MM.y").format(System.currentTimeMillis()).toString()
+                                protocolModel.time =
+                                    SimpleDateFormat("HH:mm:ss").format(System.currentTimeMillis()).toString()
                                 protocolModel.operator = controller.position1
                                 protocolModel.objectName = cbObjects.selectionModel.selectedItem.name
-                                protocolModel.serial =  if (tfSerial.text.isNullOrEmpty()) "Не задан" else tfSerial.text
+                                protocolModel.serial =
+                                    if (tfSerial.text.isNullOrEmpty()) "Не задан" else tfSerial.text
                                 protocolModel.p2 = cbObjects.selectionModel.selectedItem.p2
-                                protocolModel.uN = cbObjects.selectionModel.selectedItem.uN
+                                protocolModel.uN = cbObjects.selectionModel.selectedItem.uNom
                                 protocolModel.iN = cbObjects.selectionModel.selectedItem.iN
                                 protocolModel.nAsync = cbObjects.selectionModel.selectedItem.nAsync
                                 protocolModel.kpd = cbObjects.selectionModel.selectedItem.kpd
@@ -451,6 +462,32 @@ class MainView : View("КСПЭМ") {
         cbList.clear()
         vBox.clear()
         if (cbObjects.selectionModel.selectedItem.type == motorType.sd) {
+            controller.listSD.forEach { contr ->
+                vBox.addChildIfPossible(checkbox(contr.name) {
+                    cbList.add(this)
+                    onAction = EventHandler {
+                        if (isSelected) {
+                            controller.expListRaw.add(contr)
+                        } else {
+                            controller.expListRaw.remove(contr)
+                        }
+                    }
+                })
+            }
+        } else if (cbObjects.selectionModel.selectedItem.type == motorType.sg) {
+            controller.listSG.forEach { contr ->
+                vBox.addChildIfPossible(checkbox(contr.name) {
+                    cbList.add(this)
+                    onAction = EventHandler {
+                        if (isSelected) {
+                            controller.expListRaw.add(contr)
+                        } else {
+                            controller.expListRaw.remove(contr)
+                        }
+                    }
+                })
+            }
+        } else if (cbObjects.selectionModel.selectedItem.type == motorType.dpt) {
             controller.listDPT.forEach { contr ->
                 vBox.addChildIfPossible(checkbox(contr.name) {
                     cbList.add(this)
@@ -482,7 +519,7 @@ class MainView : View("КСПЭМ") {
         labelType.text = getFullType(cbObjects.selectionModel.selectedItem.type)
         with(cbObjects.selectionModel.selectedItem) {
             tableData.p2.value = p2
-            tableData.uN.value = uN
+            tableData.uN.value = uNom
             tableData.iN.value = iN
             tableData.uOV.value = uOV
             tableData.iOV.value = iOV

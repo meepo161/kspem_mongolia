@@ -24,7 +24,7 @@ class VIUView : View() {
         }
         showTwoWayDialog(
             title = "Внимание!",
-            text = if (objectModel!!.uVIU.toDouble() < 5000.1) "подключите измерительные провода GPT к ОИ" else "подключите измерительные провода TV35",
+            text = "подключите измерительные провода TV35",
             way1Title = "Подтвердить",
             way2Title = "Отменить",
             way1 = {

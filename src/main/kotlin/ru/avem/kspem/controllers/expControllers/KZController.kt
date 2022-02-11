@@ -73,19 +73,19 @@ class KZController : CustomController() {
                 if (fDelta > 10 && value.toDouble() > 700 && isExperimentRunning) cause = "проверьте подключение ОИ"
                 model.data.uAB.value = (value.toDouble() * ktrVoltage).autoformat()
                 if (!pm135.isResponding && isExperimentRunning) cause = "PM135 не отвечает"
-                if (isExperimentRunning && (value.toDouble() * ktrVoltage) > objectModel!!.uN.toDouble() * 0.35) cause =
+                if (isExperimentRunning && (value.toDouble() * ktrVoltage) > objectModel!!.uNom.toDouble() * 0.35) cause =
                     "превышение напряжения ОИ, проверьте схему"
             }
             cm.startPoll(CommunicationModel.DeviceID.PAV41, PM130Model.U_BC_REGISTER) { value ->
                 if (fDelta > 10 && value.toDouble() > 700 && isExperimentRunning) cause = "проверьте подключение ОИ"
                 model.data.uBC.value = (value.toDouble() * ktrVoltage).autoformat()
-                if (isExperimentRunning && (value.toDouble() * ktrVoltage) > objectModel!!.uN.toDouble() * 0.35) cause =
+                if (isExperimentRunning && (value.toDouble() * ktrVoltage) > objectModel!!.uNom.toDouble() * 0.35) cause =
                     "превышение напряжения ОИ, проверьте схему"
             }
             cm.startPoll(CommunicationModel.DeviceID.PAV41, PM130Model.U_CA_REGISTER) { value ->
                 if (fDelta > 10 && value.toDouble() > 700 && isExperimentRunning) cause = "проверьте подключение ОИ"
                 model.data.uCA.value = (value.toDouble() * ktrVoltage).autoformat()
-                if (isExperimentRunning && (value.toDouble() * ktrVoltage) > objectModel!!.uN.toDouble() * 0.35) cause =
+                if (isExperimentRunning && (value.toDouble() * ktrVoltage) > objectModel!!.uNom.toDouble() * 0.35) cause =
                     "превышение напряжения ОИ, проверьте схему"
             }
             cm.startPoll(CommunicationModel.DeviceID.PAV41, PM130Model.I_A_REGISTER) { value ->
@@ -155,7 +155,7 @@ class KZController : CustomController() {
         }
 
         if (isExperimentRunning) {
-            calibrateVoltage()
+//            calibrateVoltage()
         }
 
         if (isExperimentRunning) {
@@ -204,18 +204,18 @@ class KZController : CustomController() {
         restoreData()
     }
 
-    private fun calibrateVoltage() {
-        appendMessageToLog(LogTag.DEBUG, "Проверка выставленного напряжения")
-        val uAvg =
-            (model.data.uAB.value.toDouble() + model.data.uBC.value.toDouble() + model.data.uCA.value.toDouble()) / 3.0
-        val kCalibr = objectModel!!.uN.toDouble() / 3.8 / uAvg
-        if (kCalibr < 1.6 && kCalibr > 0.9) {
-            voltageDelta *= kCalibr
-            delta.setObjectURun(voltageDelta)
-        } else {
-            appendMessageToLog(LogTag.ERROR, "Коэффициент $kCalibr")
-        }
-    }
+//    private fun calibrateVoltage() {
+//        appendMessageToLog(LogTag.DEBUG, "Проверка выставленного напряжения")
+//        val uAvg =
+//            (model.data.uAB.value.toDouble() + model.data.uBC.value.toDouble() + model.data.uCA.value.toDouble()) / 3.0
+//        val kCalibr = objectModel!!.uNom.toDouble() / 3.8 / uAvg
+//        if (kCalibr < 1.6 && kCalibr > 0.9) {
+//            voltageDelta *= kCalibr
+//            delta.setObjectURun(voltageDelta)
+//        } else {
+//            appendMessageToLog(LogTag.ERROR, "Коэффициент $kCalibr")
+//        }
+//    }
 
 
     private fun startRegulation() {

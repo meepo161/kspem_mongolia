@@ -1,11 +1,10 @@
-package ru.avem.kspem.communication.model.devices.latr
+package ru.avem.kspem.communication.model.devices.avem.latr
 
 import ru.avem.kserialpooler.communication.adapters.modbusrtu.ModbusRTUAdapter
 import ru.avem.kserialpooler.communication.adapters.utils.ModbusRegister
 import ru.avem.kserialpooler.communication.utils.TransportException
 import ru.avem.kspem.communication.model.DeviceRegister
 import ru.avem.kspem.communication.model.IDeviceController
-import ru.avem.kspem.communication.model.devices.avem.latr.LatrModel
 import ru.avem.kspem.communication.model.devices.avem.latr.LatrModel.Companion.CORRIDOR_REGISTER
 import ru.avem.kspem.communication.model.devices.avem.latr.LatrModel.Companion.DELTA_REGISTER
 import ru.avem.kspem.communication.model.devices.avem.latr.LatrModel.Companion.IR_DUTY_MAX_PERCENT
@@ -23,7 +22,7 @@ import java.nio.ByteBuffer
 import java.nio.ByteOrder
 
 
-class Latr(
+class LatrController(
     override val name: String,
     override val protocolAdapter: ModbusRTUAdapter,
     override val id: Byte
@@ -34,6 +33,10 @@ class Latr(
     override var requestSuccessCount = 0
     override val pollingRegisters = mutableListOf<DeviceRegister>()
     override val writingRegisters = mutableListOf<Pair<DeviceRegister, Number>>()
+
+    init {
+        protocolAdapter.connection.connect()
+    }
 
     override fun readRegister(register: DeviceRegister) {
         isResponding = try {
@@ -111,27 +114,10 @@ class Latr(
         }
     }
 
-//    override fun writeRegisters(register: DeviceRegister, values: List<Short>) {
-//        val registers = values.map { ModbusRegister(it) }
-//        isResponding = try {
-//            transactionWithAttempts {
-//                protocolAdapter.presetMultipleRegisters(id, register.address, registers)
-//            }
-//            true
-//        } catch (e: ru.avem.kserialpooler.communication.utils.TransportException) {
-//            false
-//        }
-//    }
-
     override fun writeRegisters(register: DeviceRegister, values: List<Short>) {
         val registers = values.map { ModbusRegister(it) }
-        isResponding = try {
-            transactionWithAttempts {
-                protocolAdapter.presetMultipleRegisters(id, register.address, registers)
-            }
-            true
-        } catch (e: ru.avem.kserialpooler.communication.utils.TransportException) {
-            false
+        transactionWithAttempts {
+            protocolAdapter.presetMultipleRegisters(id, register.address, registers)
         }
     }
 
@@ -147,35 +133,38 @@ class Latr(
     override fun getRegisterById(idRegister: String) = model.getRegisterById(idRegister)
 
 
-    fun startUpLATR(voltage: Float, speedPerc: Float) {
+    fun startUpLATRUp(voltage: Float, isNeedReset: Boolean, speedPerc: Float) {
         val corridor = 0.01f
         val delta = 0.01f
         val timeMinPulsePercent = 50.0f
         val timeMaxPulsePercent = 50.0f
-//        val minDuttyPercent = speedPerc
-//        val maxDuttyPercent = speedPerc
+//        val minDuttyPercent = 100f
+//        val maxDuttyPercent = 100f
         val timeMinPeriod = 50f
         val timeMaxPeriod = 50f
-        val minVoltage = 0.1f
+        val coridorVolt = 0.1f
+        if (isNeedReset) {
+            resetLATR()
+        }
         try {
-            writeRegister(getRegisterById(VALUE_REGISTER), (voltage))
-            writeRegister(getRegisterById(IR_TIME_PERIOD_MIN), (timeMinPulsePercent))
-            writeRegister(getRegisterById(IR_TIME_PERIOD_MAX), (timeMaxPulsePercent))
-            writeRegister(getRegisterById(IR_TIME_PULSE_MIN_PERCENT), (timeMinPeriod))
-            writeRegister(getRegisterById(IR_TIME_PULSE_MAX_PERCENT), (timeMaxPeriod))
-            writeRegister(getRegisterById(IR_DUTY_MIN_PERCENT), (speedPerc))
-            writeRegister(getRegisterById(IR_DUTY_MAX_PERCENT), (speedPerc))
             writeRegister(getRegisterById(REGULATION_TIME_REGISTER), (300000))
+            writeRegister(getRegisterById(VALUE_REGISTER), (voltage))
+            writeRegister(getRegisterById(IR_TIME_PULSE_MIN_PERCENT), (timeMinPulsePercent))
+            writeRegister(getRegisterById(IR_TIME_PULSE_MAX_PERCENT), (timeMaxPulsePercent))
             writeRegister(getRegisterById(CORRIDOR_REGISTER), (corridor))
             writeRegister(getRegisterById(DELTA_REGISTER), (delta))
-            writeRegister(getRegisterById(MIN_VOLTAGE_LIMIT_REGISTER), (minVoltage))
+            writeRegister(getRegisterById(MIN_VOLTAGE_LIMIT_REGISTER), (coridorVolt))
+            writeRegister(getRegisterById(IR_DUTY_MIN_PERCENT), (speedPerc))
+            writeRegister(getRegisterById(IR_DUTY_MAX_PERCENT), (speedPerc))
+            writeRegister(getRegisterById(IR_TIME_PERIOD_MIN), (timeMinPeriod))
+            writeRegister(getRegisterById(IR_TIME_PERIOD_MAX), (timeMaxPeriod))
             startLATR()
         } catch (e: Exception) {
             e.printStackTrace()
         }
     }
 
-    fun startLATR() {
+    private fun startLATR() {
         try {
             writeRegister(getRegisterById(START_REGISTER), (1).toShort())
             writeRegister(getRegisterById(STOP_REGISTER), (0).toShort())
@@ -184,39 +173,19 @@ class Latr(
         }
     }
 
-    fun startLATRUp() {
-        try {
-            writeRegister(getRegisterById(VALUE_REGISTER), (230f))
-            writeRegister(getRegisterById(START_REGISTER), (1).toShort())
-            writeRegister(getRegisterById(STOP_REGISTER), (0).toShort())
-        } catch (e: Exception) {
-            e.printStackTrace()
-        }
-    }
 
-    fun startLATRDown() {
-        try {
-            writeRegister(getRegisterById(VALUE_REGISTER), (1f))
-            writeRegister(getRegisterById(START_REGISTER), (1).toShort())
-            writeRegister(getRegisterById(STOP_REGISTER), (0).toShort())
-        } catch (e: Exception) {
-            e.printStackTrace()
-        }
-    }
-
-
-    fun startUpLATRPulse(voltage: Float, timePulsePercent: Float) {
+    fun startUpLATRPulse(voltage: Float, isNeedReset: Boolean, timePeriod: Float) {
         val corridor = 0.01f
         val delta = 0.01f
-        val timeMinPeriod = 20.0f
-        val timeMaxPeriod = 20.0f
+        val timeMinPeriod = 100.0f
+        val timeMaxPeriod = 100.0f
         val minVoltage = 0.1f
-        val minDuttyPercent = 80f
-        val maxDuttyPercent = 80f
+        val minDuttyPercent = 100f
+        val maxDuttyPercent = 100f
         try {
             writeRegister(getRegisterById(VALUE_REGISTER), (voltage))
-            writeRegister(getRegisterById(IR_TIME_PERIOD_MIN), (timePulsePercent))
-            writeRegister(getRegisterById(IR_TIME_PERIOD_MAX), (timePulsePercent))
+            writeRegister(getRegisterById(IR_TIME_PERIOD_MIN), (timePeriod))
+            writeRegister(getRegisterById(IR_TIME_PERIOD_MAX), (timePeriod))
             writeRegister(getRegisterById(IR_TIME_PULSE_MIN_PERCENT), (timeMinPeriod))
             writeRegister(getRegisterById(IR_TIME_PULSE_MAX_PERCENT), (timeMaxPeriod))
             writeRegister(getRegisterById(IR_DUTY_MIN_PERCENT), (minDuttyPercent))
@@ -241,6 +210,7 @@ class Latr(
 
     fun resetLATR() {
         try {
+            stopLATR()
             writeRegister(getRegisterById(START_REGISTER), (0x5A5A).toShort())
             writeRegister(getRegisterById(STOP_REGISTER), (0x5A5A).toShort())
         } catch (e: Exception) {

@@ -165,8 +165,8 @@ class ObjectEditorWindow : View("Редактор объектов испыта�
                         validator.addValidator(this) {
                             if (it?.toDoubleOrNull() == null) {
                                 error("Обязательное поле")
-                            } else if ((it.toDouble()) < 100 || (it.toDouble()) > 1000) {
-                                error("Значение не в диапазоне 100 — 1000")
+                            } else if ((it.toDouble()) < 0 || (it.toDouble()) > 1000) {
+                                error("Значение не в диапазоне 0 — 1000")
                             } else null
                         }
                     }
@@ -419,7 +419,7 @@ class ObjectEditorWindow : View("Редактор объектов испыта�
         with(cbObjects.selectionModel.selectedItem) {
             runLater {
                 tfp2.text = p2
-                tfuN.selectionModel.select(uN)
+                tfuN.selectionModel.select(uNom)
                 tfiN.text = iN
                 tfnAsync.text = nAsync
                 tfkpd.text = kpd
@@ -455,7 +455,7 @@ class ObjectEditorWindow : View("Редактор объектов испыта�
                     name = tempName
                     type = cbObjectType.selectedItem.toString()
                     p2 = tfp2.text
-                    uN = tfuN.selectionModel.selectedItem
+                    uNom = tfuN.selectionModel.selectedItem
                     iN = tfiN.text
                     nAsync = tfnAsync.text
                     kpd = tfkpd.text

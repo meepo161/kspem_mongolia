@@ -61,7 +61,7 @@ fun validateDB() {
                 name = "ВЭМ3"
                 type = motorType.dpt
                 p2 = "100"
-                uN = "100"
+                uNom = "100"
                 iN = "10.0"
                 nAsync = "740"
                 kpd = "93.0"

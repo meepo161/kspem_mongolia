@@ -6,7 +6,6 @@ import ru.avem.kspem.communication.model.devices.pm130.PM130Model
 import ru.avem.kspem.communication.model.devices.th01.TH01Model
 import ru.avem.kspem.controllers.CustomController
 import ru.avem.kspem.data.objectModel
-import ru.avem.kspem.data.protocolModel
 import ru.avem.kspem.utils.LogTag
 import ru.avem.kspem.utils.sleep
 import ru.avem.kspem.view.expViews.H_HHView
@@ -152,7 +151,7 @@ class H_HHController : CustomController() {
         }
 
         if (isExperimentRunning) {
-            startVoltage()
+//            startVoltage()
         }
 
         if (isExperimentRunning) {
@@ -199,38 +198,38 @@ class H_HHController : CustomController() {
 //        }
 //    }
 
-
-    private fun startVoltage() {
-        val timer = System.currentTimeMillis()
-        appendMessageToLog(LogTag.DEBUG, "Подъем напряжения до 1.3 Uн")
-        koefDelta = 1.0
-        while (isExperimentRunning && koefDelta < 1.3) {
-            koefDelta += 0.02
-            delta.setObjectURun(voltageDelta * koefDelta)
-            sleep(500)
-            if (System.currentTimeMillis() - timer > 30000) cause = "превышено время регулирования"
-        }
-    }
-
-    private fun stopVoltage(goTo: Double) {
-        val timer = System.currentTimeMillis()
-        appendMessageToLog(LogTag.DEBUG, "Уменьшение напряжения до $goTo Uн")
-        while (isExperimentRunning && koefDelta > goTo) {
-            koefDelta -= 0.02
-            delta.setObjectURun(voltageDelta * koefDelta)
-            sleep(500)
-            if (System.currentTimeMillis() - timer > 30000) cause = "превышено время регулирования"
-        }
-
-        if (isExperimentRunning) {
-            appendMessageToLog(LogTag.MESSAGE, "Выдержка 5 секунд")
-            var timer = 5.0
-            while (isExperimentRunning && timer > 0) {
-                sleep(100)
-                timer -= 0.1
-            }
-        }
-    }
+//
+//    private fun startVoltage() {
+//        val timer = System.currentTimeMillis()
+//        appendMessageToLog(LogTag.DEBUG, "Подъем напряжения до 1.3 Uн")
+//        koefDelta = 1.0
+//        while (isExperimentRunning && koefDelta < 1.3) {
+//            koefDelta += 0.02
+//            delta.setObjectURun(voltageDelta * koefDelta)
+//            sleep(500)
+//            if (System.currentTimeMillis() - timer > 30000) cause = "превышено время регулирования"
+//        }
+//    }
+//
+//    private fun stopVoltage(goTo: Double) {
+//        val timer = System.currentTimeMillis()
+//        appendMessageToLog(LogTag.DEBUG, "Уменьшение напряжения до $goTo Uн")
+//        while (isExperimentRunning && koefDelta > goTo) {
+//            koefDelta -= 0.02
+//            delta.setObjectURun(voltageDelta * koefDelta)
+//            sleep(500)
+//            if (System.currentTimeMillis() - timer > 30000) cause = "превышено время регулирования"
+//        }
+//
+//        if (isExperimentRunning) {
+//            appendMessageToLog(LogTag.MESSAGE, "Выдержка 5 секунд")
+//            var timer = 5.0
+//            while (isExperimentRunning && timer > 0) {
+//                sleep(100)
+//                timer -= 0.1
+//            }
+//        }
+//    }
 
     private fun startRegulation() {
         val timer = System.currentTimeMillis()
@@ -254,18 +253,18 @@ class H_HHController : CustomController() {
         }
     }
 
-    private fun calibrateVoltage() {
-        appendMessageToLog(LogTag.DEBUG, "Проверка выставленного напряжения")
-        val uAvg =
-            (model.data.uAB.value.toDouble() + model.data.uBC.value.toDouble() + model.data.uCA.value.toDouble()) / 3.0
-        val kCalibr = objectModel!!.uN.toDouble() / uAvg
-        if (kCalibr < 1.3 && kCalibr > 0.8) {
-            voltageDelta *= kCalibr
-            delta.setObjectURun(voltageDelta)
-        } else {
-            appendMessageToLog(LogTag.DEBUG, "Коэффициент $kCalibr")
-        }
-    }
+//    private fun calibrateVoltage() {
+//        appendMessageToLog(LogTag.DEBUG, "Проверка выставленного напряжения")
+//        val uAvg =
+//            (model.data.uAB.value.toDouble() + model.data.uBC.value.toDouble() + model.data.uCA.value.toDouble()) / 3.0
+//        val kCalibr = objectModel!!.uNom.toDouble() / uAvg
+//        if (kCalibr < 1.3 && kCalibr > 0.8) {
+//            voltageDelta *= kCalibr
+//            delta.setObjectURun(voltageDelta)
+//        } else {
+//            appendMessageToLog(LogTag.DEBUG, "Коэффициент $kCalibr")
+//        }
+//    }
 
     override fun stop() {
         cause = "Отменено оператором"
@@ -305,10 +304,10 @@ class H_HHController : CustomController() {
                 model.h_hhTablePoints[0].power.value = model.data.power.value
             }
         }
-
-        if (isExperimentRunning) {
-            stopVoltage(1.2)
-        }
+//
+//        if (isExperimentRunning) {
+//            stopVoltage(1.2)
+//        }
 
 
         if (isExperimentRunning) {
@@ -335,7 +334,7 @@ class H_HHController : CustomController() {
         }
 
         if (isExperimentRunning) {
-            stopVoltage(1.1)
+//            stopVoltage(1.1)
         }
 
         if (isExperimentRunning) {
@@ -362,7 +361,7 @@ class H_HHController : CustomController() {
         }
 
         if (isExperimentRunning) {
-            stopVoltage(1.0)
+//            stopVoltage(1.0)
         }
 
         if (isExperimentRunning) {
@@ -389,7 +388,7 @@ class H_HHController : CustomController() {
         }
 
         if (isExperimentRunning) {
-            stopVoltage(0.9)
+//            stopVoltage(0.9)
         }
 
         if (isExperimentRunning) {
@@ -416,7 +415,7 @@ class H_HHController : CustomController() {
         }
 
         if (isExperimentRunning) {
-            stopVoltage(0.8)
+//            stopVoltage(0.8)
         }
 
         if (isExperimentRunning) {
@@ -443,7 +442,7 @@ class H_HHController : CustomController() {
         }
 
         if (isExperimentRunning) {
-            stopVoltage(0.7)
+//            stopVoltage(0.7)
         }
 
         if (isExperimentRunning) {
@@ -470,7 +469,7 @@ class H_HHController : CustomController() {
         }
 
         if (isExperimentRunning) {
-            stopVoltage(0.6)
+//            stopVoltage(0.6)
         }
 
         if (isExperimentRunning) {
@@ -497,7 +496,7 @@ class H_HHController : CustomController() {
         }
 
         if (isExperimentRunning) {
-            stopVoltage(0.5)
+//            stopVoltage(0.5)
         }
 
         if (isExperimentRunning) {

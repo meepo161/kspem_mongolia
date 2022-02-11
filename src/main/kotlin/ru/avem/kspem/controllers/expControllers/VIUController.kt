@@ -11,7 +11,6 @@ import ru.avem.kspem.utils.LogTag
 import ru.avem.kspem.utils.sleep
 import ru.avem.kspem.view.expViews.VIUView
 import ru.avem.stand.utils.autoformat
-import ru.avem.stand.utils.toDoubleOrDefault
 import kotlin.math.abs
 
 class VIUController : CustomController() {
@@ -46,11 +45,13 @@ class VIUController : CustomController() {
 
         if (isExperimentRunning) {
             appendMessageToLog(LogTag.MESSAGE, "Инициализация АРН...")
+            latr.resetLATR()
             cm.startPoll(CommunicationModel.DeviceID.GV240, LatrModel.U_RMS_REGISTER) { value ->
                 voltageLatr = value.toDouble()
                 if (!latr.isResponding && isExperimentRunning) cause = "АРН не отвечает"
             }
-            latr.resetLATR()
+            cm.startPoll(CommunicationModel.DeviceID.GV240, LatrModel.ENDS_STATUS_REGISTER) { value ->
+            }
         }
 
         if (isExperimentRunning) {
@@ -64,16 +65,16 @@ class VIUController : CustomController() {
         }
 
         if (isExperimentRunning) {
-            appendMessageToLog(LogTag.MESSAGE, "Инициализация АВЭМ4...")
+            appendMessageToLog(LogTag.MESSAGE, "Инициализация АВЭМ3...")
             cm.startPoll(CommunicationModel.DeviceID.PV24, Avem4Model.RMS) { value ->
-                voltage = value.toDouble() * 3600 / 220
+                voltage = value.toDouble()
                 model.data.U.value = voltage.autoformat()
-                if (!avemUvv.isResponding && isExperimentRunning) cause = "АВЭМ4 не отвечает"
+                if (!avemUvv.isResponding && isExperimentRunning) cause = "АВЭМ3 не отвечает"
             }
         }
 
         if (isExperimentRunning) {
-            initButtonPost()
+//            initButtonPost()
         }
 
         if (isExperimentRunning) {
@@ -82,32 +83,33 @@ class VIUController : CustomController() {
 
         if (isExperimentRunning) {
             pr102.ground(true)
-            sleep(3000)
+            pr102.viu(true)
+            pr102.shunt(false)
         }
 
-        if (isExperimentRunning) {
-            if (!onVV) {
-                if (onGround) {
-                    cause = "заземлитель не разомкнулся"
-                } else if (!onGround) {
-                    cause = "одновременно разомкнуты DI11 и DI12"
-                }
-            } else if (onGround && onVV) {
-                cause = "одновременно замкнуты DI11 и DI12"
-            }
-        }
+//        if (isExperimentRunning) {
+//            if (!onVV) {
+//                if (onGround) {
+//                    cause = "заземлитель не разомкнулся"
+//                } else if (!onGround) {
+//                    cause = "одновременно разомкнуты DI11 и DI12"
+//                }
+//            } else if (onGround && onVV) {
+//                cause = "одновременно замкнуты DI11 и DI12"
+//            }
+//        }
 
         if (isExperimentRunning) {
             if (voltageLatr < 5) {
-                pr102.shunt(false)
-                pr102.viu(true)
+                pr102.km1(true)
                 pr102.arn(true)
+                pr102.vv(true)
             } else cause = "АРН не вышел в нулевое положение"
         }
 
         if (isExperimentRunning) {
             if (objectModel!!.uVIU.toDoubleOrNull() != null) {
-                voltageRegulation(objectModel!!.uVIU.toDouble())
+                voltageRegulation(voltageSet)
                 appendMessageToLog(LogTag.MESSAGE, "Регулировка завершена")
             } else cause = "ошибка задания напряжения"
         }
@@ -126,7 +128,7 @@ class VIUController : CustomController() {
         protocolModel.viuI = model.data.I.value
         protocolModel.viuTime = objectModel!!.timeVIU
 
-        latr.startUpLATR(0f, 70f)
+        latr.resetLATR()
 
         val timerLatr = System.currentTimeMillis()
         while (voltage > 200) {
@@ -137,7 +139,6 @@ class VIUController : CustomController() {
             }
         }
 
-        latr.resetLATR()
         pr102.arn(false)
 
         if (isExperimentRunning) {
@@ -146,17 +147,17 @@ class VIUController : CustomController() {
             sleep(3000)
         }
 
-        if (isExperimentRunning) {
-            if (!onGround) {
-                if (onVV) {
-                    cause = "заземлитель не замкнулся"
-                } else if (!onVV) {
-                    cause = "одновременно разомкнуты DI11 и DI12"
-                }
-            } else if (onGround && onVV) {
-                cause = "одновременно замкнуты DI11 и DI12"
-            }
-        }
+//        if (isExperimentRunning) {
+//            if (!onGround) {
+//                if (onVV) {
+//                    cause = "заземлитель не замкнулся"
+//                } else if (!onVV) {
+//                    cause = "одновременно разомкнуты DI11 и DI12"
+//                }
+//            } else if (onGround && onVV) {
+//                cause = "одновременно замкнуты DI11 и DI12"
+//            }
+//        }
 
         when (cause) {
             "" -> {
@@ -191,13 +192,13 @@ class VIUController : CustomController() {
         while (abs(voltage - volt) > fast && isExperimentRunning) {
             if (voltage < volt) {
                 direction = up
-                    speedPerc = 45f
+                speedPerc = 100f
             } else {
                 direction = down
-                speedPerc = 70f
+                speedPerc = 100f
             }
             if (System.currentTimeMillis() - timer > 90000) cause = "Превышено время регулирования"
-            latr.startUpLATR(direction, speedPerc)
+            latr.startUpLATRUp(direction, false, speedPerc)
         }
         latr.stopLATR()
         timer = System.currentTimeMillis()
@@ -207,13 +208,13 @@ class VIUController : CustomController() {
         while (abs(voltage - volt) > slow && isExperimentRunning) {
             if (voltage < volt) {
                 direction = up
-                timePulsePerc = 25f
+                timePulsePerc = 95f
             } else {
                 direction = down
-                timePulsePerc = 45f
+                timePulsePerc = 95f
             }
             if (System.currentTimeMillis() - timer > 60000) cause = "Превышено время регулирования"
-            latr.startUpLATRPulse(direction, timePulsePerc)
+            latr.startUpLATRPulse(direction,false, timePulsePerc)
         }
         latr.stopLATR()
         timer = System.currentTimeMillis()
@@ -223,13 +224,13 @@ class VIUController : CustomController() {
         while (abs(voltage - volt) > 20 && isExperimentRunning) {
             if (voltage < volt) {
                 direction = up
-                timePulsePerc = 12f
+                timePulsePerc = 85f
             } else {
                 direction = down
-                timePulsePerc = 20f
+                timePulsePerc = 85f
             }
             if (System.currentTimeMillis() - timer > 60000) cause = "Превышено время регулирования"
-            latr.startUpLATRPulse(direction, timePulsePerc)
+            latr.startUpLATRPulse(direction,false, timePulsePerc)
         }
         latr.stopLATR()
     }

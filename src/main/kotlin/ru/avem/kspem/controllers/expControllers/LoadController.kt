@@ -201,18 +201,18 @@ class LoadController : CustomController() {
         restoreData()
     }
 
-    private fun calibrateVoltage() {
-        appendMessageToLog(LogTag.DEBUG, "Проверка выставленного напряжения")
-        val uAvg =
-            (model.data.uab.value.toDouble() + model.data.ubc.value.toDouble() + model.data.uca.value.toDouble()) / 3.0
-        val kCalibr = objectModel!!.uN.toDouble() / uAvg
-        if (kCalibr < 1.2 && kCalibr > 0.9) {
-            voltageDelta *= kCalibr
-            delta.setObjectURun(voltageDelta)
-        } else {
-            appendMessageToLog(LogTag.ERROR, "Коэффициент $kCalibr")
-        }
-    }
+//    private fun calibrateVoltage() {
+//        appendMessageToLog(LogTag.DEBUG, "Проверка выставленного напряжения")
+//        val uAvg =
+//            (model.data.uab.value.toDouble() + model.data.ubc.value.toDouble() + model.data.uca.value.toDouble()) / 3.0
+//        val kCalibr = objectModel!!.uNom.toDouble() / uAvg
+//        if (kCalibr < 1.2 && kCalibr > 0.9) {
+//            voltageDelta *= kCalibr
+//            delta.setObjectURun(voltageDelta)
+//        } else {
+//            appendMessageToLog(LogTag.ERROR, "Коэффициент $kCalibr")
+//        }
+//    }
 
     private fun startRegulation() {
         val timer = System.currentTimeMillis()

@@ -4,9 +4,8 @@ import ru.avem.kserialpooler.communication.adapters.modbusrtu.ModbusRTUAdapter
 import ru.avem.kserialpooler.communication.adapters.utils.ModbusRegister
 import ru.avem.kserialpooler.communication.utils.TransportException
 import ru.avem.kserialpooler.communication.utils.allocateOrderedByteBuffer
+import ru.avem.kspem.communication.model.DeviceController
 import ru.avem.kspem.communication.model.DeviceRegister
-import ru.avem.kspem.communication.model.IDeviceController
-import ru.avem.kspem.communication.model.devices.avem.avem4.Avem4Model
 import java.nio.ByteBuffer
 import java.nio.ByteOrder
 
@@ -14,9 +13,8 @@ class Avem7(
     override val name: String,
     override val protocolAdapter: ModbusRTUAdapter,
     override val id: Byte
-) : IDeviceController {
-    private val model = Avem4Model()
-    override var isResponding = false
+) : DeviceController() {
+    private val model = Avem7Model()
     override var requestTotalCount = 0
     override var requestSuccessCount = 0
     override val pollingRegisters = mutableListOf<DeviceRegister>()
@@ -118,7 +116,7 @@ class Avem7(
     }
 
     fun toggleProgrammingMode() {
-        val serialNumberRegister = getRegisterById(Avem4Model.SERIAL_NUMBER)
+        val serialNumberRegister = getRegisterById(Avem7Model.SERIAL_NUMBER)
         readRegister(serialNumberRegister)
         val serialNumber = serialNumberRegister.value.toShort()
         writeRegister(serialNumberRegister, serialNumber)

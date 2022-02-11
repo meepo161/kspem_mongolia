@@ -8,9 +8,9 @@ import javafx.scene.text.Text
 import ru.avem.kspem.communication.model.CommunicationModel
 import ru.avem.kspem.communication.model.devices.avem.avem4.Avem4
 import ru.avem.kspem.communication.model.devices.avem.avem7.Avem7
+import ru.avem.kspem.communication.model.devices.avem.latr.LatrController
 import ru.avem.kspem.communication.model.devices.cs02021.CS02021
 import ru.avem.kspem.communication.model.devices.delta.Delta
-import ru.avem.kspem.communication.model.devices.latr.Latr
 import ru.avem.kspem.communication.model.devices.owen.pr.OwenPr
 import ru.avem.kspem.communication.model.devices.owen.pr.OwenPrModel
 import ru.avem.kspem.communication.model.devices.pm130.PM130
@@ -29,19 +29,24 @@ import kotlin.experimental.and
 
 abstract class CustomController() : Component(), ScopedInstance {
     val pr102 = CommunicationModel.getDeviceById(CommunicationModel.DeviceID.DD2_1) as OwenPr
-    val avemIov = CommunicationModel.getDeviceById(CommunicationModel.DeviceID.PA13) as Avem7
-    val avemIanc = CommunicationModel.getDeviceById(CommunicationModel.DeviceID.PA15) as Avem7
+
+    val avemUoy = CommunicationModel.getDeviceById(CommunicationModel.DeviceID.PV25) as Avem4
+    val avemIoy = CommunicationModel.getDeviceById(CommunicationModel.DeviceID.PA15) as Avem7
+
     val avemUov = CommunicationModel.getDeviceById(CommunicationModel.DeviceID.PV23) as Avem4
+    val avemIov = CommunicationModel.getDeviceById(CommunicationModel.DeviceID.PA13) as Avem7
+
     val avemUvv = CommunicationModel.getDeviceById(CommunicationModel.DeviceID.PV24) as Avem4
-    val avemUanc = CommunicationModel.getDeviceById(CommunicationModel.DeviceID.PV25) as Avem4
+
     val pm135 = CommunicationModel.getDeviceById(CommunicationModel.DeviceID.PAV41) as PM130
     val ikas = CommunicationModel.getDeviceById(CommunicationModel.DeviceID.PR61) as IKAS8
     val th01 = CommunicationModel.getDeviceById(CommunicationModel.DeviceID.PC71) as TH01
     val trm202 = CommunicationModel.getDeviceById(CommunicationModel.DeviceID.PS81) as TRM202
     val cs02 = CommunicationModel.getDeviceById(CommunicationModel.DeviceID.PR65) as CS02021
-//    val gpt = CommunicationModel.getDeviceById(CommunicationModel.DeviceID.PRV89) as GPT
+
+    //    val gpt = CommunicationModel.getDeviceById(CommunicationModel.DeviceID.PRV89) as GPT
     val delta = CommunicationModel.getDeviceById(CommunicationModel.DeviceID.UZ91) as Delta
-    val latr = CommunicationModel.getDeviceById(CommunicationModel.DeviceID.GV240) as Latr
+    val latr = CommunicationModel.getDeviceById(CommunicationModel.DeviceID.GV240) as LatrController
     val cm = CommunicationModel
 
     val controller: MainViewController by inject()
@@ -57,6 +62,8 @@ abstract class CustomController() : Component(), ScopedInstance {
     var ikzIN = false
     var onGround = false
     var onVV = false
+    var tempUNM = false
+    var speedUNM = false
 //    var ikzVIU = false
 
     @Volatile
@@ -97,7 +104,7 @@ abstract class CustomController() : Component(), ScopedInstance {
         cause = ""
         disableButtons()
 
-        if(isExperimentRunning) {
+        if (isExperimentRunning) {
             appendMessageToLog(LogTag.MESSAGE, "Инициализация ПР102...")
             initPR()
         }
@@ -143,20 +150,41 @@ abstract class CustomController() : Component(), ScopedInstance {
                 isStartPressed = value.toShort() and 2 > 0      // 2
                 doorZone = value.toShort() and 4 > 0            // 3
                 doorSCO = value.toShort() and 8 > 0            // 4
-                ikzOI = value.toShort() and 16 > 0            // 5
-                ikzIN = value.toShort() and 32 > 0              // 6
+                ikzOI = value.toShort() and 32 > 0            // 5
+                ikzIN = value.toShort() and 128 > 0              // 6
 //                ikzVIU = value.toShort() and 64 > 0             // 7
 //                tempDros = value.toShort() and 128 > 0        // 8
+                if (doorZone) {
+//                    cause = "Открыты двери зоны"
+                }
+                if (doorSCO) {
+//                    cause = "Открыты двери ШСО"
+                }
+                if (ikzOI) {
+                    cause = "сработала токовая защита ОИ"
+                }
+                if (ikzIN) {
+                    cause = "сработала токовая защита ВХОД"
+                }
             }
             cm.startPoll(CommunicationModel.DeviceID.DD2_1, OwenPrModel.INPUTS_REGISTER2) { value ->
-//                iViu = value.toShort() and 1 > 0       // 1
+                iViu = value.toShort() and 1 > 0       // 1
 //                = value.toShort() and 2 > 0      // 2
                 onGround = value.toShort() and 4 > 0            // 3
                 onVV = value.toShort() and 8 > 0            // 4
-//                = value.toShort() and 16 > 0            // 5
-//                = value.toShort() and 32 > 0              // 6
+                tempUNM = value.toShort() and 16 > 0            // 5
+                speedUNM = value.toShort() and 32 > 0              // 6
 //                = value.toShort() and 64 > 0             // 7
 //                = value.toShort() and 128 > 0        // 8
+                if (iViu) {
+                    cause = "сработала токовая защита ВИУ"
+                }
+                if (tempUNM) {
+                    cause = "сработала токовая защита ВИУ"
+                }
+                if (speedUNM) {
+                    cause = "сработала токовая защита ВИУ"
+                }
             }
             sleep(1000)
             thread(isDaemon = true) {
@@ -200,4 +228,5 @@ abstract class CustomController() : Component(), ScopedInstance {
         view.vboxExp.children.clear()
         view.vboxExp.children.add(model.root)
     }
+
 }

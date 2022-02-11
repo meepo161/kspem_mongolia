@@ -11,6 +11,7 @@ class OwenPrModel : IDeviceModel {
         const val KMS1_REGISTER = "KMS1_REGISTER"
         const val KMS2_REGISTER = "KMS2_REGISTER"
         const val TVN = "TVN"
+        const val TRN = "TRN"
         const val RES = "RES"
     }
 
@@ -21,6 +22,7 @@ class OwenPrModel : IDeviceModel {
         KMS1_REGISTER to DeviceRegister(515, DeviceRegister.RegisterValueType.SHORT),
         KMS2_REGISTER to DeviceRegister(516, DeviceRegister.RegisterValueType.SHORT),
         TVN to DeviceRegister(520, DeviceRegister.RegisterValueType.FLOAT),
+        TRN to DeviceRegister(522, DeviceRegister.RegisterValueType.FLOAT),
         RES to DeviceRegister(518, DeviceRegister.RegisterValueType.SHORT)
     )
 

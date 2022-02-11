@@ -1,6 +1,8 @@
-package ru.avem.kspem.controllers.expControllers
+package ru.avem.kspem.controllers.expControllersSD
 
 import ru.avem.kspem.communication.model.CommunicationModel
+import ru.avem.kspem.communication.model.devices.avem.avem4.Avem4Model
+import ru.avem.kspem.communication.model.devices.avem.latr.LatrModel
 import ru.avem.kspem.communication.model.devices.delta.DeltaModel
 import ru.avem.kspem.communication.model.devices.pm130.PM130Model
 import ru.avem.kspem.communication.model.devices.th01.TH01Model
@@ -10,19 +12,25 @@ import ru.avem.kspem.data.objectModel
 import ru.avem.kspem.data.protocolModel
 import ru.avem.kspem.utils.LogTag
 import ru.avem.kspem.utils.sleep
-import ru.avem.kspem.view.expViews.NView
+import ru.avem.kspem.view.expViews.expViewsSD.NViewSD
 import ru.avem.stand.utils.autoformat
+import kotlin.concurrent.thread
 import kotlin.math.abs
 
-class NController : CustomController() {
-    override val model: NView by inject()
+class NControllerSD : CustomController() {
+    override val model: NViewSD by inject()
     override val name = model.name
     var deltaStatus = 0
     private var setTime = 0.0
     var fDelta = 1
     private var ktrVoltage = 1.0
-    private var ktrAmperage = 1.0
+    private var ktrAmperage = 400 / 5
     var voltageDelta = 0.0
+    var voltage = 0.0
+    var amperage = 0.0
+    var voltageLatr = 0.0
+    var voltageSet = 0.0
+    var voltageOVSet = 0.0
 
     @Volatile
     var ktrDelta = 1.0
@@ -33,7 +41,28 @@ class NController : CustomController() {
         // (value-4)*0.625
 
         fDelta = 1
+        voltageSet = objectModel!!.uNom.toDouble()
+        voltageOVSet = objectModel!!.uOV.toDouble()
         setTime = objectModel!!.timeHH.toDouble()
+
+
+        if (isExperimentRunning) {
+            appendMessageToLog(LogTag.MESSAGE, "Инициализация АВЭМ4-03...")
+            cm.startPoll(CommunicationModel.DeviceID.PV23, Avem4Model.RMS) { value ->
+                voltage = value.toDouble()
+                model.data.uOV.value = voltage.autoformat()
+                if (!avemUov.isResponding && isExperimentRunning) cause = "АВЭМ4-03 не отвечает"
+            }
+        }
+
+        if (isExperimentRunning) {
+            appendMessageToLog(LogTag.MESSAGE, "Инициализация АВЭМ4-01...")
+            cm.startPoll(CommunicationModel.DeviceID.PA13, Avem4Model.RMS) { value ->
+                amperage = value.toDouble()
+                model.data.iOV.value = amperage.autoformat()
+                if (!avemIov.isResponding && isExperimentRunning) cause = "АВЭМ4-01 не отвечает"
+            }
+        }
 
         if (isExperimentRunning) {
             appendMessageToLog(LogTag.MESSAGE, "Инициализация ТРМ202...")
@@ -101,7 +130,18 @@ class NController : CustomController() {
         }
 
         if (isExperimentRunning) {
-            initButtonPost()
+            appendMessageToLog(LogTag.MESSAGE, "Инициализация АРН...")
+            latr.resetLATR()
+            cm.startPoll(CommunicationModel.DeviceID.GV240, LatrModel.U_RMS_REGISTER) { value ->
+                voltageLatr = value.toDouble()
+                if (!latr.isResponding && isExperimentRunning) cause = "АРН не отвечает"
+            }
+            cm.startPoll(CommunicationModel.DeviceID.GV240, LatrModel.ENDS_STATUS_REGISTER) { value ->
+            }
+        }
+
+        if (isExperimentRunning) {
+//            initButtonPost()
         }
 
         if (isExperimentRunning) {
@@ -128,14 +168,31 @@ class NController : CustomController() {
             }
         }
 
+        if (isExperimentRunning) {
+            if (voltageLatr < 5) {
+                pr102.arn(true)
+                pr102.ov_oi(true)
+            } else {
+                cause = "АРН не вышел в нулевое положение"
+            }
+        }
+
+        thread(isDaemon = true) {
+            if (isExperimentRunning) {
+                if (objectModel!!.uVIU.toDoubleOrNull() != null) {
+                    voltageRegulation(voltageOVSet)
+                    appendMessageToLog(LogTag.MESSAGE, "Регулировка завершена")
+                } else cause = "ошибка задания напряжения"
+            }
+        }
 
         if (isExperimentRunning) {
+            delta.setObjectParamsRun()
             delta.startObject()
         }
         if (isExperimentRunning) {
             startRegulation()
         }
-
 
         if (isExperimentRunning) {
             var timer = 5.0
@@ -145,7 +202,6 @@ class NController : CustomController() {
             }
         }
 
-
         var timer = 5.0
         while (isExperimentRunning && timer > 0) {
             sleep(100)
@@ -153,14 +209,16 @@ class NController : CustomController() {
             model.data.timeExp.value = abs(timer).autoformat()
         }
 
-        startRegulationN()
+        if (isExperimentRunning) {
+            voltageRegulation(voltageOVSet * 1.2)
+        }
 
         timer = 120.0
         if (isExperimentRunning) {
             appendMessageToLog(LogTag.MESSAGE, "Выдержка 120 секунд")
             while (isExperimentRunning && timer > 0) {
                 timer -= 0.1
-                if (timer >=0) {
+                if (timer >= 0) {
                     model.data.timeExp.value = timer.autoformat()
                 }
                 sleep(100)
@@ -204,18 +262,62 @@ class NController : CustomController() {
         restoreData()
     }
 
-//    private fun calibrateVoltage() {
-//        appendMessageToLog(LogTag.DEBUG, "Проверка выставленного напряжения")
-//        val uAvg =
-//            (model.data.uAB.value.toDouble() + model.data.uBC.value.toDouble() + model.data.uCA.value.toDouble()) / 3.0
-//        val kCalibr = objectModel!!.uNom.toDouble() / uAvg
-//        if (kCalibr < 1.2 && kCalibr > 0.9) {
-//            voltageDelta *= kCalibr
-//            delta.setObjectURunN(voltageDelta)
-//        } else {
-//            appendMessageToLog(LogTag.DEBUG, "Коэффициент $kCalibr")
-//        }
-//    }
+    private fun voltageRegulation(volt: Double) {
+        var timer = 0L
+        val slow = 200.0
+        val fast = 1000.0
+        var speedPerc = 35f
+        var timePulsePerc = 20f
+        val up = 220f
+        val down = 1f
+        var direction: Float
+        timer = System.currentTimeMillis()
+        appendMessageToLog(LogTag.DEBUG, "Быстрая регулировка")
+        while (abs(voltage - volt) > fast && isExperimentRunning) {
+            if (voltage < volt) {
+                direction = up
+                speedPerc = 100f
+            } else {
+                direction = down
+                speedPerc = 100f
+            }
+            if (System.currentTimeMillis() - timer > 90000) cause = "Превышено время регулирования"
+            latr.startUpLATRUp(direction, false, speedPerc)
+        }
+        latr.stopLATR()
+        timer = System.currentTimeMillis()
+        if (isExperimentRunning) {
+            appendMessageToLog(LogTag.DEBUG, "Грубая регулировка")
+        }
+        while (abs(voltage - volt) > slow && isExperimentRunning) {
+            if (voltage < volt) {
+                direction = up
+                timePulsePerc = 95f
+            } else {
+                direction = down
+                timePulsePerc = 95f
+            }
+            if (System.currentTimeMillis() - timer > 60000) cause = "Превышено время регулирования"
+            latr.startUpLATRPulse(direction, false, timePulsePerc)
+        }
+        latr.stopLATR()
+        timer = System.currentTimeMillis()
+        if (isExperimentRunning) {
+            appendMessageToLog(LogTag.DEBUG, "Точная регулировка")
+        }
+        while (abs(voltage - volt) > 20 && isExperimentRunning) {
+            if (voltage < volt) {
+                direction = up
+                timePulsePerc = 85f
+            } else {
+                direction = down
+                timePulsePerc = 85f
+            }
+            if (System.currentTimeMillis() - timer > 60000) cause = "Превышено время регулирования"
+            latr.startUpLATRPulse(direction, false, timePulsePerc)
+        }
+        latr.stopLATR()
+    }
 
     private fun startRegulation() {
         val timer = System.currentTimeMillis()
@@ -258,10 +360,10 @@ class NController : CustomController() {
 
     private fun saveData() {
         protocolModel.nUAB = model.data.uAB.value
-        protocolModel.nUBC = model.data.uBC.value
+        protocolModel.nUBC = model.data.uOV.value
         protocolModel.nUCA = model.data.uCA.value
-        protocolModel.nIA = model.data.iA.value
-        protocolModel.nIB = model.data.iB.value
+        protocolModel.nIA = model.data.iOV.value
+        protocolModel.nIB = model.data.iA.value
         protocolModel.nIC = model.data.iC.value
         protocolModel.nSpeed = model.data.n.value
         protocolModel.nF = model.data.f.value
@@ -270,10 +372,10 @@ class NController : CustomController() {
 
     private fun restoreData() {
         model.data.uAB.value = protocolModel.nUAB
-        model.data.uBC.value = protocolModel.nUBC
+        model.data.uOV.value = protocolModel.nUBC
         model.data.uCA.value = protocolModel.nUCA
-        model.data.iA.value = protocolModel.nIA
-        model.data.iB.value = protocolModel.nIB
+        model.data.iOV.value = protocolModel.nIA
+        model.data.iA.value = protocolModel.nIB
         model.data.iC.value = protocolModel.nIC
         model.data.n.value = protocolModel.nSpeed
         model.data.f.value = protocolModel.nF

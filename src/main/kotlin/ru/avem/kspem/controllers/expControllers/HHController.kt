@@ -3,7 +3,6 @@ package ru.avem.kspem.controllers.expControllers
 import ru.avem.kspem.communication.model.CommunicationModel
 import ru.avem.kspem.communication.model.devices.avem.avem4.Avem4Model
 import ru.avem.kspem.communication.model.devices.avem.avem7.Avem7Model
-import ru.avem.kspem.communication.model.devices.avem.latr.LatrModel
 import ru.avem.kspem.communication.model.devices.th01.TH01Model
 import ru.avem.kspem.communication.model.devices.trm202.TRM202Model
 import ru.avem.kspem.controllers.CustomController
@@ -71,7 +70,7 @@ class HHController : CustomController() {
         if (isExperimentRunning) {
             appendMessageToLog(LogTag.MESSAGE, "Инициализация PV25...")
             cm.startPoll(CommunicationModel.DeviceID.PV25, Avem4Model.AMP) { value ->
-                if (!avemUanc.isResponding && isExperimentRunning) cause = "АРН не отвечает"
+                if (!avemUoy.isResponding && isExperimentRunning) cause = "АРН не отвечает"
                 model.data.uAnc.value = value.autoformat()
             }
         }
@@ -87,19 +86,19 @@ class HHController : CustomController() {
         if (isExperimentRunning) {
             appendMessageToLog(LogTag.MESSAGE, "Инициализация PA15...")
             cm.startPoll(CommunicationModel.DeviceID.PA15, Avem7Model.AMPERAGE) { value ->
-                if (!avemIanc.isResponding && isExperimentRunning) cause = "АРН не отвечает"
+                if (!avemIoy.isResponding && isExperimentRunning) cause = "АРН не отвечает"
                 model.data.iAnc.value = value.autoformat()
             }
         }
 
-        if (isExperimentRunning) {
-            appendMessageToLog(LogTag.MESSAGE, "Инициализация АРН...")
-            cm.startPoll(CommunicationModel.DeviceID.GV240, LatrModel.U_RMS_REGISTER) { value ->
-                if (!latr.isResponding && isExperimentRunning) cause = "АРН не отвечает"
-                voltageLatr = value.toDouble()
-            }
-            latr.resetLATR()
-        }
+//        if (isExperimentRunning) {
+//            appendMessageToLog(LogTag.MESSAGE, "Инициализация АРН...")
+//            cm.startPoll(CommunicationModel.DeviceID.GV240, LatrModel.U_RMS_REGISTER) { value ->
+//                if (!latr.isResponding && isExperimentRunning) cause = "АРН не отвечает"
+//                voltageLatr = value.toDouble()
+//            }
+//            latr.resetLATR()
+//        }
 
         if (isExperimentRunning) {
             initButtonPost()
@@ -116,7 +115,7 @@ class HHController : CustomController() {
         }
 
         if (isExperimentRunning) {
-            startRegulation(setuAnc = objectModel!!.uN.toDouble(), setuOv = objectModel!!.uOV.toDouble())
+//            startRegulation(setuAnc = objectModel!!.uN.toDouble(), setuOv = objectModel!!.uOV.toDouble())
         }
 
 //        if (isExperimentRunning) {
@@ -156,31 +155,6 @@ class HHController : CustomController() {
         }
         protocolModel.hhResult = model.data.result.value
         restoreData()
-    }
-
-    private fun startRegulation(setuAnc: Double, setuOv: Double) {
-        var timer = 0L
-        val tviAO = setuOv / 460.0
-        if (isExperimentRunning) {
-            latr.startUpLATR(setuAnc.toFloat(), 50f)
-        }
-        timer = System.currentTimeMillis()
-        while (isExperimentRunning && uOV < setuOv*0.9 && uAnc < setuAnc*0.9) {
-            pr102.setTVN((tviAO * uAnc / setuAnc).toFloat())
-            sleep(100)
-            if (System.currentTimeMillis() - timer > 60000) cause = "Превышено время регулирования"
-        }
-        latr.stopLATR()
-        if (isExperimentRunning) {
-            latr.startUpLATR(setuAnc.toFloat(), 30f)
-        }
-        timer = System.currentTimeMillis()
-        while (isExperimentRunning && uOV < setuOv && uAnc < setuAnc) {
-            pr102.setTVN((tviAO * uAnc / setuAnc).toFloat())
-            sleep(100)
-            if (System.currentTimeMillis() - timer > 60000) cause = "Превышено время регулирования"
-        }
-        latr.stopLATR()
     }
 
 

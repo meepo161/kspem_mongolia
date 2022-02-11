@@ -7,9 +7,9 @@ import ru.avem.kspem.app.Main.Companion.isAppRunning
 import ru.avem.kspem.communication.adapters.serial.SerialAdapter
 import ru.avem.kspem.communication.model.devices.avem.avem4.Avem4
 import ru.avem.kspem.communication.model.devices.avem.avem7.Avem7
+import ru.avem.kspem.communication.model.devices.avem.latr.LatrController
 import ru.avem.kspem.communication.model.devices.cs02021.CS02021
 import ru.avem.kspem.communication.model.devices.delta.Delta
-import ru.avem.kspem.communication.model.devices.latr.Latr
 import ru.avem.kspem.communication.model.devices.owen.pr.OwenPr
 import ru.avem.kspem.communication.model.devices.pm130.PM130
 import ru.avem.kspem.communication.model.devices.th01.TH01
@@ -78,7 +78,7 @@ object CommunicationModel {
         DeviceID.PC71 to TH01(DeviceID.PC71.toString(), modbusAdapter, 71),
         DeviceID.PS81 to TRM202(DeviceID.PS81.toString(), modbusAdapter, 81),
         DeviceID.UZ91 to Delta(DeviceID.UZ91.toString(), deltaAdapter, 91),
-        DeviceID.GV240 to Latr(DeviceID.GV240.toString(), modbusAdapter, 240.toByte())
+        DeviceID.GV240 to LatrController(DeviceID.GV240.toString(), modbusAdapter, 240.toByte())
 //        DeviceID.UZ96 на AO пр102
     )
 

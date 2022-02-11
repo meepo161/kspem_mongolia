@@ -274,8 +274,12 @@ class OwenPr(
         }
     }
 
-    fun setTVN(voltage: Float) {
-        writeRegister(getRegisterById(OwenPrModel.TVN), voltage)
+    fun setTVN(voltage: Double) {
+        writeRegister(getRegisterById(OwenPrModel.TVN), voltage.toFloat())
+    }
+
+    fun setTRN(voltage: Double) {
+        writeRegister(getRegisterById(OwenPrModel.TRN), voltage.toFloat())
     }
 
 }

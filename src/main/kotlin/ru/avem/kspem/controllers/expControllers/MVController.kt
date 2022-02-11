@@ -142,7 +142,7 @@ class MVController : CustomController() {
         }
 
             if (isExperimentRunning) {
-                startVoltage()
+//                startVoltage()
             }
 
             if (isExperimentRunning) {
@@ -156,7 +156,7 @@ class MVController : CustomController() {
             }
 
             if (isExperimentRunning) {
-                stopVoltage()
+//                stopVoltage()
             }
 
             if (isExperimentRunning) {
@@ -227,66 +227,66 @@ class MVController : CustomController() {
         restoreData()
     }
 
-    private fun startVoltage() {
-        val timer = System.currentTimeMillis()
-        appendMessageToLog(LogTag.MESSAGE, "Подъем напряжения")
-        while (isExperimentRunning && koefDelta < 1.3) {
-            koefDelta += 0.02
-            delta.setObjectURun(voltageDelta * koefDelta)
-            sleep(500)
-            if (System.currentTimeMillis() - timer > 30000) cause = "превышено время регулирования"
-        }
+//    private fun startVoltage() {
+//        val timer = System.currentTimeMillis()
+//        appendMessageToLog(LogTag.MESSAGE, "Подъем напряжения")
+//        while (isExperimentRunning && koefDelta < 1.3) {
+//            koefDelta += 0.02
+//            delta.setObjectURun(voltageDelta * koefDelta)
+//            sleep(500)
+//            if (System.currentTimeMillis() - timer > 30000) cause = "превышено время регулирования"
+//        }
+//
+//        if (isExperimentRunning) {
+//            appendMessageToLog(LogTag.DEBUG, "Проверка выставленного напряжения")
+//            if (isExperimentRunning) {
+//                var timer2 = 5.0
+//                while (isExperimentRunning && timer2 > 0) {
+//                    sleep(100)
+//                    timer2 -= 0.1
+//                }
+//            }
+//            val uAvg =
+//                (model.data.uAB.value.toDouble() + model.data.uBC.value.toDouble() + model.data.uCA.value.toDouble()) / 3.0
+//            val kCalibr = objectModel!!.uNom.toDouble() * 1.3 / uAvg
+//            if (isExperimentRunning) {
+//                if (kCalibr < 1.2 && kCalibr > 0.9) {
+//                    koefDelta *= kCalibr
+//                    delta.setObjectURun(voltageDelta * koefDelta)
+//                } else {
+//                    appendMessageToLog(LogTag.DEBUG, "Коэффициент $kCalibr")
+//                }
+//            }
+//        }
+//    }
+//
+//    private fun stopVoltage() {
+//        val timer = System.currentTimeMillis()
+//        appendMessageToLog(LogTag.MESSAGE, "Уменьшение напряжения")
+//        while (isExperimentRunning && koefDelta > 1.0) {
+//            koefDelta -= 0.02
+//            delta.setObjectURun(voltageDelta * koefDelta)
+//            sleep(500)
+//            if (System.currentTimeMillis() - timer > 30000) cause = "превышено время регулирования"
+//        }
+//        if (isExperimentRunning) {
+//            koefDelta = 1.0
+//            delta.setObjectURun(voltageDelta)
+//        }
+//    }
 
-        if (isExperimentRunning) {
-            appendMessageToLog(LogTag.DEBUG, "Проверка выставленного напряжения")
-            if (isExperimentRunning) {
-                var timer2 = 5.0
-                while (isExperimentRunning && timer2 > 0) {
-                    sleep(100)
-                    timer2 -= 0.1
-                }
-            }
-            val uAvg =
-                (model.data.uAB.value.toDouble() + model.data.uBC.value.toDouble() + model.data.uCA.value.toDouble()) / 3.0
-            val kCalibr = objectModel!!.uN.toDouble() * 1.3 / uAvg
-            if (isExperimentRunning) {
-                if (kCalibr < 1.2 && kCalibr > 0.9) {
-                    koefDelta *= kCalibr
-                    delta.setObjectURun(voltageDelta * koefDelta)
-                } else {
-                    appendMessageToLog(LogTag.DEBUG, "Коэффициент $kCalibr")
-                }
-            }
-        }
-    }
-
-    private fun stopVoltage() {
-        val timer = System.currentTimeMillis()
-        appendMessageToLog(LogTag.MESSAGE, "Уменьшение напряжения")
-        while (isExperimentRunning && koefDelta > 1.0) {
-            koefDelta -= 0.02
-            delta.setObjectURun(voltageDelta * koefDelta)
-            sleep(500)
-            if (System.currentTimeMillis() - timer > 30000) cause = "превышено время регулирования"
-        }
-        if (isExperimentRunning) {
-            koefDelta = 1.0
-            delta.setObjectURun(voltageDelta)
-        }
-    }
-
-    private fun calibrateVoltage() {
-        appendMessageToLog(LogTag.DEBUG, "Проверка выставленного напряжения")
-        val uAvg =
-            (model.data.uAB.value.toDouble() + model.data.uBC.value.toDouble() + model.data.uCA.value.toDouble()) / 3.0
-        val kCalibr = objectModel!!.uN.toDouble() / uAvg
-        if (kCalibr < 1.3 && kCalibr > 0.9) {
-            voltageDelta *= kCalibr
-            delta.setObjectURun(voltageDelta)
-        } else {
-            appendMessageToLog(LogTag.DEBUG, "Коэффициент $kCalibr")
-        }
-    }
+//    private fun calibrateVoltage() {
+//        appendMessageToLog(LogTag.DEBUG, "Проверка выставленного напряжения")
+//        val uAvg =
+//            (model.data.uAB.value.toDouble() + model.data.uBC.value.toDouble() + model.data.uCA.value.toDouble()) / 3.0
+//        val kCalibr = objectModel!!.uNom.toDouble() / uAvg
+//        if (kCalibr < 1.3 && kCalibr > 0.9) {
+//            voltageDelta *= kCalibr
+//            delta.setObjectURun(voltageDelta)
+//        } else {
+//            appendMessageToLog(LogTag.DEBUG, "Коэффициент $kCalibr")
+//        }
+//    }
 
     private fun startRegulation() {
         val timer = System.currentTimeMillis()
