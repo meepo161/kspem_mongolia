@@ -191,18 +191,17 @@ class HHControllerMPT : CustomController() {
         restoreData()
     }
 
-    private fun voltageRegulation(volt: Double) {
+    private fun voltageRegulation(volt: Double, coarse: Int = 10, fine: Int = 5, accurate: Int = 2) {
         var timer = 0L
-        val slow = 50.0
-        val fast = 250.0
-        var speedPerc = 35f
+        var speedPerc = 100f
         var timePulsePerc = 20f
         val up = 220f
         val down = 1f
         var direction: Float
         timer = System.currentTimeMillis()
-        while (abs(voltageOV - volt) > fast && isExperimentRunning) {
-            if (voltageOV < volt) {
+//        appendMessageToLog(LogTag.DEBUG, "Быстрая регулировка")
+        while (abs(voltageOY - volt) > fine && isExperimentRunning) {
+            if (voltageOY < volt) {
                 direction = up
                 speedPerc = 100f
             } else {
@@ -213,91 +212,68 @@ class HHControllerMPT : CustomController() {
             latr.startUpLATRUp(direction, false, speedPerc)
         }
         latr.stopLATR()
+//        timer = System.currentTimeMillis()
+//        if (isExperimentRunning) {
+//            appendMessageToLog(LogTag.DEBUG, "Грубая регулировка")
+//        }
+//        while (abs(voltageOY - volt) > coarse && isExperimentRunning) {
+//            if (voltageOY < volt) {
+//                direction = up
+//                timePulsePerc = 85f
+//            } else {
+//                direction = down
+//                timePulsePerc = 100f
+//            }
+//            if (System.currentTimeMillis() - timer > 60000) cause = "Превышено время регулирования"
+//            latr.startUpLATRPulse(direction, false, timePulsePerc)
+//        }
+//        latr.stopLATR()
         timer = System.currentTimeMillis()
-        while (abs(voltageOV - volt) > slow && isExperimentRunning) {
-            if (voltageOV < volt) {
+//        if (isExperimentRunning) {
+//            appendMessageToLog(LogTag.DEBUG, "Быстрая регулировка")
+//        }
+        while (abs(voltageOY - volt) > fine && isExperimentRunning) {
+            if (voltageOY < volt) {
                 direction = up
-                timePulsePerc = 95f
+                timePulsePerc = 70f
             } else {
                 direction = down
-                timePulsePerc = 95f
+                timePulsePerc = 100f
             }
-            if (System.currentTimeMillis() - timer > 60000) cause = "Превышено время регулирования"
+            if (System.currentTimeMillis() - timer > 180000) cause = "Превышено время регулирования"
             latr.startUpLATRPulse(direction, false, timePulsePerc)
+            sleep(500)
+            latr.stopLATR()
+            sleep(500)
         }
-        latr.stopLATR()
         timer = System.currentTimeMillis()
-        while (abs(voltageOV - volt) > 5 && isExperimentRunning) {
-            if (voltageOV < volt) {
+//        if (isExperimentRunning) {
+//            appendMessageToLog(LogTag.DEBUG, "Точная регулировка")
+//        }
+        while (abs(voltageOY - volt) > accurate && isExperimentRunning) {
+            if (voltageOY < volt) {
                 direction = up
-                timePulsePerc = 85f
+                timePulsePerc = 70f
             } else {
                 direction = down
-                timePulsePerc = 85f
+                timePulsePerc = 100f
             }
-            if (System.currentTimeMillis() - timer > 60000) cause = "Превышено время регулирования"
+            if (System.currentTimeMillis() - timer > 180000) cause = "Превышено время регулирования"
             latr.startUpLATRPulse(direction, false, timePulsePerc)
-        }
-        latr.stopLATR()
-    }
-
-    private fun voltageRegulationForSpeed(speed: Double) {
-        var timer = 0L
-        val slow = 50.0
-        val fast = 250.0
-        var speedPerc = 35f
-        var timePulsePerc = 20f
-        val up = 220f
-        val down = 1f
-        var direction: Float
-        timer = System.currentTimeMillis()
-        while (abs(rotateSpeed - speed) > fast && isExperimentRunning) {
-            if (rotateSpeed < speed) {
-                direction = up
-                speedPerc = 100f
-            } else {
-                direction = down
-                speedPerc = 100f
-            }
-            if (System.currentTimeMillis() - timer > 90000) cause = "Превышено время регулирования"
-            latr.startUpLATRUp(direction, false, speedPerc)
-        }
-        latr.stopLATR()
-        timer = System.currentTimeMillis()
-        while (abs(rotateSpeed - speed) > slow && isExperimentRunning) {
-            if (rotateSpeed < speed) {
-                direction = up
-                timePulsePerc = 95f
-            } else {
-                direction = down
-                timePulsePerc = 95f
-            }
-            if (System.currentTimeMillis() - timer > 60000) cause = "Превышено время регулирования"
-            latr.startUpLATRPulse(direction, false, timePulsePerc)
-        }
-        latr.stopLATR()
-        timer = System.currentTimeMillis()
-        while (abs(rotateSpeed - speed) > 10 && isExperimentRunning) {
-            if (rotateSpeed < speed) {
-                direction = up
-                timePulsePerc = 85f
-            } else {
-                direction = down
-                timePulsePerc = 85f
-            }
-            if (System.currentTimeMillis() - timer > 60000) cause = "Превышено время регулирования"
-            latr.startUpLATRPulse(direction, false, timePulsePerc)
+            sleep(250)
+            latr.stopLATR()
+            sleep(2000)
         }
         latr.stopLATR()
     }
 
     private fun voltageRegulationTVN(volt: Double, coarseSleep: Long, fineSleep: Long) {
         var start = 0.0
-        val slow = 20.0
-        val fast = 100.0
+        val slow = 100.0
+        val fast = 20.0
 
         var timer = System.currentTimeMillis()
-        while (abs(voltageOY - volt) > fast && isExperimentRunning) {
+        while (abs(voltageOY - volt) > slow && isExperimentRunning) {
             if (voltageOY < volt) {
                 start += 0.05
                 pr102.setTVN(start)
@@ -310,7 +286,7 @@ class HHControllerMPT : CustomController() {
         }
 
         timer = System.currentTimeMillis()
-        while (abs(voltageOY - volt) > slow && isExperimentRunning) {
+        while (abs(voltageOY - volt) > fast && isExperimentRunning) {
             if (voltageOY < volt) {
                 start += 0.03
                 pr102.setTVN(start)
@@ -332,7 +308,7 @@ class HHControllerMPT : CustomController() {
                 pr102.setTVN(start)
             }
             if (System.currentTimeMillis() - timer > 90000) cause = "Превышено время регулирования"
-            sleep(200)
+            sleep(fineSleep)
         }
 
     }

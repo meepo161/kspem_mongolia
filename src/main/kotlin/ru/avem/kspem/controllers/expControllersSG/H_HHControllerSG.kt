@@ -268,7 +268,7 @@ class H_HHControllerSG : CustomController() {
         }
 
         if (isExperimentRunning) {
-            appendMessageToLog(LogTag.DEBUG, "Подъем напряжения обмотки возбуждения")
+            appendMessageToLog(LogTag.MESSAGE, "Подъем напряжения обмотки возбуждения завершен")
         }
 
         var timer = 30.0
@@ -291,19 +291,18 @@ class H_HHControllerSG : CustomController() {
             step -= 0.1
             if (isExperimentRunning) {
                 if (objectModel!!.uVIU.toDoubleOrNull() != null) {
-                    appendMessageToLog(LogTag.DEBUG, "Установка напряжения обмотки возбуждения. Ступень: $step")
+                    appendMessageToLog(
+                        LogTag.MESSAGE,
+                        "Установка напряжения обмотки возбуждения завершена. Ступень: ${step.autoformat()}"
+                    )
 //                    voltageRegulation(voltageOYSet * step, 150, 100, 10)
                     voltageRegulationTRN(voltageOYSet * step)
-                    appendMessageToLog(
-                            LogTag.MESSAGE,
-                            "Установка напряжения обмотки возбуждения завершена. Ступень: $step"
-                    )
                 } else cause = "ошибка задания напряжения"
             }
 
             timer = 10.0
             if (isExperimentRunning) {
-                appendMessageToLog(LogTag.MESSAGE, "Снятие характеристик. Ступень: $step")
+                appendMessageToLog(LogTag.MESSAGE, "Снятие характеристик. Ступень: ${step.autoformat()}")
                 while (isExperimentRunning && timer > 0) {
                     timer -= 0.1
                     if (timer >= 0) {
@@ -353,11 +352,11 @@ class H_HHControllerSG : CustomController() {
     }
 
     private fun voltageRegulationTRN(
-            volt: Double,
-            coarseLimit: Int = 50,
-            fineLimit: Int = 10,
-            coarseSleep: Long = 1000,
-            fineSleep: Long = 2000
+        volt: Double,
+        coarseLimit: Int = 50,
+        fineLimit: Int = 10,
+        coarseSleep: Long = 1000,
+        fineSleep: Long = 2000
     ) {
         while (isExperimentRunning && (voltageOY > volt + coarseLimit || voltageOY < volt)) {
             if (voltageOY < volt + coarseLimit) {
@@ -381,11 +380,11 @@ class H_HHControllerSG : CustomController() {
     }
 
     private fun regulateToRPM(
-            speed: Double,
-            coarseLimit: Int,
-            fineLimit: Int,
-            coarseSleep: Long,
-            fineSleep: Long
+        speed: Double,
+        coarseLimit: Int,
+        fineLimit: Int,
+        coarseSleep: Long,
+        fineSleep: Long
     ) {
         while (isExperimentRunning && (rotateSpeed > speed + coarseLimit || rotateSpeed < speed)) {
             if (rotateSpeed < speed + coarseLimit) {
@@ -489,13 +488,13 @@ class H_HHControllerSG : CustomController() {
     }
 
     private fun regulation(
-            coarseStep: Int,
-            fineStep: Int,
-            end: Double,
-            coarseLimit: Double,
-            fineLimit: Double,
-            coarseSleep: Int,
-            fineSleep: Int
+        coarseStep: Int,
+        fineStep: Int,
+        end: Double,
+        coarseLimit: Double,
+        fineLimit: Double,
+        coarseSleep: Int,
+        fineSleep: Int
     ): Int {
         val coarseMinLimit = 1 - coarseLimit
         val coarseMaxLimit = 1 + coarseLimit

@@ -23,12 +23,12 @@ class KZViewSG : View() {
         runLater {
             clearTables()
             series.data.clear()
-            var step = 1.4
-            series.data.add(XYChart.Data(0.0, 0.0))
-            while (380 * step > 1) {
-                step -= 0.1
-                series.data.add(XYChart.Data(step * step, 380 * step))
-            }
+//            var step = 1.4
+//            series.data.add(XYChart.Data(0.0, 0.0))
+//            while (380 * step > 1) {
+//                step -= 0.1
+//                series.data.add(XYChart.Data(step * step, 380 * step))
+//            }
         }
     }
 
@@ -51,8 +51,6 @@ class KZViewSG : View() {
                 isMouseTransparent = true
                 column("U ОВ, В", KZDataSG::uOV.getter).isEditable = false
                 column("I ОВ, А", KZDataSG::iOV.getter).isEditable = false
-                column("f, Гц", KZDataSG::f.getter).isEditable = false
-                column("P1, кВт", KZDataSG::p.getter).isEditable = false
                 columnResizePolicy = TableView.CONSTRAINED_RESIZE_POLICY
             }
             tableview(observableListOf(data)) {
@@ -62,7 +60,6 @@ class KZViewSG : View() {
                 minHeight = 120.0
                 maxHeight = 120.0
                 isMouseTransparent = true
-                column("cosφ, о.е.", KZDataSG::cos.getter).isEditable = false
                 column("Uab, В", KZDataSG::uAB.getter).isEditable = false
                 column("Ubc, В", KZDataSG::uBC.getter).isEditable = false
                 column("Uca, В", KZDataSG::uCA.getter).isEditable = false
@@ -99,7 +96,7 @@ class KZViewSG : View() {
                 prefWidth = 1860.0
                 data.add(series)
                 animated = false
-                createSymbols = false
+//                createSymbols = false
                 isLegendVisible = false
             }
         }

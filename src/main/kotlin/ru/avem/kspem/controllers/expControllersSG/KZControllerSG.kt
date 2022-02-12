@@ -1,6 +1,9 @@
 package ru.avem.kspem.controllers.expControllersSG
 
+import javafx.scene.chart.XYChart
 import ru.avem.kspem.communication.model.CommunicationModel
+import ru.avem.kspem.communication.model.devices.avem.avem4.Avem4Model
+import ru.avem.kspem.communication.model.devices.avem.avem7.Avem7Model
 import ru.avem.kspem.communication.model.devices.avem.latr.LatrModel
 import ru.avem.kspem.communication.model.devices.delta.DeltaModel
 import ru.avem.kspem.communication.model.devices.pm130.PM130Model
@@ -13,6 +16,7 @@ import ru.avem.kspem.utils.LogTag
 import ru.avem.kspem.utils.sleep
 import ru.avem.kspem.view.expViews.expViewsSG.KZViewSG
 import ru.avem.stand.utils.autoformat
+import tornadofx.runLater
 import kotlin.math.abs
 
 class KZControllerSG : CustomController() {
@@ -34,6 +38,9 @@ class KZControllerSG : CustomController() {
     private var ktrAmperageOV = 25 / 0.075
 
     @Volatile
+    var voltageTRN = 0.0
+
+    @Volatile
     var voltageDelta = 0.0
 
     @Volatile
@@ -50,6 +57,9 @@ class KZControllerSG : CustomController() {
 
     @Volatile
     var voltageOY = 0.0
+
+    @Volatile
+    var amperageOY = 0.0
 
     @Volatile
     var amperageOV = 0.0
@@ -96,6 +106,27 @@ class KZControllerSG : CustomController() {
         rotateSpeedSet = objectModel!!.nAsync.toDouble()
         voltageOVSet = objectModel!!.uOV.toDouble()
         setTime = objectModel!!.timeHH.toDouble()
+        runLater {
+            model.series.data.clear()
+        }
+
+        if (isExperimentRunning) {
+            appendMessageToLog(LogTag.MESSAGE, "Инициализация АВЭМ4-01...")
+            cm.startPoll(CommunicationModel.DeviceID.PA13, Avem7Model.AMPERAGE) { value ->
+                amperageOV = abs(value.toDouble()) * ktrAmperageOV
+                model.data.iOV.value = amperageOV.autoformat()
+                if (!avemIov.isResponding && isExperimentRunning) cause = "АВЭМ4-01 не отвечает"
+            }
+        }
+
+        if (isExperimentRunning) {
+            appendMessageToLog(LogTag.MESSAGE, "Инициализация АВЭМ4-03...")
+            cm.startPoll(CommunicationModel.DeviceID.PV23, Avem4Model.RMS) { value ->
+                voltageOV = abs(value.toDouble())
+                model.data.uOV.value = voltageOV.autoformat()
+                if (!avemUov.isResponding && isExperimentRunning) cause = "АВЭМ4-03 не отвечает"
+            }
+        }
 
         if (isExperimentRunning) {
             appendMessageToLog(LogTag.MESSAGE, "Инициализация ТРМ202...")
@@ -151,21 +182,22 @@ class KZControllerSG : CustomController() {
                 amperageOYA = (value.toDouble() * ktrAmperage)
                 model.data.iA.value = amperageOYA.autoformat()
                 if (amperageOYA > amperageOYSet) {
-                    cause = "Ток фазы A дошел до номинальных значений"
+                    appendMessageToLog(LogTag.DEBUG, "Ток фазы A дошел до номинальных значений")
                 }
             }
             cm.startPoll(CommunicationModel.DeviceID.PAV41, PM130Model.I_B_REGISTER) { value ->
                 amperageOYB = (value.toDouble() * ktrAmperage)
                 model.data.iB.value = amperageOYB.autoformat()
                 if (amperageOYB > amperageOYSet) {
-                    cause = "Ток фазы B дошел до номинальных значений"
+                    appendMessageToLog(LogTag.DEBUG, "Ток фазы B дошел до номинальных значений")
                 }
             }
             cm.startPoll(CommunicationModel.DeviceID.PAV41, PM130Model.I_C_REGISTER) { value ->
                 amperageOYC = (value.toDouble() * ktrAmperage)
                 model.data.iC.value = amperageOYC.autoformat()
+                amperageOY = (amperageOYA + amperageOYB + amperageOYC) / 3
                 if (amperageOYC > amperageOYSet) {
-                    cause = "Ток фазы C дошел до номинальных значений"
+                    appendMessageToLog(LogTag.DEBUG, "Ток фазы C дошел до номинальных значений")
                 }
             }
             cm.startPoll(CommunicationModel.DeviceID.PAV41, PM130Model.P_REGISTER) { value ->
@@ -185,8 +217,6 @@ class KZControllerSG : CustomController() {
             cm.startPoll(CommunicationModel.DeviceID.GV240, LatrModel.U_RMS_REGISTER) { value ->
                 voltageLatr = value.toDouble()
                 if (!latr.isResponding && isExperimentRunning) cause = "АРН не отвечает"
-            }
-            cm.startPoll(CommunicationModel.DeviceID.GV240, LatrModel.ENDS_STATUS_REGISTER) { value ->
             }
         }
 
@@ -242,25 +272,24 @@ class KZControllerSG : CustomController() {
                 var timer = 2.0
                 if (isExperimentRunning) {
                     while (isExperimentRunning && timer > 0) {
-                        sleep(100)
                         timer -= 0.1
+                        sleep(100)
                     }
                 }
             }
             appendMessageToLog(LogTag.MESSAGE, "Регулировка до номинальной частоты вращения завершена")
-
         }
 
         if (isExperimentRunning) {
             if (objectModel!!.uVIU.toDoubleOrNull() != null) {
                 appendMessageToLog(LogTag.DEBUG, "Подъем напряжения обмотки возбуждения")
                 for (i in 1..3) {
-                    voltageRegulation(voltageOYSet, 100, 50, 10)
+                    voltageRegulation(amperageOYSet, 100, 50, 10)
                     var timer = 2.0
                     if (isExperimentRunning) {
                         while (isExperimentRunning && timer > 0) {
-                            sleep(100)
                             timer -= 0.1
+                            sleep(100)
                         }
                     }
                 }
@@ -271,16 +300,50 @@ class KZControllerSG : CustomController() {
             appendMessageToLog(LogTag.MESSAGE, "Подъем напряжения обмотки возбуждения завершен")
         }
 
-        var timer = 5.0
-        if (isExperimentRunning) {
-            appendMessageToLog(LogTag.MESSAGE, "Выдержка 5 секунд")
-            while (isExperimentRunning && timer > 0) {
-                timer -= 0.1
-                if (timer >= 0) {
-                    model.data.timeExp.value = timer.autoformat()
-                }
-                sleep(100)
+        saveData()
+
+        var step = 1.1
+        for (i in 1..6) {
+            step -= 0.1
+            if (isExperimentRunning) {
+                if (objectModel!!.uVIU.toDoubleOrNull() != null) {
+                    appendMessageToLog(
+                        LogTag.DEBUG,
+                        "Установка напряжения обмотки возбуждения. Ступень: ${step.autoformat()}"
+                    )
+                    voltageRegulation(amperageOYSet * step, 10, 5, 2)
+//                    voltageRegulationTRN(voltageOYSet * step)
+                } else cause = "ошибка задания напряжения"
             }
+
+            var timer = 5.0
+            if (isExperimentRunning) {
+                appendMessageToLog(LogTag.MESSAGE, "Снятие характеристик. Ступень: ${step.autoformat()}")
+                while (isExperimentRunning && timer > 0) {
+                    timer -= 0.1
+                    if (timer >= 0) {
+                        model.data.timeExp.value = timer.autoformat()
+                    }
+                    sleep(100)
+                }
+            }
+
+//            model.kzTablePoints[i].uAB.value = model.data.uAB.value
+//            model.kzTablePoints[i].uBC.value = model.data.uBC.value
+//            model.kzTablePoints[i].uCA.value = model.data.uCA.value
+//            model.kzTablePoints[i].iA.value = model.data.iA.value
+//            model.kzTablePoints[i].iB.value = model.data.iB.value
+//            model.kzTablePoints[i].iC.value = model.data.iC.value
+//            model.kzTablePoints[i].uOV.value = model.data.uOV.value
+//            model.kzTablePoints[i].iOV.value = model.data.iOV.value
+//            model.kzTablePoints[i].power.value = model.data.p.value
+            runLater {
+                model.series.data.add(XYChart.Data(amperageOV, amperageOY))
+            }
+        }
+
+        runLater {
+            model.series.data.add(XYChart.Data(0.0, 0.0))
         }
 
         protocolModel.kzUAB = model.data.uAB.value
@@ -318,6 +381,34 @@ class KZControllerSG : CustomController() {
         restoreData()
     }
 
+    private fun voltageRegulationTRN(
+        volt: Double,
+        coarseLimit: Int = 50,
+        fineLimit: Int = 10,
+        coarseSleep: Long = 1000,
+        fineSleep: Long = 2000
+    ) {
+        while (isExperimentRunning && (voltageOY > volt + coarseLimit || voltageOY < volt)) {
+            if (voltageOY < volt + coarseLimit) {
+                voltageTRN += 0.05
+            } else if (voltageOY > volt) {
+                voltageTRN -= 0.05
+            }
+            pr102.setTRN(voltageTRN)
+            sleep(coarseSleep)
+        }
+
+        while (isExperimentRunning && (voltageOY > volt + fineLimit || voltageOY < volt)) {
+            if (voltageOY < volt + fineLimit) {
+                voltageTRN += 0.01
+            } else if (voltageOY > volt) {
+                voltageTRN -= 0.01
+            }
+            pr102.setTRN(voltageTRN)
+            sleep(fineSleep)
+        }
+    }
+
     private fun regulateToRPM(
         speed: Double,
         coarseLimit: Int,
@@ -325,17 +416,17 @@ class KZControllerSG : CustomController() {
         coarseSleep: Long,
         fineSleep: Long
     ) {
-//        while (isExperimentRunning && (rotateSpeed > speed + coarseLimit || rotateSpeed < speed)) {
-//            if (rotateSpeed < speed + coarseLimit) {
-//                fDelta += 0.1
-//                delta.setObjectF(fDelta)
-//                sleep(coarseSleep)
-//            } else if (rotateSpeed > speed) {
-//                fDelta -= 0.1
-//                delta.setObjectF(fDelta)
-//                sleep(coarseSleep)
-//            }
-//        }
+        while (isExperimentRunning && (rotateSpeed > speed + coarseLimit || rotateSpeed < speed)) {
+            if (rotateSpeed < speed + coarseLimit) {
+                fDelta += 0.1
+                delta.setObjectF(fDelta)
+                sleep(coarseSleep)
+            } else if (rotateSpeed > speed) {
+                fDelta -= 0.1
+                delta.setObjectF(fDelta)
+                sleep(coarseSleep)
+            }
+        }
 
         while (isExperimentRunning && (rotateSpeed > speed + fineLimit || rotateSpeed < speed)) {
             if (rotateSpeed < speed + fineLimit) {
@@ -350,27 +441,32 @@ class KZControllerSG : CustomController() {
         }
     }
 
-    private fun voltageRegulation(volt: Double, coarse: Int = 10, fine: Int = 5, accurate: Int = 2) {
+    private fun voltageRegulation(
+        amperage: Double,
+        coarse: Int = 25,
+        fine: Int = 5,
+        accurate: Int = 2
+    ) {
         var timer = 0L
-        var speedPerc = 35f
+        var speedPerc = 100f
         var timePulsePerc = 20f
         val up = 220f
         val down = 1f
         var direction: Float
-//        timer = System.currentTimeMillis()
+        timer = System.currentTimeMillis()
 //        appendMessageToLog(LogTag.DEBUG, "Быстрая регулировка")
-//        while (abs(voltageOY - volt) > fine && isExperimentRunning) {
-//            if (voltageOY < volt) {
-//                direction = up
-//                speedPerc = 100f
-//            } else {
-//                direction = down
-//                speedPerc = 100f
-//            }
-//            if (System.currentTimeMillis() - timer > 90000) cause = "Превышено время регулирования"
-//            latr.startUpLATRUp(direction, false, speedPerc)
-//        }
-//        latr.stopLATR()
+        while (abs(amperageOYA - amperage) > coarse && abs(amperageOYB - amperage) > coarse && abs(amperageOYC - amperage) > coarse && isExperimentRunning) {
+            if (amperageOYA < amperage && amperageOYB < amperage && amperageOYC < amperage) {
+                direction = up
+                speedPerc = 100f
+            } else {
+                direction = down
+                speedPerc = 100f
+            }
+            if (System.currentTimeMillis() - timer > 90000) cause = "Превышено время регулирования"
+            latr.startUpLATRUp(direction, false, speedPerc)
+        }
+        latr.stopLATR()
 //        timer = System.currentTimeMillis()
 //        if (isExperimentRunning) {
 //            appendMessageToLog(LogTag.DEBUG, "Грубая регулировка")
@@ -391,37 +487,43 @@ class KZControllerSG : CustomController() {
 //        if (isExperimentRunning) {
 //            appendMessageToLog(LogTag.DEBUG, "Быстрая регулировка")
 //        }
-        while (abs(voltageOY - volt) > fine && isExperimentRunning) {
-            if (voltageOY < volt) {
+        while (abs(amperageOYA - amperage) > fine
+            && abs(amperageOYB - amperage) > fine
+            && abs(amperageOYC - amperage) > fine && isExperimentRunning
+        ) {
+            if (amperageOYA < amperage && amperageOYB < amperage && amperageOYC < amperage) {
                 direction = up
                 timePulsePerc = 70f
             } else {
                 direction = down
                 timePulsePerc = 100f
             }
-            if (System.currentTimeMillis() - timer > 60000) cause = "Превышено время регулирования"
+            if (System.currentTimeMillis() - timer > 180000) cause = "Превышено время регулирования"
             latr.startUpLATRPulse(direction, false, timePulsePerc)
-            sleep(1000)
+            sleep(500)
             latr.stopLATR()
-            sleep(1000)
+            sleep(500)
         }
         timer = System.currentTimeMillis()
 //        if (isExperimentRunning) {
 //            appendMessageToLog(LogTag.DEBUG, "Точная регулировка")
 //        }
-        while (abs(voltageOY - volt) > accurate && isExperimentRunning) {
-            if (voltageOY < volt) {
+        while (abs(amperageOYA - amperage) > accurate
+            && abs(amperageOYB - amperage) > accurate
+            && abs(amperageOYC - amperage) > accurate && isExperimentRunning
+        ) {
+            if (amperageOYA < amperage && amperageOYB < amperage && amperageOYC < amperage) {
                 direction = up
                 timePulsePerc = 70f
             } else {
                 direction = down
                 timePulsePerc = 100f
             }
-            if (System.currentTimeMillis() - timer > 60000) cause = "Превышено время регулирования"
+            if (System.currentTimeMillis() - timer > 180000) cause = "Превышено время регулирования"
             latr.startUpLATRPulse(direction, false, timePulsePerc)
-            sleep(750)
+            sleep(250)
             latr.stopLATR()
-            sleep(3000)
+            sleep(2000)
         }
         latr.stopLATR()
     }
