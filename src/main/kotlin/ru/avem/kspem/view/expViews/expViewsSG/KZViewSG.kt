@@ -94,7 +94,7 @@ class KZViewSG : View() {
                 column("Результат", KZDataSG::result.getter)
                 columnResizePolicy = TableView.CONSTRAINED_RESIZE_POLICY
             }
-            lineChart = linechart("ГРАФИК", NumberAxis(), NumberAxis()) {
+            lineChart = linechart("", NumberAxis(), NumberAxis()) {
                 prefHeight = 460.0
                 prefWidth = 1860.0
                 data.add(series)

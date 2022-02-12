@@ -1,5 +1,6 @@
 package ru.avem.kspem.controllers.expControllersSG
 
+import javafx.scene.chart.XYChart
 import ru.avem.kspem.communication.model.CommunicationModel
 import ru.avem.kspem.communication.model.devices.avem.avem4.Avem4Model
 import ru.avem.kspem.communication.model.devices.avem.avem7.Avem7Model
@@ -91,6 +92,7 @@ class H_HHControllerSG : CustomController() {
         rotateSpeedSet = objectModel!!.nAsync.toDouble()
         voltageOVSet = objectModel!!.uOV.toDouble()
         setTime = objectModel!!.timeHH.toDouble()
+        model.series.data.clear()
 
 
         if (isExperimentRunning) {
@@ -282,14 +284,7 @@ class H_HHControllerSG : CustomController() {
             }
         }
 
-        protocolModel.nUAB = model.data.uAB.value
-        protocolModel.nUBC = model.data.uBC.value
-        protocolModel.nUCA = model.data.uCA.value
-        protocolModel.nIA = model.data.iA.value
-        protocolModel.nIB = model.data.iB.value
-        protocolModel.nIC = model.data.iC.value
-        protocolModel.nSpeed = model.data.n.value
-        protocolModel.nF = model.data.f.value
+        saveData()
 
         var step = 1.4
         for (i in 0..8) {
@@ -300,8 +295,8 @@ class H_HHControllerSG : CustomController() {
 //                    voltageRegulation(voltageOYSet * step, 150, 100, 10)
                     voltageRegulationTRN(voltageOYSet * step)
                     appendMessageToLog(
-                        LogTag.MESSAGE,
-                        "Установка напряжения обмотки возбуждения завершена. Ступень: $step"
+                            LogTag.MESSAGE,
+                            "Установка напряжения обмотки возбуждения завершена. Ступень: $step"
                     )
                 } else cause = "ошибка задания напряжения"
             }
@@ -324,7 +319,10 @@ class H_HHControllerSG : CustomController() {
             model.h_hhTablePoints[i].iA.value = model.data.iA.value
             model.h_hhTablePoints[i].iB.value = model.data.iB.value
             model.h_hhTablePoints[i].iC.value = model.data.iC.value
+            model.h_hhTablePoints[i].uOV.value = model.data.uOV.value
+            model.h_hhTablePoints[i].iOV.value = model.data.iOV.value
             model.h_hhTablePoints[i].power.value = model.data.p.value
+            model.series.data.add(XYChart.Data(amperageOV, voltageOY))
         }
 
         delta.stopObject()
@@ -355,11 +353,11 @@ class H_HHControllerSG : CustomController() {
     }
 
     private fun voltageRegulationTRN(
-        volt: Double,
-        coarseLimit: Int = 50,
-        fineLimit: Int = 10,
-        coarseSleep: Long = 1000,
-        fineSleep: Long = 2000
+            volt: Double,
+            coarseLimit: Int = 50,
+            fineLimit: Int = 10,
+            coarseSleep: Long = 1000,
+            fineSleep: Long = 2000
     ) {
         while (isExperimentRunning && (voltageOY > volt + coarseLimit || voltageOY < volt)) {
             if (voltageOY < volt + coarseLimit) {
@@ -383,11 +381,11 @@ class H_HHControllerSG : CustomController() {
     }
 
     private fun regulateToRPM(
-        speed: Double,
-        coarseLimit: Int,
-        fineLimit: Int,
-        coarseSleep: Long,
-        fineSleep: Long
+            speed: Double,
+            coarseLimit: Int,
+            fineLimit: Int,
+            coarseSleep: Long,
+            fineSleep: Long
     ) {
         while (isExperimentRunning && (rotateSpeed > speed + coarseLimit || rotateSpeed < speed)) {
             if (rotateSpeed < speed + coarseLimit) {
@@ -491,13 +489,13 @@ class H_HHControllerSG : CustomController() {
     }
 
     private fun regulation(
-        coarseStep: Int,
-        fineStep: Int,
-        end: Double,
-        coarseLimit: Double,
-        fineLimit: Double,
-        coarseSleep: Int,
-        fineSleep: Int
+            coarseStep: Int,
+            fineStep: Int,
+            end: Double,
+            coarseLimit: Double,
+            fineLimit: Double,
+            coarseSleep: Int,
+            fineSleep: Int
     ): Int {
         val coarseMinLimit = 1 - coarseLimit
         val coarseMaxLimit = 1 + coarseLimit
@@ -542,6 +540,16 @@ class H_HHControllerSG : CustomController() {
     }
 
     private fun saveData() {
+        protocolModel.hhUAB = model.data.uAB.value
+        protocolModel.hhUBC = model.data.uBC.value
+        protocolModel.hhUCA = model.data.uCA.value
+        protocolModel.hhIA = model.data.iA.value
+        protocolModel.hhIB = model.data.iB.value
+        protocolModel.hhIC = model.data.iC.value
+        protocolModel.hhUOV = model.data.uOV.value
+        protocolModel.hhIOV = model.data.iOV.value
+        protocolModel.hhSpeed = model.data.n.value
+        protocolModel.hhF = model.data.f.value
         protocolModel.hhTempOI = model.data.tempOI.value
         protocolModel.hhSpeed = model.data.n.value
         protocolModel.hhTime = objectModel!!.timeHH
@@ -549,7 +557,19 @@ class H_HHControllerSG : CustomController() {
     }
 
     private fun restoreData() {
+        model.data.uAB.value = protocolModel.hhUAB
+        model.data.uBC.value = protocolModel.hhUBC
+        model.data.uCA.value = protocolModel.hhUCA
+        model.data.iA.value = protocolModel.hhIA
+        model.data.iB.value = protocolModel.hhIB
+        model.data.iC.value = protocolModel.hhIC
+        model.data.uOV.value = protocolModel.hhUOV
+        model.data.iOV.value = protocolModel.hhIOV
+        model.data.n.value = protocolModel.hhSpeed
+        model.data.f.value = protocolModel.hhF
         model.data.tempOI.value = protocolModel.hhTempOI
         model.data.n.value = protocolModel.hhSpeed
+        model.data.timeExp.value = protocolModel.hhTime
+        model.data.result.value = protocolModel.hhResult
     }
 }

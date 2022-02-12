@@ -3,6 +3,9 @@ package ru.avem.kspem.view.expViews.expViewsSG
 import javafx.beans.property.SimpleStringProperty
 import javafx.beans.property.StringProperty
 import javafx.geometry.Pos
+import javafx.scene.chart.LineChart
+import javafx.scene.chart.NumberAxis
+import javafx.scene.chart.XYChart
 import javafx.scene.control.TableView
 import javafx.scene.layout.Priority
 import tornadofx.*
@@ -24,9 +27,21 @@ class H_HHViewSG : View() {
         H_HHPointsSG(SimpleStringProperty("0.5"),SimpleStringProperty(), SimpleStringProperty(), SimpleStringProperty())
     )
 
+    var lineChart: LineChart<Number, Number> by singleAssign()
+    var series = XYChart.Series<Number, Number>()
+
     override fun onDock() {
         super.onDock()
-        clearTables()
+        runLater {
+            clearTables()
+            series.data.clear()
+//            var step = 1.4
+//            series.data.add(XYChart.Data(0.0, 0.0))
+//            while (380 * step > 1) {
+//                step -= 0.1
+//                series.data.add(XYChart.Data(step * step, 380 * step))
+//            }
+        }
     }
 
     override val root = vbox(16.0, Pos.CENTER) {
@@ -90,6 +105,14 @@ class H_HHViewSG : View() {
             column("Результат", H_HHDataSG  ::result.getter)
             columnResizePolicy = TableView.CONSTRAINED_RESIZE_POLICY
         }
+        lineChart = linechart("", NumberAxis(), NumberAxis()) {
+            prefHeight = 460.0
+            prefWidth = 1860.0
+            data.add(series)
+            animated = false
+            createSymbols = false
+            isLegendVisible = false
+        }
     }
 
     fun clearTables() {
@@ -148,5 +171,7 @@ data class H_HHPointsSG(
     var iA: StringProperty = SimpleStringProperty(""),
     var iB: StringProperty = SimpleStringProperty(""),
     var iC: StringProperty = SimpleStringProperty(""),
+    val uOV: StringProperty = SimpleStringProperty(""),
+    val iOV: StringProperty = SimpleStringProperty(""),
     var power: StringProperty = SimpleStringProperty("")
 )
