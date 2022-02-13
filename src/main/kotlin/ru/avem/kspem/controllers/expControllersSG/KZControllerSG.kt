@@ -182,14 +182,14 @@ class KZControllerSG : CustomController() {
                 amperageOYA = (value.toDouble() * ktrAmperage)
                 model.data.iA.value = amperageOYA.autoformat()
                 if (amperageOYA > amperageOYSet) {
-                    appendMessageToLog(LogTag.DEBUG, "Ток фазы A дошел до номинальных значений")
+//                    appendMessageToLog(LogTag.DEBUG, "Ток фазы A дошел до номинальных значений")
                 }
             }
             cm.startPoll(CommunicationModel.DeviceID.PAV41, PM130Model.I_B_REGISTER) { value ->
                 amperageOYB = (value.toDouble() * ktrAmperage)
                 model.data.iB.value = amperageOYB.autoformat()
                 if (amperageOYB > amperageOYSet) {
-                    appendMessageToLog(LogTag.DEBUG, "Ток фазы B дошел до номинальных значений")
+//                    appendMessageToLog(LogTag.DEBUG, "Ток фазы B дошел до номинальных значений")
                 }
             }
             cm.startPoll(CommunicationModel.DeviceID.PAV41, PM130Model.I_C_REGISTER) { value ->
@@ -197,7 +197,7 @@ class KZControllerSG : CustomController() {
                 model.data.iC.value = amperageOYC.autoformat()
                 amperageOY = (amperageOYA + amperageOYB + amperageOYC) / 3
                 if (amperageOYC > amperageOYSet) {
-                    appendMessageToLog(LogTag.DEBUG, "Ток фазы C дошел до номинальных значений")
+//                    appendMessageToLog(LogTag.DEBUG, "Ток фазы C дошел до номинальных значений")
                 }
             }
             cm.startPoll(CommunicationModel.DeviceID.PAV41, PM130Model.P_REGISTER) { value ->

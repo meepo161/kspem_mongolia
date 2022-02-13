@@ -12,7 +12,6 @@ import ru.avem.kspem.data.protocolModel
 import ru.avem.kspem.utils.LogTag
 import ru.avem.kspem.utils.sleep
 import ru.avem.kspem.view.expViews.expViewsMPT.HHViewMPT
-import ru.avem.kspem.view.expViews.expViewsMPT.NViewMPT
 import ru.avem.stand.utils.autoformat
 import kotlin.math.abs
 

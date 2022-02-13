@@ -35,8 +35,8 @@ class NViewMPT : View() {
             minHeight = 120.0
             maxHeight = 120.0
             isMouseTransparent = true
-            column("U ОВ, В", LoadDataMPT::uOV.getter).isEditable = false
-            column("I ОВ, А", LoadDataMPT::iOV.getter).isEditable = false
+            column("U ОВ, В", NDataMPT::uOV.getter).isEditable = false
+            column("I ОВ, А", NDataMPT::iOV.getter).isEditable = false
             columnResizePolicy = TableView.CONSTRAINED_RESIZE_POLICY
         }
         tableview(observableListOf(data)) {
@@ -46,9 +46,9 @@ class NViewMPT : View() {
             minHeight = 120.0
             maxHeight = 120.0
             isMouseTransparent = true
-            column("U ОЯ, В", LoadDataMPT::uOY.getter).isEditable = false
-            column("I ОЯ, А", LoadDataMPT::iOY.getter).isEditable = false
-            column("P1, кВт", LoadDataMPT::p.getter).isEditable = false
+            column("U ОЯ, В", NDataMPT::uOY.getter).isEditable = false
+            column("I ОЯ, А", NDataMPT::iOY.getter).isEditable = false
+            column("P1, кВт", NDataMPT::p.getter).isEditable = false
             columnResizePolicy = TableView.CONSTRAINED_RESIZE_POLICY
         }
         tableview(observableListOf(data)) {
@@ -58,9 +58,9 @@ class NViewMPT : View() {
             minHeight = 120.0
             maxHeight = 120.0
             isMouseTransparent = true
-            column("n, об/мин", LoadDataMPT::n.getter).isEditable = false
-            column("t воздуха, °C", LoadDataMPT::tempAmb.getter)
-            column("t ОИ, °C", LoadDataMPT::tempOI.getter)
+            column("n, об/мин", NDataMPT::n.getter).isEditable = false
+            column("t воздуха, °C", NDataMPT::tempAmb.getter)
+            column("t ОИ, °C", NDataMPT::tempOI.getter)
             columnResizePolicy = TableView.CONSTRAINED_RESIZE_POLICY
         }
         tableview(observableListOf(data)) {
@@ -70,8 +70,8 @@ class NViewMPT : View() {
             minHeight = 120.0
             maxHeight = 120.0
             isMouseTransparent = true
-            column("Время, сек", LoadDataMPT::timeExp.getter)
-            column("Результат", LoadDataMPT::result.getter)
+            column("Время, сек", NDataMPT::timeExp.getter)
+            column("Результат", NDataMPT::result.getter)
             columnResizePolicy = TableView.CONSTRAINED_RESIZE_POLICY
         }
     }

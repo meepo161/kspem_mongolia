@@ -81,14 +81,14 @@ class OwenPr(
         isResponding = try {
             when (value) {
                 is Float -> {
-                    val bb = ByteBuffer.allocate(4).putFloat(value).order(ByteOrder.LITTLE_ENDIAN)
+                    val bb = ByteBuffer.allocate(4).putFloat(value)
                     val registers = listOf(ModbusRegister(bb.getShort(2)), ModbusRegister(bb.getShort(0)))
                     transactionWithAttempts {
                         protocolAdapter.presetMultipleRegisters(id, register.address, registers)
                     }
                 }
                 is Int -> {
-                    val bb = ByteBuffer.allocate(4).putInt(value).order(ByteOrder.LITTLE_ENDIAN)
+                    val bb = ByteBuffer.allocate(4).putInt(value)
                     val registers = listOf(ModbusRegister(bb.getShort(2)), ModbusRegister(bb.getShort(0)))
                     transactionWithAttempts {
                         protocolAdapter.presetMultipleRegisters(id, register.address, registers)

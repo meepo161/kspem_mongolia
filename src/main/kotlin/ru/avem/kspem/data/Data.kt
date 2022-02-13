@@ -5,6 +5,7 @@ import javafx.beans.property.StringProperty
 import ru.avem.kspem.controllers.expControllers.*
 import ru.avem.kspem.controllers.expControllersMPT.HHControllerMPT
 import ru.avem.kspem.controllers.expControllersMPT.LoadControllerMPT
+import ru.avem.kspem.controllers.expControllersMPT.NControllerMPT
 import ru.avem.kspem.controllers.expControllersSD.NControllerSD
 import ru.avem.kspem.controllers.expControllersSG.H_HHControllerSG
 import ru.avem.kspem.controllers.expControllersSG.KZControllerSG
@@ -43,7 +44,7 @@ val ikas = IKASController()
 
 val nSD = NControllerSD()
 val nSG = NControllerSG()
-val nMPT = NControllerSG()
+val nMPT = NControllerMPT()
 
 val hh = HHController()
 val hhMPT = HHControllerMPT()
