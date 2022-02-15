@@ -17,9 +17,17 @@ class DeltaModel : IDeviceModel {
         const val POINT_1_VOLTAGE_REGISTER = "POINT_1_VOLTAGE_REGISTER"
         const val POINT_2_FREQUENCY_REGISTER = "POINT_2_FREQUENCY_REGISTER"
         const val POINT_2_VOLTAGE_REGISTER = "POINT_2_VOLTAGE_REGISTER"
+        const val CURRENT_AMPER = "CURRENT_AMPER"
+        const val CURRENT_FREQ = "CURRENT_FREQ"
+        const val CURRENT_VOLT = "CURRENT_VOLT"
+        const val CURRENT_POWER = "CURRENT_POWER"
     }
 
     override val registers: Map<String, DeviceRegister> = mapOf(
+        CURRENT_AMPER to DeviceRegister(0x2200, DeviceRegister.RegisterValueType.SHORT),
+        CURRENT_FREQ to DeviceRegister(0x2202, DeviceRegister.RegisterValueType.SHORT),
+        CURRENT_VOLT to DeviceRegister(0x2204, DeviceRegister.RegisterValueType.SHORT),
+        CURRENT_POWER to DeviceRegister(0x2206, DeviceRegister.RegisterValueType.SHORT),
         ERRORS_REGISTER to DeviceRegister(0x2100, DeviceRegister.RegisterValueType.SHORT),
         STATUS_REGISTER to DeviceRegister(0x2101, DeviceRegister.RegisterValueType.SHORT),
         CURRENT_FREQUENCY_INPUT_REGISTER to DeviceRegister(0x2103, DeviceRegister.RegisterValueType.SHORT),

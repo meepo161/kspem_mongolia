@@ -33,20 +33,7 @@ class OwenPr(
         const val TRIG_RESETER: Short = 0xFFFF.toShort()
         const val WD_RESETER: Short = 0b10
     }
-
-//    override fun readRegister(register: DeviceRegister) {
-//        isResponding = try {
-//            transactionWithAttempts {
-//                val modbusRegister =
-//                    protocolAdapter.readHoldingRegisters(id, register.address, 1).map(ModbusRegister::toShort)
-//                register.value = modbusRegister.first()
-//            }
-//            true
-//        } catch (e: ru.avem.kserialpooler.communication.utils.TransportException) {
-//            false
-//        }
-//    }
-
+    
     override fun readRegister(register: DeviceRegister) {
         isResponding = try {
             transactionWithAttempts {
@@ -104,7 +91,7 @@ class OwenPr(
                 }
             }
             true
-        } catch (e: ru.avem.kserialpooler.communication.utils.TransportException) {
+        } catch (e: TransportException) {
             false
         }
     }
@@ -116,7 +103,7 @@ class OwenPr(
                 protocolAdapter.presetMultipleRegisters(id, register.address, registers)
             }
             true
-        } catch (e: ru.avem.kserialpooler.communication.utils.TransportException) {
+        } catch (e: TransportException) {
             false
         }
     }
@@ -184,6 +171,7 @@ class OwenPr(
         writeRegister(getRegisterById(OwenPrModel.KMS1_REGISTER), outMask1)
         writeRegister(getRegisterById(OwenPrModel.KMS2_REGISTER), outMask2)
         writeRegister(getRegisterById(OwenPrModel.TVN), 0f)
+        writeRegister(getRegisterById(OwenPrModel.TRN), 0f)
     }
 
     fun km1(stat: Boolean) {
@@ -191,6 +179,14 @@ class OwenPr(
             onRegister(1, 1)
         } else {
             offRegister(1, 1)
+        }
+    }
+
+    fun ov_oi_obr(stat: Boolean) {
+        if (stat) {
+            onRegister(1, 2)
+        } else {
+            offRegister(1, 2)
         }
     }
 

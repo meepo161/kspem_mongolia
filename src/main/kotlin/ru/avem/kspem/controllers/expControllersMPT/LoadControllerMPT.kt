@@ -3,8 +3,8 @@ package ru.avem.kspem.controllers.expControllersMPT
 import ru.avem.kspem.communication.model.CommunicationModel
 import ru.avem.kspem.communication.model.devices.avem.avem4.Avem4Model
 import ru.avem.kspem.communication.model.devices.avem.avem7.Avem7Model
-import ru.avem.kspem.communication.model.devices.avem.latr.LatrModel
 import ru.avem.kspem.communication.model.devices.delta.DeltaModel
+import ru.avem.kspem.communication.model.devices.owen.pr.OwenPrModel
 import ru.avem.kspem.communication.model.devices.th01.TH01Model
 import ru.avem.kspem.communication.model.devices.trm202.TRM202Model
 import ru.avem.kspem.controllers.CustomController
@@ -14,6 +14,7 @@ import ru.avem.kspem.utils.LogTag
 import ru.avem.kspem.utils.sleep
 import ru.avem.kspem.view.expViews.expViewsMPT.LoadViewMPT
 import ru.avem.stand.utils.autoformat
+import kotlin.concurrent.thread
 import kotlin.math.abs
 
 class LoadControllerMPT : CustomController() {
@@ -41,9 +42,6 @@ class LoadControllerMPT : CustomController() {
     var voltageDelta = 0.0
 
     @Volatile
-    var voltageLatr = 0.0
-
-    @Volatile
     var voltageOYSet = 0.0
 
     @Volatile
@@ -56,7 +54,7 @@ class LoadControllerMPT : CustomController() {
     var rotateSpeedSet = 0.0
 
     @Volatile
-    var amperageSet = 0.0
+    var voltageTVN = 0.0
 
     @Volatile
     var deltaStatus = 0
@@ -65,19 +63,34 @@ class LoadControllerMPT : CustomController() {
     var fDelta = 0.0
 
     @Volatile
-    var startDelta = 1 * 10
+    var amperageSet = 0.0
+
+    @Volatile
+    var voltageTRN = 0.0
+
+    @Volatile
+    var rotateUNM = 0.0
 
     override fun start() {
         model.clearTables()
         super.start()
         // (value-4)*0.625
 
+        voltageTVN = 0.0
+        voltageTRN = 0.0
         voltageOYSet = objectModel!!.uNom.toDouble()
         rotateSpeedSet = objectModel!!.nAsync.toDouble()
         voltageOVSet = objectModel!!.uOV.toDouble()
         amperageSet = objectModel!!.iN.toDouble()
         setTime = objectModel!!.timeHH.toDouble()
 
+
+        if (isExperimentRunning) {
+            appendMessageToLog(LogTag.MESSAGE, "Инициализация АВЭМ4-01-ОВ...")
+            cm.startPoll(CommunicationModel.DeviceID.DD2_1, OwenPrModel.ROTATE_UNM) { value ->
+                rotateUNM = value.toDouble()
+            }
+        }
         if (isExperimentRunning) {
             appendMessageToLog(LogTag.MESSAGE, "Инициализация АВЭМ4-01-ОВ...")
             cm.startPoll(CommunicationModel.DeviceID.PA13, Avem7Model.AMPERAGE) { value ->
@@ -110,7 +123,7 @@ class LoadControllerMPT : CustomController() {
             cm.startPoll(CommunicationModel.DeviceID.PV25, Avem4Model.RMS) { value ->
                 voltageOY = abs(value.toDouble())
                 model.data.uOY.value = voltageOY.autoformat()
-                model.data.p.value = (voltageOY * amperageOY).autoformat()
+                model.data.p.value = ((voltageOY * amperageOY) / 1000).autoformat()
                 if (!avemUoy.isResponding && isExperimentRunning) cause = "АВЭМ4-03 не отвечает"
             }
         }
@@ -144,23 +157,37 @@ class LoadControllerMPT : CustomController() {
         }
 
         if (isExperimentRunning) {
-            appendMessageToLog(LogTag.MESSAGE, "Инициализация АРН...")
-            latr.resetLATR()
-            cm.startPoll(CommunicationModel.DeviceID.GV240, LatrModel.U_RMS_REGISTER) { value ->
-                voltageLatr = value.toDouble()
-                if (!latr.isResponding && isExperimentRunning) cause = "АРН не отвечает"
-            }
-            cm.startPoll(CommunicationModel.DeviceID.GV240, LatrModel.ENDS_STATUS_REGISTER) { value ->
-            }
-        }
-
-        if (isExperimentRunning) {
 //            initButtonPost()
         }
 
         if (isExperimentRunning) {
             pr102.km1(true)
+            pr102.vent(true)
         }
+
+        sleep(2000)
+
+
+        thread(isDaemon = true) {
+            var noRotate = 0
+            while (isExperimentRunning) {
+                val rotateUNMLast = rotateUNM
+                sleep(1000)
+                if (abs(rotateUNMLast - rotateUNM) < 10) {
+                    noRotate++
+                    if (noRotate > 5) {
+                        cause = "Вентилятор остановился"
+                    }
+                } else {
+                    noRotate = 0
+                }
+            }
+        }
+
+        while (isExperimentRunning) {
+            sleep(100)
+        }
+
 
         if (isExperimentRunning) {
             appendMessageToLog(LogTag.MESSAGE, "Инициализация Delta...")
@@ -175,23 +202,23 @@ class LoadControllerMPT : CustomController() {
                 sleep(100)
                 if ((System.currentTimeMillis() - timer) > 30000) cause = "Delta не отвечает"
             }
-
-            cm.startPoll(CommunicationModel.DeviceID.UZ91, DeltaModel.STATUS_REGISTER) { value ->
-                deltaStatus = value.toInt()
-                if (!delta.isResponding && isExperimentRunning) cause = "Delta не отвечает"
+            cm.startPoll(CommunicationModel.DeviceID.UZ91, DeltaModel.CURRENT_FREQ) { value ->
+                println("CURRENT_FREQ = " + value.toDouble() / 100 + " Гц")
             }
-            cm.startPoll(CommunicationModel.DeviceID.UZ91, DeltaModel.POINT_1_VOLTAGE_REGISTER) { value ->
-                voltageDelta = value.toInt() / 10.0
+            cm.startPoll(CommunicationModel.DeviceID.UZ91, DeltaModel.CURRENT_AMPER) { value ->
+                println("CURRENT_AMPER = " + value.toDouble() / 100 + " А")
+            }
+            cm.startPoll(CommunicationModel.DeviceID.UZ91, DeltaModel.CURRENT_VOLT) { value ->
+                println("CURRENT_VOLT = " + value.toDouble() / 10 + " В")
             }
         }
 
         if (isExperimentRunning) {
-            if (voltageLatr < 5) {
-                pr102.arn(true)
-                pr102.ov_oi(true)
-            } else {
-                cause = "АРН не вышел в нулевое положение"
-            }
+            pr102.arn(true)
+            pr102.ov_oi_obr(true)
+            pr102.tvn(true)
+            pr102.setTVN(voltageTVN)
+            pr102.setTRN(voltageTRN)
         }
 
         if (isExperimentRunning) {
@@ -201,48 +228,33 @@ class LoadControllerMPT : CustomController() {
         if (isExperimentRunning) {
             appendMessageToLog(LogTag.MESSAGE, "Регулировка до номинальной частоты вращения завершена")
         }
-
         if (isExperimentRunning) {
-            if (objectModel!!.uVIU.toDoubleOrNull() != null) {
-                appendMessageToLog(LogTag.DEBUG, "Подъем напряжения обмотки возбуждения и обмотки якоря")
-                var step = 0.0
-                for (i in 0..9) {
-                    step += 0.1
-                    appendMessageToLog(LogTag.ERROR, "Ступень ${step * 10}% от номинала")
-                    voltageRegulation(voltageOVSet * step)
-                    voltageRegulationTVN(voltageOYSet * step, 750, 1000)
-                }
-                appendMessageToLog(LogTag.MESSAGE, "Подъем напряжения обмотки возбуждения и обмотки якоря завершен")
-            } else cause = "ошибка задания напряжения"
-        }
-
-        var timer = 5.0
-        if (isExperimentRunning) {
-            while (isExperimentRunning && timer > 0) {
-                sleep(100)
-                timer -= 0.1
-            }
+            appendMessageToLog(LogTag.DEBUG, "Подъем напряжения обмотки возбуждения и обмотки якоря.")
+            voltageRegulationTRN(voltageOVSet, 300, 600)
+            voltageRegulationTVN(voltageOYSet, 300, 600)
         }
 
         if (isExperimentRunning) {
-            delta.setObjectParamsRun()
-            delta.startObject()
-        }
-
-        if (isExperimentRunning) {
-
             appendMessageToLog(LogTag.DEBUG, "Разгон НМ...")
 
-            var u = 5
-            val maxU = 380
+//            fDelta = if ((rotateSpeed / (1500 / 50)) / 2 < 50) {
+//                (rotateSpeed / (1500 / 50)) / 2 //TODO проверка шкивов
+//            } else {
+//                50.0
+//            }
+            fDelta = 38.3
 
-            fDelta = if (rotateSpeed / 60 * 2 < 50) {
-                rotateSpeed / 60 * 2 //TODO проверка шкивов
-            } else {
-                50.0
-            }
+            var u = 2
+            val maxU = 380 / 50 * fDelta
 
             delta.setObjectParamsRun(fDelta, u, fDelta)
+            delta.startObject()
+
+            var timer = 10.0
+            while (isExperimentRunning && timer > 0) {
+                timer -= 0.1
+                sleep(100)
+            }
 
             while (isExperimentRunning && u < maxU) {
                 u++
@@ -252,13 +264,26 @@ class LoadControllerMPT : CustomController() {
             delta.setObjectUMax(maxU)
 
             appendMessageToLog(LogTag.MESSAGE, "Подключение нагрузки")
+
             pr102.unm(true)
+            pr102.vent(true)
+
+            thread(isDaemon = true) {
+                while (isExperimentRunning) {
+                    voltageRegulationTRN(voltageOVSet, 300, 600)
+                }
+            }
+            thread(isDaemon = true) {
+                while (isExperimentRunning) {
+                    voltageRegulationTVN(voltageOYSet, 300, 600)
+                }
+            }
             regulationTo(amperageSet)
 
             appendMessageToLog(LogTag.MESSAGE, "Регулировка до номинальной нагрузки завершена")
         }
 
-        timer = 120.0
+        var timer = 120.0
         if (isExperimentRunning) {
             appendMessageToLog(LogTag.MESSAGE, "Выдержка 120 секунд")
             while (isExperimentRunning && timer > 0) {
@@ -268,11 +293,18 @@ class LoadControllerMPT : CustomController() {
                 }
                 sleep(100)
             }
+            model.data.timeExp.value = "0.0"
         }
+        saveData()
 
-        protocolModel.nSpeed = model.data.n.value
+        isExperimentRunning = false
+        sleep(100)
+        pr102.setTVN(0.0)
+        pr102.setTRN(0.0)
+        sleep(2000)
 
         finalizeExperiment()
+
         when (cause) {
             "" -> {
                 model.data.result.value = "Успешно"
@@ -289,13 +321,13 @@ class LoadControllerMPT : CustomController() {
 
     private fun regulationTo(
         amperageSet: Double,
-        coarseLimit: Double = 0.05,
-        fineLimit: Double = 0.02,
+        coarseLimit: Double = 10.0,
+        fineLimit: Double = 2.0,
         coarseSleep: Long = 500,
         fineSleep: Long = 750
     ) {
-        while (isExperimentRunning && (amperageOY * (1 - coarseLimit) < amperageSet || amperageOY * (1 + coarseLimit) > amperageSet)) {
-            if (amperageOY < amperageSet * (1 - coarseLimit)) {
+        while (abs(amperageOY - amperageSet) > coarseLimit && isExperimentRunning) {
+            if (amperageOY < amperageSet) {
                 fDelta -= 0.1
             } else {
                 fDelta += 0.1
@@ -303,8 +335,8 @@ class LoadControllerMPT : CustomController() {
             delta.setObjectF(fDelta)
             sleep(coarseSleep)
         }
-        while (isExperimentRunning && (amperageOY * (1 - fineLimit) < amperageSet || amperageOY * (1 + fineLimit) > amperageSet)) {
-            if (amperageOY < amperageSet * (1 - fineLimit)) {
+        while (abs(amperageOY - amperageSet) > fineLimit && isExperimentRunning) {
+            if (amperageOY < amperageSet) {
                 fDelta -= 0.05
             } else {
                 fDelta += 0.05
@@ -314,17 +346,16 @@ class LoadControllerMPT : CustomController() {
         }
     }
 
-    private fun voltageRegulation(volt: Double) {
+    private fun voltageRegulation(volt: Double, coarse: Int = 10, fine: Int = 5, accurate: Int = 2) {
         var timer = 0L
-        val slow = 50.0
-        val fast = 250.0
-        var speedPerc = 35f
+        var speedPerc = 100f
         var timePulsePerc = 20f
         val up = 220f
         val down = 1f
         var direction: Float
         timer = System.currentTimeMillis()
-        while (abs(voltageOV - volt) > fast && isExperimentRunning) {
+//        appendMessageToLog(LogTag.DEBUG, "Быстрая регулировка")
+        while (abs(voltageOV - volt) > fine && isExperimentRunning) {
             if (voltageOV < volt) {
                 direction = up
                 speedPerc = 100f
@@ -332,80 +363,134 @@ class LoadControllerMPT : CustomController() {
                 direction = down
                 speedPerc = 100f
             }
-            if (System.currentTimeMillis() - timer > 90000) cause = "Превышено время регулирования"
-            latr.startUpLATRUp(direction, false, speedPerc)
+            if (System.currentTimeMillis() - timer > 180000) cause = "Превышено время регулирования"
+            latr.startUpLATRPulse(direction, false, speedPerc)
         }
         latr.stopLATR()
+//        timer = System.currentTimeMillis()
+//        if (isExperimentRunning) {
+//            appendMessageToLog(LogTag.DEBUG, "Грубая регулировка")
+//        }
+//        while (abs(voltageOY - volt) > coarse && isExperimentRunning) {
+//            if (voltageOY < volt) {
+//                direction = up
+//                timePulsePerc = 85f
+//            } else {
+//                direction = down
+//                timePulsePerc = 100f
+//            }
+//            if (System.currentTimeMillis() - timer > 60000) cause = "Превышено время регулирования"
+//            latr.startUpLATRPulse(direction, false, timePulsePerc)
+//        }
+//        latr.stopLATR()
         timer = System.currentTimeMillis()
-        while (abs(voltageOV - volt) > slow && isExperimentRunning) {
+//        if (isExperimentRunning) {
+//            appendMessageToLog(LogTag.DEBUG, "Быстрая регулировка")
+//        }
+        while (abs(voltageOV - volt) > accurate && isExperimentRunning) {
             if (voltageOV < volt) {
                 direction = up
-                timePulsePerc = 95f
+                timePulsePerc = 70f
             } else {
                 direction = down
-                timePulsePerc = 95f
+                timePulsePerc = 100f
             }
-            if (System.currentTimeMillis() - timer > 60000) cause = "Превышено время регулирования"
+            if (System.currentTimeMillis() - timer > 180000) cause = "Превышено время регулирования"
             latr.startUpLATRPulse(direction, false, timePulsePerc)
-        }
-        latr.stopLATR()
-        timer = System.currentTimeMillis()
-        while (abs(voltageOV - volt) > 5 && isExperimentRunning) {
-            if (voltageOV < volt) {
-                direction = up
-                timePulsePerc = 85f
-            } else {
-                direction = down
-                timePulsePerc = 85f
-            }
-            if (System.currentTimeMillis() - timer > 60000) cause = "Превышено время регулирования"
-            latr.startUpLATRPulse(direction, false, timePulsePerc)
+            sleep(500)
+            latr.stopLATR()
+            sleep(500)
         }
         latr.stopLATR()
     }
 
     private fun voltageRegulationTVN(volt: Double, coarseSleep: Long, fineSleep: Long) {
-        var start = 0.0
-        val slow = 20.0
-        val fast = 100.0
+        val slow = 100.0
+        val fast = 20.0
+        val accurate = 2.0
 
         var timer = System.currentTimeMillis()
-        while (abs(voltageOY - volt) > fast && isExperimentRunning) {
+        while (abs(voltageOY - volt) > slow && isExperimentRunning) {
             if (voltageOY < volt) {
-                start += 0.05
-                pr102.setTVN(start)
+                voltageTVN += 0.01
+                pr102.setTVN(voltageTVN)
             } else {
-                start -= 0.05
-                pr102.setTVN(start)
+                voltageTVN -= 0.01
+                pr102.setTVN(voltageTVN)
             }
             if (System.currentTimeMillis() - timer > 90000) cause = "Превышено время регулирования"
             sleep(coarseSleep)
         }
 
         timer = System.currentTimeMillis()
-        while (abs(voltageOY - volt) > slow && isExperimentRunning) {
+        while (abs(voltageOY - volt) > fast && isExperimentRunning) {
             if (voltageOY < volt) {
-                start += 0.03
-                pr102.setTVN(start)
+                voltageTVN += 0.005
+                pr102.setTVN(voltageTVN)
             } else {
-                start -= 0.03
-                pr102.setTVN(start)
+                voltageTVN -= 0.005
+                pr102.setTVN(voltageTVN)
             }
             if (System.currentTimeMillis() - timer > 90000) cause = "Превышено время регулирования"
             sleep(fineSleep)
         }
 
         timer = System.currentTimeMillis()
-        while (abs(voltageOY - volt) > 5 && isExperimentRunning) {
+        while (abs(voltageOY - volt) > accurate && isExperimentRunning) {
             if (voltageOY < volt) {
-                start += 0.01
-                pr102.setTVN(start)
+                voltageTVN += 0.003
+                pr102.setTVN(voltageTVN)
             } else {
-                start -= 0.01
-                pr102.setTVN(start)
+                voltageTVN -= 0.003
+                pr102.setTVN(voltageTVN)
             }
             if (System.currentTimeMillis() - timer > 90000) cause = "Превышено время регулирования"
-            sleep(200)
+            sleep(fineSleep)
+        }
+    }
+
+    private fun voltageRegulationTRN(volt: Double, coarseSleep: Long, fineSleep: Long) {
+        val slow = 100.0
+        val fast = 20.0
+        val accurate = 2.0
+
+        var timer = System.currentTimeMillis()
+        while (abs(voltageOV - volt) > slow && isExperimentRunning) {
+            if (voltageOV < volt) {
+                voltageTRN += 0.01
+                pr102.setTRN(voltageTRN)
+            } else {
+                voltageTRN -= 0.01
+                pr102.setTRN(voltageTRN)
+            }
+            if (System.currentTimeMillis() - timer > 90000) cause = "Превышено время регулирования"
+            sleep(coarseSleep)
+        }
+
+        timer = System.currentTimeMillis()
+        while (abs(voltageOV - volt) > fast && isExperimentRunning) {
+            if (voltageOV < volt) {
+                voltageTRN += 0.005
+                pr102.setTRN(voltageTRN)
+            } else {
+                voltageTRN -= 0.005
+                pr102.setTRN(voltageTRN)
+            }
+            if (System.currentTimeMillis() - timer > 90000) cause = "Превышено время регулирования"
+            sleep(fineSleep)
+        }
+
+        timer = System.currentTimeMillis()
+        while (abs(voltageOV - volt) > accurate && isExperimentRunning) {
+            if (voltageOV < volt) {
+                voltageTRN += 0.003
+                pr102.setTRN(voltageTRN)
+            } else {
+                voltageTRN -= 0.003
+                pr102.setTRN(voltageTRN)
+            }
+            if (System.currentTimeMillis() - timer > 90000) cause = "Превышено время регулирования"
+            sleep(fineSleep)
         }
 
     }

@@ -214,14 +214,6 @@ class H_HHControllerSG : CustomController() {
                 sleep(100)
                 if ((System.currentTimeMillis() - timer) > 30000) cause = "Delta не отвечает"
             }
-
-            cm.startPoll(CommunicationModel.DeviceID.UZ91, DeltaModel.STATUS_REGISTER) { value ->
-                deltaStatus = value.toInt()
-                if (!delta.isResponding && isExperimentRunning) cause = "Delta не отвечает"
-            }
-            cm.startPoll(CommunicationModel.DeviceID.UZ91, DeltaModel.POINT_1_VOLTAGE_REGISTER) { value ->
-                voltageDelta = value.toInt() / 10.0
-            }
         }
 
         if (isExperimentRunning) {

@@ -74,7 +74,6 @@ abstract class CustomController() : Component(), ScopedInstance {
         set(value) {
             if (value.isNotEmpty()) {
                 isExperimentRunning = false
-                appendMessageToLog(LogTag.ERROR, "Завершение испытания")
                 if (!field.contains(value)) field += "${if (field != "") "/" else ""}$value"
             } else {
                 field = value
@@ -180,10 +179,10 @@ abstract class CustomController() : Component(), ScopedInstance {
                     cause = "сработала токовая защита ВИУ"
                 }
                 if (tempUNM) {
-                    cause = "сработала токовая защита ВИУ"
+//                    cause = "сработала токовая защита ВИУ"
                 }
                 if (speedUNM) {
-                    cause = "сработала токовая защита ВИУ"
+//                    cause = "сработала токовая защита ВИУ"
                 }
             }
             sleep(1000)

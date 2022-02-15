@@ -12,6 +12,7 @@ class OwenPrModel : IDeviceModel {
         const val KMS2_REGISTER = "KMS2_REGISTER"
         const val TVN = "TVN"
         const val TRN = "TRN"
+        const val ROTATE_UNM = "ROTATE_UNM"
         const val RES = "RES"
     }
 
@@ -23,7 +24,8 @@ class OwenPrModel : IDeviceModel {
         KMS2_REGISTER to DeviceRegister(516, DeviceRegister.RegisterValueType.SHORT),
         TVN to DeviceRegister(520, DeviceRegister.RegisterValueType.FLOAT),
         TRN to DeviceRegister(522, DeviceRegister.RegisterValueType.FLOAT),
-        RES to DeviceRegister(518, DeviceRegister.RegisterValueType.SHORT)
+        RES to DeviceRegister(518, DeviceRegister.RegisterValueType.SHORT),
+        ROTATE_UNM to DeviceRegister(517, DeviceRegister.RegisterValueType.SHORT)
     )
 
     override fun getRegisterById(idRegister: String) =
