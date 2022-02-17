@@ -1,8 +1,10 @@
 package ru.avem.kspem.controllers.expControllersMPT
 
+import javafx.stage.Modality
 import ru.avem.kspem.communication.model.CommunicationModel
 import ru.avem.kspem.communication.model.devices.avem.avem4.Avem4Model
 import ru.avem.kspem.communication.model.devices.avem.avem7.Avem7Model
+import ru.avem.kspem.communication.model.devices.delta.Delta
 import ru.avem.kspem.communication.model.devices.delta.DeltaModel
 import ru.avem.kspem.communication.model.devices.owen.pr.OwenPrModel
 import ru.avem.kspem.communication.model.devices.th01.TH01Model
@@ -11,9 +13,13 @@ import ru.avem.kspem.controllers.CustomController
 import ru.avem.kspem.data.objectModel
 import ru.avem.kspem.data.protocolModel
 import ru.avem.kspem.utils.LogTag
+import ru.avem.kspem.utils.Singleton
+import ru.avem.kspem.utils.showTwoWayDialog
 import ru.avem.kspem.utils.sleep
+import ru.avem.kspem.view.AlertView
 import ru.avem.kspem.view.expViews.expViewsMPT.LoadViewMPT
 import ru.avem.stand.utils.autoformat
+import tornadofx.runLater
 import kotlin.concurrent.thread
 import kotlin.math.abs
 
@@ -71,11 +77,37 @@ class LoadControllerMPT : CustomController() {
     @Volatile
     var rotateUNM = 0.0
 
+    @Volatile
+    var isReverseNM = false
+
+    @Volatile
+    var isReverseOI = false
+
+    @Volatile
+    var currentFreq = 0.0
+
+    @Volatile
+    var currentFreqLast = 0.0
+
+    @Volatile
+    var regulateStarted = false
+
+    @Volatile
+    var regulate12Started = false
+
+    var timerMy = 20.0
+
+    var timerMyStart = 20.0
+
     override fun start() {
         model.clearTables()
         super.start()
         // (value-4)*0.625
 
+        timerMy = 20.0
+        timerMyStart = 20.0
+        isReverseNM = false
+        isReverseOI = false
         voltageTVN = 0.0
         voltageTRN = 0.0
         voltageOYSet = objectModel!!.uNom.toDouble()
@@ -86,11 +118,12 @@ class LoadControllerMPT : CustomController() {
 
 
         if (isExperimentRunning) {
-            appendMessageToLog(LogTag.MESSAGE, "Инициализация АВЭМ4-01-ОВ...")
+            appendMessageToLog(LogTag.MESSAGE, "Инициализация оборотов УНМ...")
             cm.startPoll(CommunicationModel.DeviceID.DD2_1, OwenPrModel.ROTATE_UNM) { value ->
                 rotateUNM = value.toDouble()
             }
         }
+
         if (isExperimentRunning) {
             appendMessageToLog(LogTag.MESSAGE, "Инициализация АВЭМ4-01-ОВ...")
             cm.startPoll(CommunicationModel.DeviceID.PA13, Avem7Model.AMPERAGE) { value ->
@@ -106,6 +139,11 @@ class LoadControllerMPT : CustomController() {
                 voltageOV = abs(value.toDouble())
                 model.data.uOV.value = voltageOV.autoformat()
                 if (!avemUov.isResponding && isExperimentRunning) cause = "АВЭМ4-03 не отвечает"
+
+                if (regulateStarted && voltageOV > 50 && amperageOV < 0.1) {
+                    cause = "Нет тока на ОВ"
+                }
+
             }
         }
 
@@ -122,6 +160,12 @@ class LoadControllerMPT : CustomController() {
             appendMessageToLog(LogTag.MESSAGE, "Инициализация АВЭМ4-03-ОЯ...")
             cm.startPoll(CommunicationModel.DeviceID.PV25, Avem4Model.RMS) { value ->
                 voltageOY = abs(value.toDouble())
+                if (voltageOY > 80 && rotateSpeed < 100) cause = "Проверьте датчик скорости"
+
+                if (regulateStarted && voltageOV > 50 && voltageOV < 500 && amperageOY < 0.1) {
+                    cause = "Нет тока на ОЯ"
+                }
+
                 model.data.uOY.value = voltageOY.autoformat()
                 model.data.p.value = ((voltageOY * amperageOY) / 1000).autoformat()
                 if (!avemUoy.isResponding && isExperimentRunning) cause = "АВЭМ4-03 не отвечает"
@@ -162,32 +206,7 @@ class LoadControllerMPT : CustomController() {
 
         if (isExperimentRunning) {
             pr102.km1(true)
-            pr102.vent(true)
         }
-
-        sleep(2000)
-
-
-        thread(isDaemon = true) {
-            var noRotate = 0
-            while (isExperimentRunning) {
-                val rotateUNMLast = rotateUNM
-                sleep(1000)
-                if (abs(rotateUNMLast - rotateUNM) < 10) {
-                    noRotate++
-                    if (noRotate > 5) {
-                        cause = "Вентилятор остановился"
-                    }
-                } else {
-                    noRotate = 0
-                }
-            }
-        }
-
-        while (isExperimentRunning) {
-            sleep(100)
-        }
-
 
         if (isExperimentRunning) {
             appendMessageToLog(LogTag.MESSAGE, "Инициализация Delta...")
@@ -203,31 +222,157 @@ class LoadControllerMPT : CustomController() {
                 if ((System.currentTimeMillis() - timer) > 30000) cause = "Delta не отвечает"
             }
             cm.startPoll(CommunicationModel.DeviceID.UZ91, DeltaModel.CURRENT_FREQ) { value ->
-                println("CURRENT_FREQ = " + value.toDouble() / 100 + " Гц")
-            }
-            cm.startPoll(CommunicationModel.DeviceID.UZ91, DeltaModel.CURRENT_AMPER) { value ->
-                println("CURRENT_AMPER = " + value.toDouble() / 100 + " А")
-            }
-            cm.startPoll(CommunicationModel.DeviceID.UZ91, DeltaModel.CURRENT_VOLT) { value ->
-                println("CURRENT_VOLT = " + value.toDouble() / 10 + " В")
+                currentFreq = value.toDouble() / 100
             }
         }
 
         if (isExperimentRunning) {
             pr102.arn(true)
-            pr102.ov_oi_obr(true)
+            pr102.ov_oi(true)
             pr102.tvn(true)
             pr102.setTVN(voltageTVN)
             pr102.setTRN(voltageTRN)
         }
 
         if (isExperimentRunning) {
-            appendMessageToLog(LogTag.DEBUG, "Регулировка до номинальной частоты вращения")
+            while (isExperimentRunning && rotateSpeed < 100) {
+                voltageTRN += 0.03
+                voltageTVN += 0.03
+                pr102.setTRN(voltageTRN)
+                pr102.setTVN(voltageTVN)
+                sleep(1000)
+            }
+            voltageTRN = 0.0
+            voltageTVN = 0.0
+            pr102.setTRN(voltageTRN)
+            pr102.setTVN(voltageTVN)
+            while (isExperimentRunning && rotateSpeed > 100) {
+                sleep(100)
+            }
+        }
+
+        var isClicked = false
+
+        if (isExperimentRunning) {
+            showTwoWayDialog(
+                title = "Внимание!",
+                text = "ОИ вращается в правильном направлении?",
+                way1Title = "Да",
+                way2Title = "Нет",
+                way1 = {
+                    appendMessageToLog(LogTag.MESSAGE, "Направление вращения ОИ осталось прежним")
+                    isClicked = true
+                },
+                way2 = {
+                    appendMessageToLog(LogTag.DEBUG, "Направление вращения ОИ изменено")
+                    isReverseOI = true
+                    isClicked = true
+                },
+                currentWindow = primaryStage.scene.window
+            )
+        }
+
+        while (!isClicked && isExperimentRunning) {
+            sleep(100)
+        }
+
+        if (isReverseOI) {
+            pr102.ov_oi(false)
+            pr102.ov_oi_obr(true)
         }
 
         if (isExperimentRunning) {
-            appendMessageToLog(LogTag.MESSAGE, "Регулировка до номинальной частоты вращения завершена")
+            while (isExperimentRunning && rotateSpeed < 100) {
+                voltageTRN += 0.03
+                voltageTVN += 0.03
+                pr102.setTRN(voltageTRN)
+                pr102.setTVN(voltageTVN)
+                sleep(1000)
+            }
+            voltageTRN = 0.0
+            voltageTVN = 0.0
+            pr102.setTRN(voltageTRN)
+            pr102.setTVN(voltageTVN)
+            while (isExperimentRunning && rotateSpeed > 100) {
+                sleep(100)
+            }
+            delta.setObjectParamsRun(2, 20, 2)
+            delta.startObject()
+            var timer = 5.0
+            while (isExperimentRunning && timer > 0) {
+                timer -= 0.1
+                sleep(100)
+            }
+            delta.stopObject()
+            while (isExperimentRunning && rotateSpeed > 100) {
+                sleep(100)
+            }
         }
+
+        isClicked = false
+
+        if (isExperimentRunning) {
+            showTwoWayDialog(
+                title = "Внимание!",
+                text = "Совпадают направления вращения ОИ и НМ?",
+                way1Title = "Да",
+                way2Title = "Нет",
+                way1 = {
+                    appendMessageToLog(LogTag.MESSAGE, "Направление вращения НМ осталось прежним")
+                    isClicked = true
+                },
+                way2 = {
+                    appendMessageToLog(LogTag.DEBUG, "Направление вращения НМ изменено")
+                    isReverseNM = true
+                    isClicked = true
+                },
+                currentWindow = primaryStage.scene.window
+            )
+        }
+
+        while (!isClicked && isExperimentRunning) {
+            sleep(100)
+        }
+
+        if (isExperimentRunning) {
+            pr102.vent(true)
+        }
+        if (isExperimentRunning) {
+            sleep(2000)
+        }
+
+        if (isExperimentRunning) {
+            thread(isDaemon = true) {
+                var noRotate = 0
+                while (isExperimentRunning) {
+                    val rotateUNMLast = rotateUNM
+                    sleep(1000)
+                    if (abs(rotateUNMLast - rotateUNM) < 10) {
+                        noRotate++
+                        if (noRotate > 5) {
+                            cause = "Вентилятор остановился"
+                        }
+                    } else {
+                        noRotate = 0
+                    }
+                }
+            }
+        }
+
+        if (isExperimentRunning) {
+            var timer = 5.0
+            while (isExperimentRunning && timer > 0) {
+                timer -= 0.1
+                sleep(100)
+            }
+        }
+
+        if (isExperimentRunning) {
+            appendMessageToLog(LogTag.DEBUG, "Регулировка до номинальной частоты вращения")
+        }
+
+        regulateStarted = true
+
         if (isExperimentRunning) {
             appendMessageToLog(LogTag.DEBUG, "Подъем напряжения обмотки возбуждения и обмотки якоря.")
             voltageRegulationTRN(voltageOVSet, 300, 600)
@@ -235,20 +380,27 @@ class LoadControllerMPT : CustomController() {
         }
 
         if (isExperimentRunning) {
+            appendMessageToLog(LogTag.MESSAGE, "Регулировка до номинальной частоты вращения завершена")
+        }
+
+        if (isExperimentRunning) {
             appendMessageToLog(LogTag.DEBUG, "Разгон НМ...")
 
-//            fDelta = if ((rotateSpeed / (1500 / 50)) / 2 < 50) {
-//                (rotateSpeed / (1500 / 50)) / 2 //TODO проверка шкивов
-//            } else {
-//                50.0
-//            }
-            fDelta = 38.3
+            fDelta = if ((rotateSpeed / (1500 / 50)) / 2 < 50) {
+                (rotateSpeed / (1500 / 50)) / 2 //TODO проверка шкивов
+            } else {
+                50.0
+            }
 
-            var u = 2
+            var u = 3
             val maxU = 380 / 50 * fDelta
 
             delta.setObjectParamsRun(fDelta, u, fDelta)
-            delta.startObject()
+            if (isReverseNM) {
+                delta.startObject(Delta.Direction.REVERSE)
+            } else {
+                delta.startObject()
+            }
 
             var timer = 10.0
             while (isExperimentRunning && timer > 0) {
@@ -266,26 +418,94 @@ class LoadControllerMPT : CustomController() {
             appendMessageToLog(LogTag.MESSAGE, "Подключение нагрузки")
 
             pr102.unm(true)
-            pr102.vent(true)
+
 
             thread(isDaemon = true) {
-                while (isExperimentRunning) {
-                    voltageRegulationTRN(voltageOVSet, 300, 600)
+                while (isExperimentRunning && regulateStarted) {
+                    voltageRegulationTRN(voltageOVSet, 150, 300)
                 }
             }
             thread(isDaemon = true) {
-                while (isExperimentRunning) {
-                    voltageRegulationTVN(voltageOYSet, 300, 600)
+                while (isExperimentRunning && regulateStarted) {
+                    voltageRegulationTVN(voltageOYSet, 150, 300)
                 }
             }
+
             regulationTo(amperageSet)
 
             appendMessageToLog(LogTag.MESSAGE, "Регулировка до номинальной нагрузки завершена")
         }
+        regulateStarted = false
 
-        var timer = 120.0
         if (isExperimentRunning) {
-            appendMessageToLog(LogTag.MESSAGE, "Выдержка 120 секунд")
+            appendMessageToLog(LogTag.MESSAGE, "Выдержка 20 секунд")
+            while (isExperimentRunning && timerMy > 0) {
+                timerMy -= 0.1
+                if (timerMy >= 0) {
+                    model.data.timeExp.value = timerMy.autoformat()
+                }
+                sleep(100)
+            }
+            model.data.timeExp.value = "0.0"
+        }
+
+        regulate12Started = true
+        if (isExperimentRunning) {
+            appendMessageToLog(LogTag.MESSAGE, "Регулировка до номинальной нагрузки * 1.2")
+            thread(isDaemon = true) {
+                while (isExperimentRunning && regulate12Started) {
+                    voltageRegulationTRN(voltageOVSet, 150, 300)
+                }
+            }
+            thread(isDaemon = true) {
+                while (isExperimentRunning && regulate12Started) {
+                    voltageRegulationTVN(voltageOYSet, 150, 300)
+                }
+            }
+            regulationTo(amperageSet * 1.2)
+            appendMessageToLog(LogTag.MESSAGE, "Регулировка до номинальной нагрузки * 1.2 завершена")
+        }
+        regulate12Started = false
+
+        if (isExperimentRunning) {
+            appendMessageToLog(LogTag.MESSAGE, "Выдержка 20 секунд")
+            timerMy = 20.0
+            while (isExperimentRunning && timerMy > 0) {
+                timerMy -= 0.1
+                if (timerMy >= 0) {
+                    model.data.timeExp.value = timerMy.autoformat()
+                }
+                sleep(100)
+            }
+            model.data.timeExp.value = "0.0"
+        }
+
+        if (Singleton.sparking1.isNotEmpty()) {
+            for (i in 0 until Singleton.sparking1.size) {
+                appendMessageToLog(LogTag.MESSAGE, "Время измерения. точка $i = ${Singleton.sparkingTime[i]}")
+                appendMessageToLog(LogTag.MESSAGE, "Степень искрения 1 узла. точка $i = ${Singleton.sparking1[i]}")
+                appendMessageToLog(LogTag.MESSAGE, "Степень искрения 2 узла. точка $i = ${Singleton.sparking2[i]}")
+                appendMessageToLog(LogTag.MESSAGE, "Степень искрения 3 узла. точка $i = ${Singleton.sparking3[i]}")
+                appendMessageToLog(LogTag.MESSAGE, "Степень искрения 4 узла. точка $i = ${Singleton.sparking4[i]}")
+            }
+        }
+
+        saveData()
+
+        voltageTVN = 0.0
+        voltageTRN = 0.0
+        pr102.setTVN(voltageTVN)
+        pr102.setTRN(voltageTRN)
+        delta.stopObject()
+        pr102.ov_oi_obr(false)
+        pr102.ov_oi(false)
+        pr102.unm(false)
+        pr102.arn(false)
+        pr102.tvn(false)
+
+        var timer = 30.0
+        if (isExperimentRunning) {
+            appendMessageToLog(LogTag.MESSAGE, "Обдув УНМ 30 секунд")
             while (isExperimentRunning && timer > 0) {
                 timer -= 0.1
                 if (timer >= 0) {
@@ -295,14 +515,8 @@ class LoadControllerMPT : CustomController() {
             }
             model.data.timeExp.value = "0.0"
         }
-        saveData()
 
         isExperimentRunning = false
-        sleep(100)
-        pr102.setTVN(0.0)
-        pr102.setTRN(0.0)
-        sleep(2000)
-
         finalizeExperiment()
 
         when (cause) {
@@ -329,14 +543,51 @@ class LoadControllerMPT : CustomController() {
         while (abs(amperageOY - amperageSet) > coarseLimit && isExperimentRunning) {
             if (amperageOY < amperageSet) {
                 fDelta -= 0.1
+                currentFreqLast = currentFreq
+                sleep(coarseSleep)
+                if (currentFreqLast < currentFreq) {
+                    cause = "Не удается нагрузить ДПТ, проверьте соединение с УНМ"
+                }
+            } else {
+                fDelta += 0.1
+                sleep(coarseSleep)
+            }
+            delta.setObjectF(fDelta)
+        }
+        while (abs(amperageOY - amperageSet) > fineLimit && isExperimentRunning) {
+            if (amperageOY < amperageSet) {
+                fDelta -= 0.05
+                currentFreqLast = currentFreq
+                sleep(fineSleep)
+                if (currentFreqLast < currentFreq) {
+                    cause = "Не удается нагрузить ДПТ, проверьте соединение с УНМ"
+                }
+            } else {
+                fDelta += 0.05
+                sleep(fineSleep)
+            }
+            delta.setObjectF(fDelta)
+        }
+    }
+
+    private fun regulationToSpeed(
+        rpmSet: Double,
+        coarseLimit: Double = 10.0,
+        fineLimit: Double = 2.0,
+        coarseSleep: Long = 500,
+        fineSleep: Long = 750
+    ) {
+        while (abs(rotateSpeed - rpmSet) > coarseLimit && isExperimentRunning) {
+            if (rotateSpeed > rpmSet) {
+                fDelta -= 0.1
             } else {
                 fDelta += 0.1
             }
             delta.setObjectF(fDelta)
             sleep(coarseSleep)
         }
-        while (abs(amperageOY - amperageSet) > fineLimit && isExperimentRunning) {
-            if (amperageOY < amperageSet) {
+        while (abs(rotateSpeed - rpmSet) > fineLimit && isExperimentRunning) {
+            if (rotateSpeed > rpmSet) {
                 fDelta -= 0.05
             } else {
                 fDelta += 0.05

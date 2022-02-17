@@ -165,6 +165,9 @@ abstract class CustomController() : Component(), ScopedInstance {
                 if (ikzIN) {
                     cause = "сработала токовая защита ВХОД"
                 }
+                if (isStopPressed) {
+                    cause = "отменено оператором"
+                }
             }
             cm.startPoll(CommunicationModel.DeviceID.DD2_1, OwenPrModel.INPUTS_REGISTER2) { value ->
                 iViu = value.toShort() and 1 > 0       // 1
@@ -179,7 +182,7 @@ abstract class CustomController() : Component(), ScopedInstance {
                     cause = "сработала токовая защита ВИУ"
                 }
                 if (tempUNM) {
-//                    cause = "сработала токовая защита ВИУ"
+                    cause = "сработал температурный датчик УНМ"
                 }
                 if (speedUNM) {
 //                    cause = "сработала токовая защита ВИУ"

@@ -139,11 +139,6 @@ class NControllerMPT : CustomController() {
         }
 
         if (isExperimentRunning) {
-            appendMessageToLog(LogTag.MESSAGE, "Ожидаем пока АРН выйдет в начальное положение...")
-        }
-
-
-        if (isExperimentRunning) {
             pr102.arn(true)
             pr102.ov_oi(true)
             pr102.tvn(true)

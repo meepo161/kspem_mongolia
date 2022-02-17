@@ -248,8 +248,10 @@ class NControllerSG : CustomController() {
                     }
                 }
             }
-            appendMessageToLog(LogTag.MESSAGE, "Регулировка до номинальной частоты вращения завершена")
+        }
 
+        if (isExperimentRunning) {
+            appendMessageToLog(LogTag.DEBUG, "Регулировка до номинальной частоты вращения")
         }
 
         if (isExperimentRunning) {
@@ -257,7 +259,7 @@ class NControllerSG : CustomController() {
                 appendMessageToLog(LogTag.DEBUG, "Подъем напряжения обмотки возбуждения")
                 for (i in 1..3) {
 //                    voltageRegulation(voltageOYSet, 100, 50, 10)
-                    voltageRegulationTRN(voltageOYSet)
+                    voltageRegulationTRN(voltageOYSet,300,600)
                     var timer = 2.0
                     if (isExperimentRunning) {
                         while (isExperimentRunning && timer > 0) {
@@ -376,30 +378,47 @@ class NControllerSG : CustomController() {
         }
     }
 
-    private fun voltageRegulationTRN(
-        volt: Double,
-        coarseLimit: Int = 50,
-        fineLimit: Int = 10,
-        coarseSleep: Long = 1000,
-        fineSleep: Long = 2000
-    ) {
-        while (isExperimentRunning && (voltageOY > volt + coarseLimit || voltageOY < volt)) {
-            if (voltageOY < volt + coarseLimit) {
-                voltageTRN += 0.05
-            } else if (voltageOY > volt) {
-                voltageTRN -= 0.05
+    private fun voltageRegulationTRN(volt: Double, coarseSleep: Long, fineSleep: Long) {
+        val slow = 100.0
+        val fast = 20.0
+        val accurate = 2.0
+
+        var timer = System.currentTimeMillis()
+        while (abs(voltageOV - volt) > slow && isExperimentRunning) {
+            if (voltageOV < volt) {
+                voltageTRN += 0.01
+                pr102.setTRN(voltageTRN)
+            } else {
+                voltageTRN -= 0.01
+                pr102.setTRN(voltageTRN)
             }
-            pr102.setTRN(voltageTRN)
+            if (System.currentTimeMillis() - timer > 90000) cause = "Превышено время регулирования"
             sleep(coarseSleep)
         }
 
-        while (isExperimentRunning && (voltageOY > volt + fineLimit || voltageOY < volt)) {
-            if (voltageOY < volt + fineLimit) {
-                voltageTRN += 0.01
-            } else if (voltageOY > volt) {
-                voltageTRN -= 0.01
+        timer = System.currentTimeMillis()
+        while (abs(voltageOV - volt) > fast && isExperimentRunning) {
+            if (voltageOV < volt) {
+                voltageTRN += 0.005
+                pr102.setTRN(voltageTRN)
+            } else {
+                voltageTRN -= 0.005
+                pr102.setTRN(voltageTRN)
             }
-            pr102.setTRN(voltageTRN)
+            if (System.currentTimeMillis() - timer > 90000) cause = "Превышено время регулирования"
+            sleep(fineSleep)
+        }
+
+        timer = System.currentTimeMillis()
+        while (abs(voltageOV - volt) > accurate && isExperimentRunning) {
+            if (voltageOV < volt) {
+                voltageTRN += 0.003
+                pr102.setTRN(voltageTRN)
+            } else {
+                voltageTRN -= 0.003
+                pr102.setTRN(voltageTRN)
+            }
+            if (System.currentTimeMillis() - timer > 90000) cause = "Превышено время регулирования"
             sleep(fineSleep)
         }
     }

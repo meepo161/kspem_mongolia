@@ -108,6 +108,18 @@ class IKAS8(
 
     override fun getRegisterById(idRegister: String) = model.getRegisterById(idRegister)
 
+    fun startMeasuringAA() {
+        writeRegister(getRegisterById(CFG_SCHEME), IKAS8Model.Scheme.AA.value)
+        writeRegister(getRegisterById(START_STOP), 1)
+        sleep(2000)
+    }
+
+    fun startMeasuringBB() {
+        writeRegister(getRegisterById(CFG_SCHEME), IKAS8Model.Scheme.BB.value)
+        writeRegister(getRegisterById(START_STOP), 1)
+        sleep(2000)
+    }
+
     fun startMeasuringAB() {
         writeRegister(getRegisterById(CFG_SCHEME), IKAS8Model.Scheme.AB.value)
         writeRegister(getRegisterById(START_STOP), 1)

@@ -10,4 +10,9 @@ object Singleton {
     var color1: Double = 20.0
     var color2: Double = 0.5
     var color3: Double = 1.0
+    var sparking1 = mutableListOf<String>()
+    var sparking2 = mutableListOf<String>()
+    var sparking3 = mutableListOf<String>()
+    var sparking4 = mutableListOf<String>()
+    var sparkingTime = mutableListOf<String>()
 }

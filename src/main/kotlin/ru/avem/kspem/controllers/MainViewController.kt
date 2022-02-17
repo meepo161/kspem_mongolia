@@ -39,8 +39,8 @@ class MainViewController : Controller() {
 
 
     lateinit var currentExp: CustomController
-    var listDPT = mutableListOf<CustomController>(mgr, viu, ikas, nMPT, hhMPT, loadMPT)
-    var listGPT = mutableListOf<CustomController>(/*mgr, viu, ikas,n*/)
+    var listDPT = mutableListOf<CustomController>(mgr, viu, ikasMPT, nMPT, hhMPT, loadMPT)
+    var listGPT = mutableListOf<CustomController>(mgr, viu, ikasMPT, nGPT)
     var listSD = mutableListOf<CustomController>(mgr, viu, ikas, nSD)
     var listSG = mutableListOf<CustomController>(mgr, viu, ikas, nSG, h_hhSG, kzSG)
 
@@ -360,78 +360,111 @@ class MainViewController : Controller() {
 
     private fun sortExp(expListRaw: MutableList<CustomController>): MutableList<CustomController> {
         val newList = mutableListOf<CustomController>()
-        repeat(expListRaw.size) {
-            when {
-                expListRaw.contains(mgr) -> {
-                    newList.add(mgr)
-                    expListRaw.remove(mgr)
-                }
-                expListRaw.contains(viu) -> {
-                    newList.add(viu)
-                    expListRaw.remove(viu)
-                }
-                expListRaw.contains(ikas) -> {
-                    newList.add(ikas)
-                    expListRaw.remove(ikas)
-                }
-                expListRaw.contains(hh) -> {
-                    newList.add(hh)
-                    expListRaw.remove(hh)
-                }
-                expListRaw.contains(hhMPT) -> {
-                    newList.add(hhMPT)
-                    expListRaw.remove(hhMPT)
-                }
-                expListRaw.contains(h_hhSG) -> {
-                    newList.add(h_hhSG)
-                    expListRaw.remove(h_hhSG)
-                }
-                expListRaw.contains(load) -> {
-                    newList.add(load)
-                    expListRaw.remove(load)
-                }
-                expListRaw.contains(loadMPT) -> {
-                    newList.add(loadMPT)
-                    expListRaw.remove(loadMPT)
-                }
-//                expListRaw.contains(h_hh) -> {
-//                    newList.add(h_hh)
-//                    expListRaw.remove(h_hh)
-//                }
-                expListRaw.contains(n) -> {
-                    newList.add(n)
-                    expListRaw.remove(n)
-                }
-                expListRaw.contains(nSD) -> {
-                    newList.add(nSD)
-                    expListRaw.remove(nSD)
-                }
-                expListRaw.contains(nSG) -> {
-                    newList.add(nSG)
-                    expListRaw.remove(nSG)
-                }
-                expListRaw.contains(nMPT) -> {
-                    newList.add(nMPT)
-                    expListRaw.remove(nMPT)
-                }
-                expListRaw.contains(ktr) -> {
-                    newList.add(ktr)
-                    expListRaw.remove(ktr)
-                }
-                expListRaw.contains(mv) -> {
-                    newList.add(mv)
-                    expListRaw.remove(mv)
-                }
-                expListRaw.contains(kz) -> {
-                    newList.add(kz)
-                    expListRaw.remove(kz)
-                }
-                expListRaw.contains(kzSG) -> {
-                    newList.add(kzSG)
-                    expListRaw.remove(kzSG)
-                }
+        list.add(mgr)
+        list.add(viu)
+        list.add(ikas)
+        list.add(ikasMPT)
+        list.add(nSD)
+        list.add(nSG)
+        list.add(nMPT)
+        list.add(nGPT)
+        list.add(hh)
+        list.add(hhMPT)
+        list.add(h_hh)
+        list.add(h_hhSG)
+        list.add(load)
+        list.add(loadMPT)
+        list.add(n)
+        list.add(ktr)
+        list.add(mv)
+        list.add(kz)
+        list.add(kzSG)
+        list.forEach {
+            if (expListRaw.contains(it)) {
+                newList.add(it)
+                expListRaw.remove(it)
             }
         }
+//        repeat(expListRaw.size) {
+//            when {
+//                expListRaw.contains(mgr) -> {
+//                    newList.add(mgr)
+//                    expListRaw.remove(mgr)
+//                }
+//                expListRaw.contains(viu) -> {
+//                    newList.add(viu)
+//                    expListRaw.remove(viu)
+//                }
+//                expListRaw.contains(ikas) -> {
+//                    newList.add(ikas)
+//                    expListRaw.remove(ikas)
+//                }
+//                expListRaw.contains(ikasMPT) -> {
+//                    newList.add(ikasMPT)
+//                    expListRaw.remove(ikasMPT)
+//                }
+//                expListRaw.contains(hh) -> {
+//                    newList.add(hh)
+//                    expListRaw.remove(hh)
+//                }
+//                expListRaw.contains(hhMPT) -> {
+//                    newList.add(hhMPT)
+//                    expListRaw.remove(hhMPT)
+//                }
+//                expListRaw.contains(h_hhSG) -> {
+//                    newList.add(h_hhSG)
+//                    expListRaw.remove(h_hhSG)
+//                }
+//                expListRaw.contains(load) -> {
+//                    newList.add(load)
+//                    expListRaw.remove(load)
+//                }
+//                expListRaw.contains(loadMPT) -> {
+//                    newList.add(loadMPT)
+//                    expListRaw.remove(loadMPT)
+//                }
+////                expListRaw.contains(h_hh) -> {
+////                    newList.add(h_hh)
+////                    expListRaw.remove(h_hh)
+////                }
+//                expListRaw.contains(n) -> {
+//                    newList.add(n)
+//                    expListRaw.remove(n)
+//                }
+//                expListRaw.contains(nSD) -> {
+//                    newList.add(nSD)
+//                    expListRaw.remove(nSD)
+//                }
+//                expListRaw.contains(nSG) -> {
+//                    newList.add(nSG)
+//                    expListRaw.remove(nSG)
+//                }
+//                expListRaw.contains(nMPT) -> {
+//                    newList.add(nMPT)
+//                    expListRaw.remove(nMPT)
+//                }
+//                expListRaw.contains(nGPT) -> {
+//                    newList.add(nGPT)
+//                    expListRaw.remove(nGPT)
+//                }
+//                expListRaw.contains(ktr) -> {
+//                    newList.add(ktr)
+//                    expListRaw.remove(ktr)
+//                }
+//                expListRaw.contains(mv) -> {
+//                    newList.add(mv)
+//                    expListRaw.remove(mv)
+//                }
+//                expListRaw.contains(kz) -> {
+//                    newList.add(kz)
+//                    expListRaw.remove(kz)
+//                }
+//                expListRaw.contains(kzSG) -> {
+//                    newList.add(kzSG)
+//                    expListRaw.remove(kzSG)
+//                }
+//            }
+//        }
         return newList
     }
 

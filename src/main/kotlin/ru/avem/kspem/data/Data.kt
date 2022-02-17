@@ -2,8 +2,11 @@ package ru.avem.kspem.data
 
 import javafx.beans.property.SimpleStringProperty
 import javafx.beans.property.StringProperty
+import ru.avem.kspem.controllers.CustomController
 import ru.avem.kspem.controllers.expControllers.*
+import ru.avem.kspem.controllers.expControllersGPT.NControllerGPT
 import ru.avem.kspem.controllers.expControllersMPT.HHControllerMPT
+import ru.avem.kspem.controllers.expControllersMPT.IKASControllerMPT
 import ru.avem.kspem.controllers.expControllersMPT.LoadControllerMPT
 import ru.avem.kspem.controllers.expControllersMPT.NControllerMPT
 import ru.avem.kspem.controllers.expControllersSD.NControllerSD
@@ -38,29 +41,34 @@ data class SchemeType(
     val star: String = "λ"
 )
 
-val mgr = MGRController()
-val viu = VIUController()
-val ikas = IKASController()
+val mgr             = MGRController()
+val viu         = VIUController()
+val ikas                = IKASController()
 
-val nSD = NControllerSD()
-val nSG = NControllerSG()
-val nMPT = NControllerMPT()
+val ikasMPT         = IKASControllerMPT()
 
-val hh = HHController()
-val hhMPT = HHControllerMPT()
+val nSD         = NControllerSD()
+val nSG         = NControllerSG()
+val nMPT        = NControllerMPT()
+val nGPT        = NControllerGPT()
 
-val h_hh = H_HHController()
-val h_hhSG = H_HHControllerSG()
+val hh          = HHController()
+val hhMPT       = HHControllerMPT()
 
-val load = LoadController()
-val loadMPT = LoadControllerMPT()
+val h_hh        = H_HHController()
+val h_hhSG      = H_HHControllerSG()
 
-val n = NController()
-val ktr = KTRController()
-val mv = MVController()
+val load        = LoadController()
+val loadMPT         = LoadControllerMPT()
 
-val kz = KZController()
-val kzSG = KZControllerSG()
+val n           = NController()
+val ktr             = KTRController()
+val mv          = MVController()
+
+val kz          = KZController()
+val kzSG        = KZControllerSG()
+
+var list        = mutableListOf<CustomController>()
 
 val protocolModel = ProtocolModel()
 data class ProtocolModel(

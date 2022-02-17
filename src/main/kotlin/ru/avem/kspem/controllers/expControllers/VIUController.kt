@@ -18,7 +18,7 @@ class VIUController : CustomController() {
     override val name = model.name
 
     var voltageSet = 0.0
-    var setI = 0.0
+    var setI = 50.0
     var setTime = 0.0
     var voltage = 0.0
     var amperage = 0.0
@@ -31,7 +31,7 @@ class VIUController : CustomController() {
         voltageSet = objectModel!!.uVIU.toDouble()
         setTime = objectModel!!.timeVIU.toDouble()
         model.data.setU.value = objectModel!!.uVIU
-        model.data.setI.value = setI.autoformat()
+        model.data.setI.value = setI.autoformat() //TODO ПРИКОЛ
         model.data.time.value = objectModel!!.timeVIU
 
 
@@ -124,9 +124,8 @@ class VIUController : CustomController() {
             timer -= 0.1
             model.data.timeExp.value = abs(timer).autoformat()
         }
-        protocolModel.viuU = model.data.U.value
-        protocolModel.viuI = model.data.I.value
-        protocolModel.viuTime = objectModel!!.timeVIU
+
+        saveData()
 
         latr.resetLATR()
 
@@ -224,10 +223,10 @@ class VIUController : CustomController() {
         while (abs(voltage - volt) > 20 && isExperimentRunning) {
             if (voltage < volt) {
                 direction = up
-                timePulsePerc = 85f
+                timePulsePerc = 90f
             } else {
                 direction = down
-                timePulsePerc = 85f
+                timePulsePerc = 90f
             }
             if (System.currentTimeMillis() - timer > 60000) cause = "Превышено время регулирования"
             latr.startUpLATRPulse(direction,false, timePulsePerc)
@@ -244,7 +243,6 @@ class VIUController : CustomController() {
         protocolModel.viuU = model.data.U.value
         protocolModel.viuI = model.data.I.value
         protocolModel.viuTime = objectModel!!.timeVIU
-        protocolModel.viuResult = model.data.result.value
     }
 
     private fun restoreData() {

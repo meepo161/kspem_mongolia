@@ -500,6 +500,19 @@ class MainView : View("КСПЭМ") {
                     }
                 })
             }
+        } else if (cbObjects.selectionModel.selectedItem.type == motorType.gpt) {
+            controller.listGPT.forEach { contr ->
+                vBox.addChildIfPossible(checkbox(contr.name) {
+                    cbList.add(this)
+                    onAction = EventHandler {
+                        if (isSelected) {
+                            controller.expListRaw.add(contr)
+                        } else {
+                            controller.expListRaw.remove(contr)
+                        }
+                    }
+                })
+            }
         }
     }
 
