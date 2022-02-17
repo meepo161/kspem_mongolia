@@ -21,6 +21,7 @@ import ru.avem.kspem.database.entities.TestObjects
 import ru.avem.kspem.utils.Singleton
 import ru.avem.kspem.utils.State
 import ru.avem.kspem.utils.Toast
+import ru.avem.kspem.utils.getFullType
 import ru.avem.kspem.view.Styles.Companion.mainTheme
 import tornadofx.*
 import tornadofx.controlsfx.errorNotification
@@ -264,7 +265,7 @@ class MainView : View("КСПЭМ") {
                     topAnchor = 32.0
                 }
                 hbox(16.0, Pos.CENTER_LEFT) {
-                    label("Тип двигателя:")
+                    label("Шифр двигателя:")
                     cbObjects = combobox {
                         hboxConstraints {
                             hGrow = Priority.ALWAYS
@@ -336,6 +337,7 @@ class MainView : View("КСПЭМ") {
                                     SimpleDateFormat("HH:mm:ss").format(System.currentTimeMillis()).toString()
                                 protocolModel.operator = controller.position1
                                 protocolModel.objectName = cbObjects.selectionModel.selectedItem.name
+                                protocolModel.type = labelType.text
                                 protocolModel.serial =
                                     if (tfSerial.text.isNullOrEmpty()) "Не задан" else tfSerial.text
                                 protocolModel.p2 = cbObjects.selectionModel.selectedItem.p2
@@ -539,16 +541,6 @@ class MainView : View("КСПЭМ") {
             tableData.nAsync.value = nAsync
         }
         addCheckBox(vBoxExps)
-    }
-
-    private fun getFullType(type: String): String {
-        return when (type) {
-            motorType.sd -> "Синхронный двигатель"
-            motorType.sg -> "Синхронный генератор"
-            motorType.dpt -> "Двигатель постоянного тока"
-            motorType.gpt -> "Генератор постоянного тока"
-            else -> "ошибка"
-        }
     }
 
     private fun clearTable() {

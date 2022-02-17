@@ -87,6 +87,7 @@ fun validateDB() {
 
             Protocol.new {
                 objectName = "ВЭМ3"
+                type = "Синхронный двигатель"
                 date = SimpleDateFormat("dd.MM.y").format(System.currentTimeMillis()).toString()
                 time = SimpleDateFormat("HH:mm:ss").format(System.currentTimeMillis()).toString()
                 operator = "Тестовый протокол"

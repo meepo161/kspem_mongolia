@@ -5,6 +5,7 @@ import javafx.event.EventHandler
 import javafx.scene.control.ButtonType
 import javafx.scene.control.TextField
 import javafx.stage.Window
+import ru.avem.kspem.data.motorType
 import ru.avem.kspem.view.Styles
 import tornadofx.*
 import java.awt.Desktop
@@ -65,8 +66,6 @@ fun TextField.callKeyBoard() {
     }
 }
 
-
-
 fun showTwoWayDialog(
     title: String,
     text: String,
@@ -90,5 +89,14 @@ fun showTwoWayDialog(
             }
         }
     }
+}
 
+fun getFullType(type: String): String {
+    return when (type) {
+        motorType.sd -> "Синхронный двигатель"
+        motorType.sg -> "Синхронный генератор"
+        motorType.dpt -> "Двигатель постоянного тока"
+        motorType.gpt -> "Генератор постоянного тока"
+        else -> "ошибка"
+    }
 }

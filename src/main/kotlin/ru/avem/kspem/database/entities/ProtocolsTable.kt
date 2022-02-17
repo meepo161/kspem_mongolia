@@ -7,6 +7,7 @@ import org.jetbrains.exposed.dao.IntIdTable
 
 object ProtocolsTable : IntIdTable() {
     var objectName = varchar("objectName", 64)
+    var type = varchar("type", 64)
     var date = varchar("date", 64)
     var operator = varchar("operator", 64)
     var time = varchar("time", 64)
@@ -183,6 +184,7 @@ class Protocol(id: EntityID<Int>) : IntEntity(id) {
     companion object : IntEntityClass<Protocol>(ProtocolsTable)
 
     var objectName by ProtocolsTable.objectName
+    var type by ProtocolsTable.type
     var date by ProtocolsTable.date
     var time by ProtocolsTable.time
     var operator by ProtocolsTable.operator

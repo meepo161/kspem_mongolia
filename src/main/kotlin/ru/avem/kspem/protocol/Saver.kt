@@ -11,14 +11,14 @@ import java.io.File
 import java.io.FileNotFoundException
 
 
-fun saveProtocolAsWorkbook(protocol: Protocol, path: String = "cfg/lastOpened.xlsx") {
+fun saveProtocolAsWorkbook(protocol: Protocol, path: String = "cfg/lastOpened.xlsx", protocolName: String = "protocol.xlsx") {
     val template = File(path)
 //    copyFileFromStream(Main::class.java.getResource("protocol.xlsx").openStream(), template)
-    if (File("cfg\\protocol.xlsx").exists()) {
-        copyFileFromStream(File("cfg/protocol.xlsx").inputStream(), template)
+    if (File("cfg\\$protocolName").exists()) {
+        copyFileFromStream(File("cfg/$protocolName").inputStream(), template)
     } else {
-        copyFileFromStream(Main::class.java.getResource("protocol.xlsx").openStream(), File("cfg/protocol.xlsx"))
-        copyFileFromStream(File("cfg/protocol.xlsx").inputStream(), template)
+        copyFileFromStream(Main::class.java.getResource(protocolName).openStream(), File("cfg/$protocolName"))
+        copyFileFromStream(File("cfg/$protocolName").inputStream(), template)
     }
 
     try {

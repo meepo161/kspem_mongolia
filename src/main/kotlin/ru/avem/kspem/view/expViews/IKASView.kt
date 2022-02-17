@@ -20,19 +20,6 @@ class IKASView : View() {
         runLater {
             clearTables()
         }
-        showTwoWayDialog(
-            title = "Внимание!",
-            text = "Подключите измерительные провода ИКАС к двигателю",
-            way1Title = "Подтвердить",
-            way2Title = "Отменить",
-            way1 = {
-
-            },
-            way2 = {
-                find<ExpView>().replaceWith<MainView>()
-            },
-            currentWindow = primaryStage.scene.window
-        )
     }
 
     override val root = vbox(16.0, Pos.CENTER) {

@@ -79,6 +79,7 @@ class IKASControllerMPT : CustomController() {
                 currentWindow = primaryStage.scene.window
             )
         }
+
         while (isExperimentRunning && !isClicked) {
             sleep(100)
         }
@@ -132,10 +133,8 @@ class IKASControllerMPT : CustomController() {
                 if (measuredR != 1E9) "%.4f".format(Locale.ENGLISH, measuredR) else "Обрыв"
         }
 
-//        if (isExperimentRunning) {
-//            calcRs()
-//        }
-
+        saveData()
+        ikas.stopMeasuring()
         finalizeExperiment()
         when (cause) {
             "" -> {
@@ -160,6 +159,7 @@ class IKASControllerMPT : CustomController() {
                 model.data.result.value = "Прервано"
             }
         }
+
         protocolModel.ikasResult = model.data.result.value
     }
 
@@ -168,8 +168,8 @@ class IKASControllerMPT : CustomController() {
         model.data.result.value = "Прервано"
     }
 
-
     private fun saveData() {
-        protocolModel.ikasResult = model.data.result.value
+        protocolModel.ikasR1 = model.data.R1.value
+        protocolModel.ikasR2 = model.data.R2.value
     }
 }

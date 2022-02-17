@@ -19,10 +19,10 @@ import tornadofx.*
 class ExpView : View("Окно испытания") {
     var vBoxLog: VBox by singleAssign()
 
-    var circlePR200: Circle by singleAssign()
-    var circlePM135: Circle by singleAssign()
-    var circleDelta: Circle by singleAssign()
-    var circleLATR: Circle by singleAssign()
+//    var circlePR200: Circle by singleAssign()
+//    var circlePM135: Circle by singleAssign()
+//    var circleDelta: Circle by singleAssign()
+//    var circleLATR: Circle by singleAssign()
 
     val controller: MainViewController by inject()
     val customController: CustomController by inject()
@@ -95,49 +95,49 @@ class ExpView : View("Окно испытания") {
                                 }
                             }
                         }
-                        label("Состояние приборов")
-                        hbox(16.0) {
-                            label("ПР102") {
-                                hboxConstraints {
-                                    hgrow = Priority.ALWAYS
-                                }
-                                useMaxWidth = true
-                            }
-                            circlePR200 = circle {
-                                radius = 20.0
-                                fill = State.INTERMEDIATE.c
-                                stroke = c("black")
-                                isSmooth = true
-                            }
-                        }
-                        hbox(16.0) {
-                            label("PM135") {
-                                hboxConstraints {
-                                    hgrow = Priority.ALWAYS
-                                }
-                                useMaxWidth = true
-                            }
-                            circlePM135 = circle {
-                                radius = 20.0
-                                fill = State.INTERMEDIATE.c
-                                stroke = c("black")
-                                isSmooth = true
-                            }
-                        }
-                        hbox(16.0) {
-                            label("Delta") {
-                                hboxConstraints {
-                                    hgrow = Priority.ALWAYS
-                                }
-                                useMaxWidth = true
-                            }
-                            circleDelta = circle {
-                                radius = 20.0
-                                fill = State.INTERMEDIATE.c
-                                stroke = c("black")
-                                isSmooth = true
-                            }
-                        }
+//                        label("Состояние приборов")
+//                        hbox(16.0) {
+//                            label("ПР102") {
+//                                hboxConstraints {
+//                                    hgrow = Priority.ALWAYS
+//                                }
+//                                useMaxWidth = true
+//                            }
+//                            circlePR200 = circle {
+//                                radius = 20.0
+//                                fill = State.INTERMEDIATE.c
+//                                stroke = c("black")
+//                                isSmooth = true
+//                            }
+//                        }
+//                        hbox(16.0) {
+//                            label("PM135") {
+//                                hboxConstraints {
+//                                    hgrow = Priority.ALWAYS
+//                                }
+//                                useMaxWidth = true
+//                            }
+//                            circlePM135 = circle {
+//                                radius = 20.0
+//                                fill = State.INTERMEDIATE.c
+//                                stroke = c("black")
+//                                isSmooth = true
+//                            }
+//                        }
+//                        hbox(16.0) {
+//                            label("Delta") {
+//                                hboxConstraints {
+//                                    hgrow = Priority.ALWAYS
+//                                }
+//                                useMaxWidth = true
+//                            }
+//                            circleDelta = circle {
+//                                radius = 20.0
+//                                fill = State.INTERMEDIATE.c
+//                                stroke = c("black")
+//                                isSmooth = true
+//                            }
+//                        }
                     }
                 }
                 hbox(16.0, Pos.CENTER) {

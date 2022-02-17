@@ -184,6 +184,7 @@ class MainViewController : Controller() {
         transaction {
             Protocol.new {
                 objectName = protocolModel.objectName
+                type = protocolModel.type
                 date = protocolModel.date
                 time = protocolModel.time
                 operator = protocolModel.operator
@@ -479,8 +480,8 @@ class MainViewController : Controller() {
                     runLater {
                         mainView.comIndicate.fill = State.BAD.c
                         mainView.circlePR102.fill = State.INTERMEDIATE.c
-                        expView.circlePM135.fill = State.INTERMEDIATE.c
-                        expView.circlePR200.fill = State.INTERMEDIATE.c
+//                        expView.circlePM135.fill = State.INTERMEDIATE.c
+//                        expView.circlePR200.fill = State.INTERMEDIATE.c
                     }
                 } else {
                     runLater {
@@ -490,23 +491,23 @@ class MainViewController : Controller() {
                     if (pr102.isResponding) {
                         runLater {
                             mainView.circlePR102.fill = State.OK.c
-                            expView.circlePR200.fill = State.OK.c
+//                            expView.circlePR200.fill = State.OK.c
                         }
                     } else {
                         pr102.resetKMS()
                         runLater {
                             mainView.circlePR102.fill = State.BAD.c
-                            expView.circlePR200.fill = State.BAD.c
+//                            expView.circlePR200.fill = State.BAD.c
                         }
                     }
                     pm135.checkResponsibility()
                     if (pm135.isResponding) {
                         runLater {
-                            expView.circlePM135.fill = State.OK.c
+//                            expView.circlePM135.fill = State.OK.c
                         }
                     } else {
                         runLater {
-                            expView.circlePM135.fill = State.BAD.c
+//                            expView.circlePM135.fill = State.BAD.c
                         }
                     }
                 }
@@ -516,7 +517,7 @@ class MainViewController : Controller() {
                 if (serialPortDelta.isEmpty()) {
                     runLater {
                         mainView.deltaIndicate.fill = State.BAD.c
-                        expView.circleDelta.fill = State.INTERMEDIATE.c
+//                        expView.circleDelta.fill = State.INTERMEDIATE.c
                     }
                 } else {
                     runLater {
@@ -525,11 +526,11 @@ class MainViewController : Controller() {
                     delta.checkResponsibility()
                     if (delta.isResponding) {
                         runLater {
-                            expView.circleDelta.fill = State.OK.c
+//                            expView.circleDelta.fill = State.OK.c
                         }
                     } else {
                         runLater {
-                            expView.circleDelta.fill = State.BAD.c
+//                            expView.circleDelta.fill = State.BAD.c
                         }
                     }
                 }

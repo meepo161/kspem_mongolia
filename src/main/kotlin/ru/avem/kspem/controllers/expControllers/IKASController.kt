@@ -8,8 +8,9 @@ import ru.avem.kspem.data.objectModel
 import ru.avem.kspem.data.protocolModel
 import ru.avem.kspem.data.schemeType
 import ru.avem.kspem.utils.LogTag
+import ru.avem.kspem.utils.showTwoWayDialog
+import ru.avem.kspem.utils.sleep
 import ru.avem.kspem.view.expViews.IKASView
-import ru.avem.stand.modules.r.communication.model.devices.avem.ikas.IKAS8
 import ru.avem.stand.utils.autoformat
 import ru.avem.stand.utils.toDoubleOrDefault
 import java.util.*
@@ -46,12 +47,12 @@ class IKASController : CustomController() {
             appendMessageToLog(LogTag.MESSAGE, "Инициализация ИКАС...")
             with(ikas) {
                 checkResponsibility()
-                if (!isResponding)  {
+                if (!isResponding) {
                     cause = "ИКАС не отвечает"
                 } else {
-                    cm.startPoll(CommunicationModel.DeviceID.PR61, IKAS8Model.STATUS) {  value ->
+                    cm.startPoll(CommunicationModel.DeviceID.PR61, IKAS8Model.STATUS) { value ->
                         status = value.toInt()
-                        if (!ikas.isResponding &&isExperimentRunning) cause = "ИКАС не отвечает"
+                        if (!ikas.isResponding && isExperimentRunning) cause = "ИКАС не отвечает"
                     }
                     cm.startPoll(CommunicationModel.DeviceID.PR61, IKAS8Model.RESIST_MEAS) { value ->
                         measuredR = value.toDouble()
@@ -62,6 +63,29 @@ class IKASController : CustomController() {
 
         if (isExperimentRunning) {
 //            initButtonPost()
+        }
+
+        var isClicked = false
+
+        if (isExperimentRunning) {
+            showTwoWayDialog(
+                title = "Внимание!",
+                text = "Подключите измерительные провода ИКАС к двигателю",
+                way1Title = "Подтвердить",
+                way2Title = "Отменить",
+                way1 = {
+                    isClicked = true
+                },
+                way2 = {
+                    isClicked = true
+                    cause = "Отменено оператором"
+                },
+                currentWindow = primaryStage.scene.window
+            )
+        }
+
+        while (isExperimentRunning && !isClicked) {
+            sleep(100)
         }
 
         if (isExperimentRunning) {
@@ -105,12 +129,15 @@ class IKASController : CustomController() {
             calcRs()
         }
 
+        ikas.stopMeasuring()
         finalizeExperiment()
-        when(cause) {
+
+        when (cause) {
             "" -> {
                 if (model.data.R1.value == "Обрыв" ||
                     model.data.R2.value == "Обрыв" ||
-                    model.data.R3.value == "Обрыв") {
+                    model.data.R3.value == "Обрыв"
+                ) {
                     appendMessageToLog(LogTag.ERROR, "Обрыв")
                     model.data.result.value = "Обрыв"
                 } else {
@@ -159,9 +186,12 @@ class IKASController : CustomController() {
                 model.data.calcR2.value = "%.4f".format(Locale.ENGLISH, ((r12 + r23 - r31) / 2.0))
                 model.data.calcR3.value = "%.4f".format(Locale.ENGLISH, ((r23 + r31 - r12) / 2.0))
             } else if (objectModel!!.scheme == schemeType.triangle) {
-                model.data.calcR1.value = "%.4f".format(Locale.ENGLISH, (2.0 * r23 * r31 / (r23 + r31 - r12) - (r23 + r31 - r12) / 2.0))
-                model.data.calcR2.value = "%.4f".format(Locale.ENGLISH, (2.0 * r31 * r12 / (r31 + r12 - r23) - (r31 + r12 - r23) / 2.0))
-                model.data.calcR3.value = "%.4f".format(Locale.ENGLISH, (2.0 * r12 * r23 / (r12 + r23 - r31) - (r12 + r23 - r31) / 2.0))
+                model.data.calcR1.value =
+                    "%.4f".format(Locale.ENGLISH, (2.0 * r23 * r31 / (r23 + r31 - r12) - (r23 + r31 - r12) / 2.0))
+                model.data.calcR2.value =
+                    "%.4f".format(Locale.ENGLISH, (2.0 * r31 * r12 / (r31 + r12 - r23) - (r31 + r12 - r23) / 2.0))
+                model.data.calcR3.value =
+                    "%.4f".format(Locale.ENGLISH, (2.0 * r12 * r23 / (r12 + r23 - r31) - (r12 + r23 - r31) / 2.0))
             }
 
             val rA = model.data.calcR1.value.toDouble()

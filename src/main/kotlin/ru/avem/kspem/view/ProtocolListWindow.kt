@@ -10,10 +10,12 @@ import javafx.scene.paint.Color
 import javafx.stage.FileChooser
 import org.jetbrains.exposed.sql.deleteWhere
 import org.jetbrains.exposed.sql.transactions.transaction
+import ru.avem.kspem.data.motorType
 import ru.avem.kspem.database.entities.Protocol
 import ru.avem.kspem.database.entities.ProtocolsTable
 import ru.avem.kspem.protocol.saveProtocolAsWorkbook
 import ru.avem.kspem.utils.Singleton
+import ru.avem.kspem.utils.getFullType
 import ru.avem.kspem.utils.openFile
 import tornadofx.*
 import tornadofx.controlsfx.confirmNotification
@@ -79,6 +81,7 @@ class ProtocolListWindow : View("Список протоколов испыта�
                 minWidth = 1600.0
                 columnResizePolicyProperty().set(TableView.CONSTRAINED_RESIZE_POLICY)
                 column("Шифр двигателя", Protocol::objectName)
+                column("Тип двигателя", Protocol::type)
                 column("Серийный номер", Protocol::serial)
                 column("Оператор", Protocol::operator)
                 column("Дата", Protocol::date)
@@ -96,7 +99,15 @@ class ProtocolListWindow : View("Список протоколов испыта�
                                     ProtocolsTable.id eq tableViewProtocols.selectedItem!!.id
                                 }.toList().asObservable()
                             }.first()
-                            saveProtocolAsWorkbook(Singleton.currentProtocol)
+
+                            if (Singleton.currentProtocol.type == getFullType(motorType.dpt)) {
+                                saveProtocolAsWorkbook(
+                                    protocol = Singleton.currentProtocol,
+                                    protocolName = "protocolMPT.xlsx"
+                                )
+                            } else {
+                                saveProtocolAsWorkbook(Singleton.currentProtocol)
+                            }
                             openFile(File("cfg/lastOpened.xlsx"))
                             close()
                         }
@@ -111,7 +122,7 @@ class ProtocolListWindow : View("Список протоколов испыта�
                                 FileChooserMode.Save,
                                 this@ProtocolListWindow.currentWindow
                             ) {
-                                this.initialDirectory = File(System.getProperty("user.home")+"/Desktop")
+                                this.initialDirectory = File(System.getProperty("user.home") + "/Desktop")
                             }
 
                             if (files.isNotEmpty()) {
@@ -134,14 +145,15 @@ class ProtocolListWindow : View("Список протоколов испыта�
                         if (tableViewProtocols.items.size > 0) {
                             val dir = chooseDirectory(
                                 "Выберите директорию для сохранения",
-                                File(System.getProperty("user.home")+"/Desktop"),
+                                File(System.getProperty("user.home") + "/Desktop"),
                                 this@ProtocolListWindow.currentWindow
                             )
 
                             if (dir != null) {
                                 tableViewProtocols.items.forEach {
                                     val time: String = it.time.replace(":", "-")
-                                    val file = File(dir, "name${it.objectName}_${it.date}_${time}_${it.serial}_${it.id}.xlsx")
+                                    val file =
+                                        File(dir, "name${it.objectName}_${it.date}_${time}_${it.serial}_${it.id}.xlsx")
                                     saveProtocolAsWorkbook(it, file.absolutePath)
                                 }
                                 Platform.runLater {

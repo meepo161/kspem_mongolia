@@ -146,7 +146,16 @@ class MGRController : CustomController() {
             }
         }
         finalizeExperiment()
+
+
+        model.data.U.value = "1"
+        model.data.R15.value = "2"
+        model.data.R60.value = "3"
+        model.data.K_ABS.value = "4"
+        model.data.tempAmb.value = "5"
+        model.data.result.value = "6"
         saveData()
+
         protocolModel.mgrResult = model.data.result.value
     }
 
@@ -157,7 +166,7 @@ class MGRController : CustomController() {
     }
 
     private fun saveData() {
-        protocolModel.mgrU = objectModel!!.uMGR
+        protocolModel.mgrU = model.data.U.value
         protocolModel.mgrR15 = model.data.R15.value
         protocolModel.mgrR60 = model.data.R60.value
         protocolModel.mgrkABS = model.data.K_ABS.value

@@ -73,6 +73,7 @@ var list        = mutableListOf<CustomController>()
 val protocolModel = ProtocolModel()
 data class ProtocolModel(
     var objectName:String = "",
+    var type:String = "",
     var date:String = "",
     var time:String = "",
     var operator:String = "",
