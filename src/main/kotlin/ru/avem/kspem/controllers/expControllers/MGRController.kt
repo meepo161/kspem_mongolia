@@ -1,5 +1,7 @@
 package ru.avem.kspem.controllers.expControllers
 
+import ru.avem.kspem.communication.model.CommunicationModel
+import ru.avem.kspem.communication.model.devices.trm202.TRM202Model
 import ru.avem.kspem.controllers.CustomController
 import ru.avem.kspem.data.objectModel
 import ru.avem.kspem.data.protocolModel
@@ -24,6 +26,12 @@ class MGRController : CustomController() {
             with(trm202) {
                 checkResponsibility()
                 if (!isResponding) cause = "ТРМ202 не отвечает"
+            }
+            cm.startPoll(CommunicationModel.DeviceID.PS81, TRM202Model.T_1) { value ->
+                model.data.tempAmb.value = value.autoformat()
+            }
+            cm.startPoll(CommunicationModel.DeviceID.PS81, TRM202Model.T_2) { value ->
+                model.data.tempOI.value = value.autoformat()
             }
         }
 

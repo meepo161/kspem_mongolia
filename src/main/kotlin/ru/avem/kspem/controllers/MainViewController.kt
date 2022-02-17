@@ -39,8 +39,8 @@ class MainViewController : Controller() {
 
 
     lateinit var currentExp: CustomController
-    var listDPT = mutableListOf<CustomController>(mgr, viu, ikasMPT, nMPT, hhMPT, loadMPT)
-    var listGPT = mutableListOf<CustomController>(mgr, viu, ikasMPT, nGPT)
+    var listDPT = mutableListOf<CustomController>(mgrMPT, viu, ikasMPT, nMPT, hhMPT, loadMPT)
+    var listGPT = mutableListOf<CustomController>(mgrMPT, viu, ikasMPT, nGPT)
     var listSD = mutableListOf<CustomController>(mgr, viu, ikas, nSD)
     var listSG = mutableListOf<CustomController>(mgr, viu, ikas, nSG, h_hhSG, kzSG)
 
@@ -362,6 +362,7 @@ class MainViewController : Controller() {
     private fun sortExp(expListRaw: MutableList<CustomController>): MutableList<CustomController> {
         val newList = mutableListOf<CustomController>()
         list.add(mgr)
+        list.add(mgrMPT)
         list.add(viu)
         list.add(ikas)
         list.add(ikasMPT)

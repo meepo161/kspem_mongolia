@@ -5,10 +5,7 @@ import javafx.beans.property.StringProperty
 import ru.avem.kspem.controllers.CustomController
 import ru.avem.kspem.controllers.expControllers.*
 import ru.avem.kspem.controllers.expControllersGPT.NControllerGPT
-import ru.avem.kspem.controllers.expControllersMPT.HHControllerMPT
-import ru.avem.kspem.controllers.expControllersMPT.IKASControllerMPT
-import ru.avem.kspem.controllers.expControllersMPT.LoadControllerMPT
-import ru.avem.kspem.controllers.expControllersMPT.NControllerMPT
+import ru.avem.kspem.controllers.expControllersMPT.*
 import ru.avem.kspem.controllers.expControllersSD.NControllerSD
 import ru.avem.kspem.controllers.expControllersSG.H_HHControllerSG
 import ru.avem.kspem.controllers.expControllersSG.KZControllerSG
@@ -42,6 +39,7 @@ data class SchemeType(
 )
 
 val mgr             = MGRController()
+val mgrMPT             = MGRControllerMPT()
 val viu         = VIUController()
 val ikas                = IKASController()
 
