@@ -133,7 +133,6 @@ class IKASControllerMPT : CustomController() {
                 if (measuredR != 1E9) "%.4f".format(Locale.ENGLISH, measuredR) else "Обрыв"
         }
 
-        saveData()
         ikas.stopMeasuring()
         finalizeExperiment()
         when (cause) {
@@ -159,8 +158,7 @@ class IKASControllerMPT : CustomController() {
                 model.data.result.value = "Прервано"
             }
         }
-
-        protocolModel.ikasResult = model.data.result.value
+        saveData()
     }
 
     override fun stop() {
@@ -169,7 +167,11 @@ class IKASControllerMPT : CustomController() {
     }
 
     private fun saveData() {
-        protocolModel.ikasR1 = model.data.R1.value
-        protocolModel.ikasR2 = model.data.R2.value
+        protocolModel.ikasR1        = "model.data.R1.value"
+        protocolModel.ikasR2        = "model.data.R2.value"
+        protocolModel.ikasResult    = "model.data.result.value"
+//        protocolModel.ikasR1 = model.data.R1.value
+//        protocolModel.ikasR2 = model.data.R2.value
+//        protocolModel.ikasResult = model.data.result.value
     }
 }

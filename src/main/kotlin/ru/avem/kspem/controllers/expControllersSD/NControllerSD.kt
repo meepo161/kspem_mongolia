@@ -427,6 +427,7 @@ class NControllerSD : CustomController() {
         protocolModel.nIC = model.data.iC.value
         protocolModel.nSpeed = model.data.n.value
         protocolModel.nF = model.data.f.value
+//        protocolModel.nResult = model.data.result.value
     }
 
     private fun restoreData() {

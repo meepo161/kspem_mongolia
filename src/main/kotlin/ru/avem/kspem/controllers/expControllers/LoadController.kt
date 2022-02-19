@@ -157,20 +157,20 @@ class LoadController : CustomController() {
             }
         }
 
-        protocolModel.runningUAB = model.data.uab.value
-        protocolModel.runningUBC = model.data.ubc.value
-        protocolModel.runningUCA = model.data.uca.value
-        protocolModel.runningIA = model.data.ia.value
-        protocolModel.runningIB = model.data.ib.value
-        protocolModel.runningIC = model.data.ic.value
-        protocolModel.runningTempOI = model.data.tempOI.value
-        protocolModel.runningTempAmb = model.data.tempAmb.value
-        protocolModel.runningSpeed = model.data.n.value
-        protocolModel.runningVibro1 = model.data.vibroPol.value
-        protocolModel.runningVibro2 = model.data.vibroRab.value
-        protocolModel.runningTime = setTime.toString()
-        protocolModel.runningP1 = model.data.p.value
-        protocolModel.runningCos = model.data.cos.value
+//        protocolModel.runningUAB = model.data.uab.value
+//        protocolModel.runningUBC = model.data.ubc.value
+//        protocolModel.runningUCA = model.data.uca.value
+//        protocolModel.runningIA = model.data.ia.value
+//        protocolModel.runningIB = model.data.ib.value
+//        protocolModel.runningIC = model.data.ic.value
+//        protocolModel.runningTempOI = model.data.tempOI.value
+//        protocolModel.runningTempAmb = model.data.tempAmb.value
+//        protocolModel.runningSpeed = model.data.n.value
+//        protocolModel.runningVibro1 = model.data.vibroPol.value
+//        protocolModel.runningVibro2 = model.data.vibroRab.value
+//        protocolModel.runningTime = setTime.toString()
+//        protocolModel.runningP1 = model.data.p.value
+//        protocolModel.runningCos = model.data.cos.value
 
         stopRegulation()
 
@@ -197,7 +197,7 @@ class LoadController : CustomController() {
                 appendMessageToLog(LogTag.ERROR, "Испытание прервано по причине: $cause")
             }
         }
-        protocolModel.runningResult = model.data.result.value
+//        protocolModel.runningResult = model.data.result.value
         restoreData()
     }
 
@@ -242,36 +242,36 @@ class LoadController : CustomController() {
     }
 
     private fun saveData() {
-        protocolModel.runningUAB = model.data.uab.value
-        protocolModel.runningUBC = model.data.ubc.value
-        protocolModel.runningUCA = model.data.uca.value
-        protocolModel.runningIA = model.data.ia.value
-        protocolModel.runningIB = model.data.ib.value
-        protocolModel.runningIC = model.data.ic.value
-        protocolModel.runningTempOI = model.data.tempOI.value
-        protocolModel.runningTempAmb = model.data.tempAmb.value
-        protocolModel.runningSpeed = model.data.n.value
-        protocolModel.runningVibro1 = model.data.vibroPol.value
-        protocolModel.runningVibro2 = model.data.vibroRab.value
-        protocolModel.runningTime = setTime.toString()
-        protocolModel.runningP1 = model.data.p.value
-        protocolModel.runningCos = model.data.cos.value
-        protocolModel.runningResult = model.data.result.value
+//        protocolModel.runningUAB = model.data.uab.value
+//        protocolModel.runningUBC = model.data.ubc.value
+//        protocolModel.runningUCA = model.data.uca.value
+//        protocolModel.runningIA = model.data.ia.value
+//        protocolModel.runningIB = model.data.ib.value
+//        protocolModel.runningIC = model.data.ic.value
+//        protocolModel.runningTempOI = model.data.tempOI.value
+//        protocolModel.runningTempAmb = model.data.tempAmb.value
+//        protocolModel.runningSpeed = model.data.n.value
+//        protocolModel.runningVibro1 = model.data.vibroPol.value
+//        protocolModel.runningVibro2 = model.data.vibroRab.value
+//        protocolModel.runningTime = setTime.toString()
+//        protocolModel.runningP1 = model.data.p.value
+//        protocolModel.runningCos = model.data.cos.value
+//        protocolModel.runningResult = model.data.result.value
     }
 
     private fun restoreData() {
-        model.data.uab.value = protocolModel.runningUAB
-        model.data.ubc.value = protocolModel.runningUBC
-        model.data.uca.value = protocolModel.runningUCA
-        model.data.ia.value = protocolModel.runningIA
-        model.data.ib.value = protocolModel.runningIB
-        model.data.ic.value = protocolModel.runningIC
-        model.data.tempOI.value = protocolModel.runningTempOI
-        model.data.tempAmb.value = protocolModel.runningTempAmb
-        model.data.n.value = protocolModel.runningSpeed
-        model.data.vibroPol.value = protocolModel.runningVibro1
-        model.data.vibroRab.value = protocolModel.runningVibro2
-        model.data.p.value = protocolModel.runningP1
-        model.data.cos.value = protocolModel.runningCos
+//        model.data.uab.value = protocolModel.runningUAB
+//        model.data.ubc.value = protocolModel.runningUBC
+//        model.data.uca.value = protocolModel.runningUCA
+//        model.data.ia.value = protocolModel.runningIA
+//        model.data.ib.value = protocolModel.runningIB
+//        model.data.ic.value = protocolModel.runningIC
+//        model.data.tempOI.value = protocolModel.runningTempOI
+//        model.data.tempAmb.value = protocolModel.runningTempAmb
+//        model.data.n.value = protocolModel.runningSpeed
+//        model.data.vibroPol.value = protocolModel.runningVibro1
+//        model.data.vibroRab.value = protocolModel.runningVibro2
+//        model.data.p.value = protocolModel.runningP1
+//        model.data.cos.value = protocolModel.runningCos
     }
 }

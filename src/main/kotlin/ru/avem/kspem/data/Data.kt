@@ -25,7 +25,6 @@ var objectModel = listOf<TestObjects>().firstOrNull()
 
 val motorType = MotorType()
 data class MotorType(
-//    val ad: String = "АД"
     val sd: String = "СД",
     val sg: String = "СГ",
     val dpt: String = "ДПТ",
@@ -38,35 +37,35 @@ data class SchemeType(
     val star: String = "λ"
 )
 
-val mgr             = MGRController()
-val mgrMPT             = MGRControllerMPT()
-val viu         = VIUController()
-val ikas                = IKASController()
+val mgr = MGRController()
+val mgrMPT = MGRControllerMPT()
+val viu = VIUController()
+val ikas = IKASController()
 
-val ikasMPT         = IKASControllerMPT()
+val ikasMPT = IKASControllerMPT()
 
-val nSD         = NControllerSD()
-val nSG         = NControllerSG()
-val nMPT        = NControllerMPT()
-val nGPT        = NControllerGPT()
+val nSD = NControllerSD()
+val nSG = NControllerSG()
+val nMPT = NControllerMPT()
+val nGPT = NControllerGPT()
 
-val hh          = HHController()
-val hhMPT       = HHControllerMPT()
+val hh = HHController()
+val hhMPT = HHControllerMPT()
 
-val h_hh        = H_HHController()
-val h_hhSG      = H_HHControllerSG()
+val h_hh = H_HHController()
+val h_hhSG = H_HHControllerSG()
 
-val load        = LoadController()
-val loadMPT         = LoadControllerMPT()
+//val load = LoadController()
+val loadMPT = LoadControllerMPT()
 
-val n           = NController()
-val ktr             = KTRController()
-val mv          = MVController()
+val n = NController()
+val ktr = KTRController()
+val mv = MVController()
 
-val kz          = KZController()
-val kzSG        = KZControllerSG()
+val kz = KZController()
+val kzSG = KZControllerSG()
 
-var list        = mutableListOf<CustomController>()
+var list = mutableListOf<CustomController>()
 
 val protocolModel = ProtocolModel()
 data class ProtocolModel(
@@ -79,17 +78,29 @@ data class ProtocolModel(
     var p2:String = "",
     var uN:String = "",
     var iN:String = "",
+    var uOV:String = "",
+    var iOV:String = "",
     var nAsync:String = "",
     var kpd:String = "",
     var cos:String = "",
     var scheme:String = "",
 //MGR//,
-    var mgrU:String = "",
-    var mgrR15:String = "",
-    var mgrR60:String = "",
-    var mgrkABS:String = "",
+    var mgrU1:String = "",
+    var mgrU2:String = "",
+    var mgrU3:String = "",
+    var mgrR151:String = "",
+    var mgrR152:String = "",
+    var mgrR153:String = "",
+    var mgrR601:String = "",
+    var mgrR602:String = "",
+    var mgrR603:String = "",
+    var mgrkABS1:String = "",
+    var mgrkABS2:String = "",
+    var mgrkABS3:String = "",
     var mgrTemp:String = "",
-    var mgrResult:String = "",
+    var mgrResult1:String = "",
+    var mgrResult2:String = "",
+    var mgrResult3:String = "",
 //VIU//,
     var viuU:String = "",
     var viuI:String = "",
@@ -100,125 +111,48 @@ data class ProtocolModel(
     var ikasR2:String = "",
     var ikasR3:String = "",
     var ikasResult:String = "",
-//HH//,
-    var hhUAB:String = "",
-    var hhUBC:String = "",
-    var hhUCA:String = "",
-    var hhIA:String = "",
-    var hhIB:String = "",
-    var hhIC:String = "",
-    var hhUOV:String = "",
-    var hhIOV:String = "",
-    var hhTempOI:String = "",
-    var hhTempAmb:String = "",
-    var hhSpeed:String = "",
-    var hhVibro1:String = "",
-    var hhVibro2:String = "",
-    var hhTime:String = "",
-    var hhP1:String = "",
-    var hhCos:String = "",
-    var hhF:String = "",
-    var hhResult:String = "",
-//RUNNING//,
-    var runningUAB:String = "",
-    var runningUBC:String = "",
-    var runningUCA:String = "",
-    var runningIA:String = "",
-    var runningIB:String = "",
-    var runningIC:String = "",
-    var runningTempOI:String = "",
-    var runningTempAmb:String = "",
-    var runningSpeed:String = "",
-    var runningVibro1:String = "",
-    var runningVibro2:String = "",
-    var runningTime:String = "",
-    var runningP1:String = "",
-    var runningCos:String = "",
-    var runningResult:String = "",
-//LOADMPT//,
-    var loadResult          :String = "",
-    var loadUOV             :String = "",
-    var loadIOV             :String = "",
-    var loadUOY             :String = "",
-    var loadIOY             :String = "",
-    var loadN               :String = "",
-    var loadP               :String = "",
-    var loadTempAmb         :String = "",
-    var loadTempOI          :String = "",
-//H_HH//,
-//    var h_hhUAB1:String = "",
-//    var h_hhUBC1:String = "",
-//    var h_hhUCA1:String = "",
-//    var h_hhIA1:String = "",
-//    var h_hhIB1:String = "",
-//    var h_hhIC1:String = "",
-//    var h_hhP1:String = "",
-//
-//    var h_hhUAB2:String = "",
-//    var h_hhUBC2:String = "",
-//    var h_hhUCA2:String = "",
-//    var h_hhIA2:String = "",
-//    var h_hhIB2:String = "",
-//    var h_hhIC2:String = "",
-//    var h_hhP2:String = "",
-//
-//    var h_hhUAB3:String = "",
-//    var h_hhUBC3:String = "",
-//    var h_hhUCA3:String = "",
-//    var h_hhIA3:String = "",
-//    var h_hhIB3:String = "",
-//    var h_hhIC3:String = "",
-//    var h_hhP3:String = "",
-//
-//    var h_hhUAB4:String = "",
-//    var h_hhUBC4:String = "",
-//    var h_hhUCA4:String = "",
-//    var h_hhIA4:String = "",
-//    var h_hhIB4:String = "",
-//    var h_hhIC4:String = "",
-//    var h_hhP4:String = "",
-//
-//    var h_hhUAB5:String = "",
-//    var h_hhUBC5:String = "",
-//    var h_hhUCA5:String = "",
-//    var h_hhIA5:String = "",
-//    var h_hhIB5:String = "",
-//    var h_hhIC5:String = "",
-//    var h_hhP5:String = "",
-//
-//    var h_hhUAB6:String = "",
-//    var h_hhUBC6:String = "",
-//    var h_hhUCA6:String = "",
-//    var h_hhIA6:String = "",
-//    var h_hhIB6:String = "",
-//    var h_hhIC6:String = "",
-//    var h_hhP6:String = "",
-//
-//    var h_hhUAB7:String = "",
-//    var h_hhUBC7:String = "",
-//    var h_hhUCA7:String = "",
-//    var h_hhIA7:String = "",
-//    var h_hhIB7:String = "",
-//    var h_hhIC7:String = "",
-//    var h_hhP7:String = "",
-//
-//    var h_hhUAB8:String = "",
-//    var h_hhUBC8:String = "",
-//    var h_hhUCA8:String = "",
-//    var h_hhIA8:String = "",
-//    var h_hhIB8:String = "",
-//    var h_hhIC8:String = "",
-//    var h_hhP8:String = "",
-//
-//    var h_hhUAB9:String = "",
-//    var h_hhUBC9:String = "",
-//    var h_hhUCA9:String = "",
-//    var h_hhIA9:String = "",
-//    var h_hhIB9:String = "",
-//    var h_hhIC9:String = "",
-//    var h_hhP9:String = "",
-//
-//    var h_hhResult:String = "",
+//N_DPT//,
+    var dptNuOV:String = "",
+    var dptNiOV:String = "",
+    var dptNuN:String = "",
+    var dptNiN:String = "",
+    var dptNP1:String = "",
+    var dptNTOI:String = "",
+    var dptNTAmb:String = "",
+    var dptNN:String = "",
+    var dptNResult:String = "",
+//HH_DPT//,
+    var dptHHuOV:String = "",
+    var dptHHiOV:String = "",
+    var dptHHuN:String = "",
+    var dptHHiN:String = "",
+    var dptHHP1:String = "",
+    var dptHHTOI:String = "",
+    var dptHHTAmb:String = "",
+    var dptHHN:String = "",
+    var dptHHResult:String = "",
+    var dptHHTime:String = "",
+//LOAD_DPT//,
+    var dptLOADuOV:String = "",
+    var dptLOADiOV:String = "",
+    var dptLOADuN:String = "",
+    var dptLOADiN:String = "",
+    var dptLOADP1:String = "",
+    var dptLOADTOI:String = "",
+    var dptLOADTAmb:String = "",
+    var dptLOADN:String = "",
+    var dptLOADResult:String = "",
+//N_GPT//,
+    var gptNuOV:String = "",
+    var gptNiOV:String = "",
+    var gptNuN:String = "",
+    var gptNiN:String = "",
+    var gptNP1:String = "",
+    var gptNTOI:String = "",
+    var gptNTAmb:String = "",
+    var gptNN:String = "",
+    var gptNResult:String = "",
+///////////
 //N//,
     var nUAB:String = "",
     var nUBC:String = "",
@@ -226,29 +160,124 @@ data class ProtocolModel(
     var nIA:String = "",
     var nIB:String = "",
     var nIC:String = "",
-    var nSpeed:String = "",
     var nF:String = "",
+    var nTempOI:String = "",
+    var nTempAmb:String = "",
+    var nSpeed:String = "",
+    var nVibro1:String = "",
+    var nVibro2:String = "",
+    var nTime:String = "",
+    var nP1:String = "",
+    var nCos:String = "",
     var nResult:String = "",
-//KTn/,
-    var ktrUAVG1: String = "",
-    var ktrUAVG2: String = "",
-    var ktrKTR: String = "",
-    var ktrResult: String = "",
+//HH//,
+//    var hhUAB:String = "",
+//    var hhUBC:String = "",
+//    var hhUCA:String = "",
+//    var hhIA:String = "",
+//    var hhIB:String = "",
+//    var hhIC:String = "",
+//    var hhUOV:String = "",
+//    var hhIOV:String = "",
+//    var hhTempOI:String = "",
+//    var hhTempAmb:String = "",
+//    var hhSpeed:String = "",
+//    var hhVibro1:String = "",
+//    var hhVibro2:String = "",
+//    var hhTime:String = "",
+//    var hhP1:String = "",
+//    var hhCos:String = "",
+//    var hhF:String = "",
+//    var hhResult:String = "",
+//H_HH//,
+    var h_hhuAB1:String = "",
+    var h_hhuBC1:String = "",
+    var h_hhuCA1:String = "",
+    var h_hhiA1:String = "",
+    var h_hhiB1:String = "",
+    var h_hhiC1:String = "",
+    var h_hhuOV1:String = "",
+
+    var h_hhuAB2:String = "",
+    var h_hhuBC2:String = "",
+    var h_hhuCA2:String = "",
+    var h_hhiA2:String = "",
+    var h_hhiB2:String = "",
+    var h_hhiC2:String = "",
+    var h_hhuOV2:String = "",
+
+    var h_hhuAB3:String = "",
+    var h_hhuBC3:String = "",
+    var h_hhuCA3:String = "",
+    var h_hhiA3:String = "",
+    var h_hhiB3:String = "",
+    var h_hhiC3:String = "",
+    var h_hhuOV3:String = "",
+
+    var h_hhuAB4:String = "",
+    var h_hhuBC4:String = "",
+    var h_hhuCA4:String = "",
+    var h_hhiA4:String = "",
+    var h_hhiB4:String = "",
+    var h_hhiC4:String = "",
+    var h_hhuOV4:String = "",
+
+    var h_hhuAB5:String = "",
+    var h_hhuBC5:String = "",
+    var h_hhuCA5:String = "",
+    var h_hhiA5:String = "",
+    var h_hhiB5:String = "",
+    var h_hhiC5:String = "",
+    var h_hhuOV5:String = "",
+
+    var h_hhuAB6:String = "",
+    var h_hhuBC6:String = "",
+    var h_hhuCA6:String = "",
+    var h_hhiA6:String = "",
+    var h_hhiB6:String = "",
+    var h_hhiC6:String = "",
+    var h_hhuOV6:String = "",
+
+    var h_hhuAB7:String = "",
+    var h_hhuBC7:String = "",
+    var h_hhuCA7:String = "",
+    var h_hhiA7:String = "",
+    var h_hhiB7:String = "",
+    var h_hhiC7:String = "",
+    var h_hhuOV7:String = "",
+
+    var h_hhuAB8:String = "",
+    var h_hhuBC8:String = "",
+    var h_hhuCA8:String = "",
+    var h_hhiA8:String = "",
+    var h_hhiB8:String = "",
+    var h_hhiC8:String = "",
+    var h_hhuOV8:String = "",
+
+    var h_hhuAB9:String = "",
+    var h_hhuBC9:String = "",
+    var h_hhuCA9:String = "",
+    var h_hhiA9:String = "",
+    var h_hhiB9:String = "",
+    var h_hhiC9:String = "",
+    var h_hhuOV9:String = "",
+
+    var h_hhResult:String = "",
 //MV//,
-    var mvUAB1:String = "",
-    var mvUBC1:String = "",
-    var mvUCA1:String = "",
-    var mvIA1:String = "",
-    var mvIB1:String = "",
-    var mvIC1:String = "",
-    var mvUAB2:String = "",
-    var mvUBC2:String = "",
-    var mvUCA2:String = "",
-    var mvIA2:String = "",
-    var mvIB2:String = "",
-    var mvIC2:String = "",
-    var mvDeviation:String = "",
-    var mvResult:String = "",
+//    var mvUAB1:String = "",
+//    var mvUBC1:String = "",
+//    var mvUCA1:String = "",
+//    var mvIA1:String = "",
+//    var mvIB1:String = "",
+//    var mvIC1:String = "",
+//    var mvUAB2:String = "",
+//    var mvUBC2:String = "",
+//    var mvUCA2:String = "",
+//    var mvIA2:String = "",
+//    var mvIB2:String = "",
+//    var mvIC2:String = "",
+//    var mvDeviation:String = "",
+//    var mvResult:String = "",
 //KZ//,
     var kzUAB:String = "",
     var kzUBC:String = "",

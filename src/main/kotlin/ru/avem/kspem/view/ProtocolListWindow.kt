@@ -10,12 +10,10 @@ import javafx.scene.paint.Color
 import javafx.stage.FileChooser
 import org.jetbrains.exposed.sql.deleteWhere
 import org.jetbrains.exposed.sql.transactions.transaction
-import ru.avem.kspem.data.motorType
 import ru.avem.kspem.database.entities.Protocol
 import ru.avem.kspem.database.entities.ProtocolsTable
 import ru.avem.kspem.protocol.saveProtocolAsWorkbook
 import ru.avem.kspem.utils.Singleton
-import ru.avem.kspem.utils.getFullType
 import ru.avem.kspem.utils.openFile
 import tornadofx.*
 import tornadofx.controlsfx.confirmNotification
@@ -100,14 +98,7 @@ class ProtocolListWindow : View("Список протоколов испыта�
                                 }.toList().asObservable()
                             }.first()
 
-                            if (Singleton.currentProtocol.type == getFullType(motorType.dpt)) {
-                                saveProtocolAsWorkbook(
-                                    protocol = Singleton.currentProtocol,
-                                    protocolName = "protocolMPT.xlsx"
-                                )
-                            } else {
-                                saveProtocolAsWorkbook(Singleton.currentProtocol)
-                            }
+                            saveProtocolAsWorkbook(Singleton.currentProtocol)
                             openFile(File("cfg/lastOpened.xlsx"))
                             close()
                         }

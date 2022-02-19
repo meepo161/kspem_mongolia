@@ -29,7 +29,6 @@ class ObjectEditorWindow : View("Редактор объектов испыта�
     var tfiN: TextField by singleAssign()
     var tfnAsync: TextField by singleAssign()
     var tfkpd: TextField by singleAssign()
-    var tfcos: TextField by singleAssign()
     var tfscheme: ComboBox<String> by singleAssign()
     var tfuVIU: TextField by singleAssign()
     var tfuMGR: TextField by singleAssign()
@@ -52,6 +51,7 @@ class ObjectEditorWindow : View("Редактор объектов испыта�
     var tfObjectName: TextField by singleAssign()
     val validator = ValidationContext()
     var newCheck = false
+    var toInsert: VBox by singleAssign()
 
 
     override fun onDock() {
@@ -121,6 +121,13 @@ class ObjectEditorWindow : View("Редактор объектов испыта�
                     items = observableListOf(motorType.sd, motorType.sg, motorType.dpt, motorType.gpt)
                     useMaxWidth = true
                     isDisable = true
+                    onAction = EventHandler {
+                        if (cbObjectType.selectionModel.selectedItem == motorType.gpt || cbObjectType.selectionModel.selectedItem == motorType.dpt) {
+                            toInsert.hide()
+                        } else {
+                            toInsert.show()
+                        }
+                    }
                 }
                 label()
                 separator()
@@ -182,8 +189,8 @@ class ObjectEditorWindow : View("Редактор объектов испыта�
                         validator.addValidator(this) {
                             if (it?.toDoubleOrNull() == null) {
                                 error("Обязательное поле")
-                            } else if ((it.toDouble()) < 0 || (it.toDouble()) > 440) {
-                                error("Значение не в диапазоне 0 — 440")
+                            } else if ((it.toDouble()) < 0 || (it.toDouble()) > 750) {
+                                error("Значение не в диапазоне 0 — 750")
                             } else null
                         }
                     }
@@ -273,33 +280,18 @@ class ObjectEditorWindow : View("Редактор объектов испыта�
                         }
                     }
                 }
-                hbox(16.0, Pos.CENTER) {
-                    label("cos φ, о.е.") {
-                        hboxConstraints {
-                            hGrow = Priority.ALWAYS
+                toInsert = vbox(16.0, Pos.CENTER) {
+                    hbox(16.0, Pos.CENTER) {
+                        label("Схема соединения обмоток") {
+                            hboxConstraints {
+                                hGrow = Priority.ALWAYS
+                            }
+                            useMaxWidth = true
                         }
-                        useMaxWidth = true
-                    }
-                    tfcos = textfield {
-                        validator.addValidator(this) {
-                            if (it?.toDoubleOrNull() == null) {
-                                error("Обязательное поле")
-                            } else if ((it.toDouble()) < 0.1 || (it.toDouble()) > 1) {
-                                error("Значение не в диапазоне 0.1 — 1")
-                            } else null
+                        tfscheme = combobox<String>() {
+                            minWidth = 266.0
+                            items = observableListOf(schemeType.triangle, schemeType.star)
                         }
-                    }
-                }
-                hbox(16.0, Pos.CENTER) {
-                    label("Схема соединения обмоток") {
-                        hboxConstraints {
-                            hGrow = Priority.ALWAYS
-                        }
-                        useMaxWidth = true
-                    }
-                    tfscheme = combobox<String>() {
-                        minWidth = 266.0
-                        items = observableListOf(schemeType.triangle, schemeType.star)
                     }
                 }
                 hbox(16.0, Pos.CENTER) {
@@ -371,7 +363,7 @@ class ObjectEditorWindow : View("Редактор объектов испыта�
                     }
                 }
                 hbox(16.0, Pos.CENTER) {
-                    label("Время испытания МВЗ, с") {
+                    label("Время испытания номинальной нагрузкой, с") {
                         hboxConstraints {
                             hGrow = Priority.ALWAYS
                         }
@@ -388,7 +380,7 @@ class ObjectEditorWindow : View("Редактор объектов испыта�
                     }
                 }
                 hbox(16.0, Pos.CENTER) {
-                    label("Время испытания Обкатка, с") {
+                    label("Время испытания повышенной нагрузкой, с") {
                         hboxConstraints {
                             hGrow = Priority.ALWAYS
                         }
@@ -428,7 +420,6 @@ class ObjectEditorWindow : View("Редактор объектов испыта�
                 tfiN.text = iN
                 tfnAsync.text = nAsync
                 tfkpd.text = kpd
-                tfcos.text = cos
                 tfscheme.selectionModel.select(scheme)
                 tfuVIU.text = uVIU
                 tfuMGR.text = uMGR
@@ -440,6 +431,11 @@ class ObjectEditorWindow : View("Редактор объектов испыта�
                 tfuOV.text = uOV
                 cbObjectType.selectionModel.select(type)
             }
+        }
+        if (cbObjectType.selectionModel.selectedItem == motorType.gpt || cbObjectType.selectionModel.selectedItem == motorType.dpt) {
+            toInsert.hide()
+        } else {
+            toInsert.show()
         }
     }
 
@@ -464,7 +460,6 @@ class ObjectEditorWindow : View("Редактор объектов испыта�
                     iN = tfiN.text
                     nAsync = tfnAsync.text
                     kpd = tfkpd.text
-                    cos = tfcos.text
                     scheme = tfscheme.selectionModel.selectedItem
                     uVIU = tfuVIU.text
                     uMGR = tfuMGR.text

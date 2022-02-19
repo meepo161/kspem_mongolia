@@ -492,6 +492,15 @@ class KZControllerSG : CustomController() {
         protocolModel.kzIC = model.data.iC.value
         protocolModel.kzP1 = model.data.p.value
         protocolModel.kzResult = model.data.result.value
+
+//        protocolModel.kzUAB     = "model.data.uAB.value"
+//        protocolModel.kzUBC     = "model.data.uBC.value"
+//        protocolModel.kzUCA     = "model.data.uCA.value"
+//        protocolModel.kzIA      = "model.data.iA.value"
+//        protocolModel.kzIB      = "model.data.iB.value"
+//        protocolModel.kzIC      = "model.data.iC.value"
+//        protocolModel.kzP1      = "model.data.p.value"
+//        protocolModel.kzResult  = "model.data.result.value"
     }
 
     private fun restoreData() {

@@ -317,34 +317,34 @@ class MVController : CustomController() {
     }
 
     fun saveData() {
-        protocolModel.mvUAB1 = model.data.uAB1.value
-        protocolModel.mvUBC1 = model.data.uBC1.value
-        protocolModel.mvUCA1 = model.data.uCA1.value
-        protocolModel.mvIA1 = model.data.iA1.value
-        protocolModel.mvIB1 = model.data.iB1.value
-        protocolModel.mvIC1 = model.data.iC1.value
-        protocolModel.mvUAB2 = model.data.uAB2.value
-        protocolModel.mvUBC2 = model.data.uBC2.value
-        protocolModel.mvUCA2 = model.data.uCA2.value
-        protocolModel.mvIA2 = model.data.iA2.value
-        protocolModel.mvIB2 = model.data.iB2.value
-        protocolModel.mvIC2 = model.data.iC2.value
-        protocolModel.mvDeviation = model.data.deviation.value
-        protocolModel.mvResult = model.data.result.value
+//        protocolModel.mvUAB1 = model.data.uAB1.value
+//        protocolModel.mvUBC1 = model.data.uBC1.value
+//        protocolModel.mvUCA1 = model.data.uCA1.value
+//        protocolModel.mvIA1 = model.data.iA1.value
+//        protocolModel.mvIB1 = model.data.iB1.value
+//        protocolModel.mvIC1 = model.data.iC1.value
+//        protocolModel.mvUAB2 = model.data.uAB2.value
+//        protocolModel.mvUBC2 = model.data.uBC2.value
+//        protocolModel.mvUCA2 = model.data.uCA2.value
+//        protocolModel.mvIA2 = model.data.iA2.value
+//        protocolModel.mvIB2 = model.data.iB2.value
+//        protocolModel.mvIC2 = model.data.iC2.value
+//        protocolModel.mvDeviation = model.data.deviation.value
+//        protocolModel.mvResult = model.data.result.value
     }
 
     fun restoreData() {
-        model.data.uAB1.value = protocolModel.mvUAB1
-        model.data.uBC1.value = protocolModel.mvUBC1
-        model.data.uCA1.value = protocolModel.mvUCA1
-        model.data.iA1.value = protocolModel.mvIA1
-        model.data.iB1.value = protocolModel.mvIB1
-        model.data.iC1.value = protocolModel.mvIC1
-        model.data.uAB2.value = protocolModel.mvUAB2
-        model.data.uBC2.value = protocolModel.mvUBC2
-        model.data.uCA2.value = protocolModel.mvUCA2
-        model.data.iA2.value = protocolModel.mvIA2
-        model.data.iB2.value = protocolModel.mvIB2
-        model.data.iC2.value = protocolModel.mvIC2
+//        model.data.uAB1.value = protocolModel.mvUAB1
+//        model.data.uBC1.value = protocolModel.mvUBC1
+//        model.data.uCA1.value = protocolModel.mvUCA1
+//        model.data.iA1.value = protocolModel.mvIA1
+//        model.data.iB1.value = protocolModel.mvIB1
+//        model.data.iC1.value = protocolModel.mvIC1
+//        model.data.uAB2.value = protocolModel.mvUAB2
+//        model.data.uBC2.value = protocolModel.mvUBC2
+//        model.data.uCA2.value = protocolModel.mvUCA2
+//        model.data.iA2.value = protocolModel.mvIA2
+//        model.data.iB2.value = protocolModel.mvIB2
+//        model.data.iC2.value = protocolModel.mvIC2
     }
 }

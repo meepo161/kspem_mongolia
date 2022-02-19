@@ -18,7 +18,7 @@ class VIUController : CustomController() {
     override val name = model.name
 
     var voltageSet = 0.0
-    var setI = 50.0
+    var setI = 100.0
     var setTime = 0.0
     var voltage = 0.0
     var amperage = 0.0
@@ -31,7 +31,7 @@ class VIUController : CustomController() {
         voltageSet = objectModel!!.uVIU.toDouble()
         setTime = objectModel!!.timeVIU.toDouble()
         model.data.setU.value = objectModel!!.uVIU
-        model.data.setI.value = setI.autoformat() //TODO ПРИКОЛ
+        model.data.setI.value = setI.autoformat()
         model.data.time.value = objectModel!!.timeVIU
 
 
@@ -245,9 +245,13 @@ class VIUController : CustomController() {
     }
 
     private fun saveData() {
-        protocolModel.viuU = model.data.U.value
-        protocolModel.viuI = model.data.I.value
-        protocolModel.viuTime = objectModel!!.timeVIU
+        protocolModel.viuU      = "model.data.U.value"
+        protocolModel.viuI      = "model.data.I.value"
+        protocolModel.viuTime   = "objectModel!!.timeVIU"
+
+//        protocolModel.viuU = model.data.U.value
+//        protocolModel.viuI = model.data.I.value
+//        protocolModel.viuTime = objectModel!!.timeVIU
     }
 
     private fun restoreData() {

@@ -39,10 +39,10 @@ class MainViewController : Controller() {
 
 
     lateinit var currentExp: CustomController
-    var listDPT = mutableListOf<CustomController>(mgrMPT, viu, ikasMPT, hhMPT, nMPT, loadMPT)
+    var listDPT = mutableListOf<CustomController>(mgrMPT, viu, ikasMPT, nMPT, hhMPT, loadMPT)
     var listGPT = mutableListOf<CustomController>(mgrMPT, viu, ikasMPT, nGPT)
     var listSD = mutableListOf<CustomController>(mgr, viu, ikas, nSD)
-    var listSG = mutableListOf<CustomController>(mgr, viu, ikas, h_hhSG, nSG, kzSG)
+    var listSG = mutableListOf<CustomController>(mgr, viu, ikas, nSG, h_hhSG, kzSG)
 
     @Volatile
     var isExperimentRunning: Boolean = false
@@ -181,196 +181,193 @@ class MainViewController : Controller() {
 //        }
 //    }
     private fun saveProtocol() {
-//        transaction {
-//            Protocol.new {
-//                objectName = protocolModel.objectName
-//                type = protocolModel.type
-//                date = protocolModel.date
-//                time = protocolModel.time
-//                operator = protocolModel.operator
-//                serial = protocolModel.serial
-//                p2 = protocolModel.p2
-//                uN = protocolModel.uN
-//                iN = protocolModel.iN
-//                nAsync = protocolModel.nAsync
-//                kpd = protocolModel.kpd
-//                cos = protocolModel.cos
-//                scheme = protocolModel.scheme
-//                //MGR//
-//                mgrU = protocolModel.mgrU
-//                mgrR15 = protocolModel.mgrR15
-//                mgrR60 = protocolModel.mgrR60
-//                mgrkABS = protocolModel.mgrkABS
-//                mgrTemp = protocolModel.mgrTemp
-//                mgrResult = protocolModel.mgrResult
-//                //VIU//
-//                viuU = protocolModel.viuU
-//                viuI = protocolModel.viuI
-//                viuTime = protocolModel.viuTime
-//                viuResult = protocolModel.viuResult
-//
-//                //IKAS//
-//                ikasR1 = protocolModel.ikasR1
-//                ikasR2 = protocolModel.ikasR2
-//                ikasR3 = protocolModel.ikasR3
-//                ikasResult = protocolModel.ikasResult
-//
-//                //HH//
-//                hhUAB = protocolModel.hhUAB
-//                hhUBC = protocolModel.hhUBC
-//                hhUCA = protocolModel.hhUCA
-//                hhIA = protocolModel.hhIA
-//                hhIB = protocolModel.hhIB
-//                hhIC = protocolModel.hhIC
-//                hhTempOI = protocolModel.hhTempOI
-//                hhTempAmb = protocolModel.hhTempAmb
-//                hhSpeed = protocolModel.hhSpeed
-//                hhVibro1 = protocolModel.hhVibro1
-//                hhVibro2 = protocolModel.hhVibro2
-//                hhP1 = protocolModel.hhP1
-//                hhCos = protocolModel.hhCos
-//                hhTime = protocolModel.hhTime
-//                hhResult = protocolModel.hhResult
-//
-//                //RUNNING//
-//                runningUAB = protocolModel.runningUAB
-//                runningUBC = protocolModel.runningUBC
-//                runningUCA = protocolModel.runningUCA
-//                runningIA = protocolModel.runningIA
-//                runningIB = protocolModel.runningIB
-//                runningIC = protocolModel.runningIC
-//                runningTempOI = protocolModel.runningTempOI
-//                runningTempAmb = protocolModel.runningTempAmb
-//                runningSpeed = protocolModel.runningSpeed
-//                runningVibro1 = protocolModel.runningVibro1
-//                runningVibro2 = protocolModel.runningVibro2
-//                runningTime = protocolModel.runningTime
-//                runningP1 = protocolModel.runningP1
-//                runningCos = protocolModel.runningCos
-//                runningResult = protocolModel.runningResult
-//
-//                //RUNNING//
-//                runningUAB = protocolModel.runningUAB
-//                runningUBC = protocolModel.runningUBC
-//                runningUCA = protocolModel.runningUCA
-//                runningIA = protocolModel.runningIA
-//                runningIB = protocolModel.runningIB
-//                runningIC = protocolModel.runningIC
-//                runningTempOI = protocolModel.runningTempOI
-//                runningTempAmb = protocolModel.runningTempAmb
-//                runningSpeed = protocolModel.runningSpeed
-//                runningVibro1 = protocolModel.runningVibro1
-//                runningVibro2 = protocolModel.runningVibro2
-//                runningTime = protocolModel.runningTime
-//                runningP1 = protocolModel.runningP1
-//                runningCos = protocolModel.runningCos
-//                runningResult = protocolModel.runningResult
-//                //H_HH//
-////                h_hhUAB1 = protocolModel.h_hhUAB1
-////                h_hhUBC1 = protocolModel.h_hhUBC1
-////                h_hhUCA1 = protocolModel.h_hhUCA1
-////                h_hhIA1 = protocolModel.h_hhIA1
-////                h_hhIB1 = protocolModel.h_hhIB1
-////                h_hhIC1 = protocolModel.h_hhIC1
-////                h_hhUAB2 = protocolModel.h_hhUAB2
-////                h_hhUBC2 = protocolModel.h_hhUBC2
-////                h_hhUCA2 = protocolModel.h_hhUCA2
-////                h_hhIA2 = protocolModel.h_hhIA2
-////                h_hhIB2 = protocolModel.h_hhIB2
-////                h_hhIC2 = protocolModel.h_hhIC2
-////                h_hhUAB3 = protocolModel.h_hhUAB3
-////                h_hhUBC3 = protocolModel.h_hhUBC3
-////                h_hhUCA3 = protocolModel.h_hhUCA3
-////                h_hhIA3 = protocolModel.h_hhIA3
-////                h_hhIB3 = protocolModel.h_hhIB3
-////                h_hhIC3 = protocolModel.h_hhIC3
-////                h_hhUAB4 = protocolModel.h_hhUAB4
-////                h_hhUBC4 = protocolModel.h_hhUBC4
-////                h_hhUCA4 = protocolModel.h_hhUCA4
-////                h_hhIA4 = protocolModel.h_hhIA4
-////                h_hhIB4 = protocolModel.h_hhIB4
-////                h_hhIC4 = protocolModel.h_hhIC4
-////                h_hhUAB5 = protocolModel.h_hhUAB5
-////                h_hhUBC5 = protocolModel.h_hhUBC5
-////                h_hhUCA5 = protocolModel.h_hhUCA5
-////                h_hhIA5 = protocolModel.h_hhIA5
-////                h_hhIB5 = protocolModel.h_hhIB5
-////                h_hhIC5 = protocolModel.h_hhIC5
-////                h_hhUAB6 = protocolModel.h_hhUAB6
-////                h_hhUBC6 = protocolModel.h_hhUBC6
-////                h_hhUCA6 = protocolModel.h_hhUCA6
-////                h_hhIA6 = protocolModel.h_hhIA6
-////                h_hhIB6 = protocolModel.h_hhIB6
-////                h_hhIC6 = protocolModel.h_hhIC6
-////                h_hhUAB7 = protocolModel.h_hhUAB7
-////                h_hhUBC7 = protocolModel.h_hhUBC7
-////                h_hhUCA7 = protocolModel.h_hhUCA7
-////                h_hhIA7 = protocolModel.h_hhIA7
-////                h_hhIB7 = protocolModel.h_hhIB7
-////                h_hhIC7 = protocolModel.h_hhIC7
-////                h_hhUAB8 = protocolModel.h_hhUAB8
-////                h_hhUBC8 = protocolModel.h_hhUBC8
-////                h_hhUCA8 = protocolModel.h_hhUCA8
-////                h_hhIA8 = protocolModel.h_hhIA8
-////                h_hhIB8 = protocolModel.h_hhIB8
-////                h_hhIC8 = protocolModel.h_hhIC8
-////                h_hhUAB9 = protocolModel.h_hhUAB9
-////                h_hhUBC9 = protocolModel.h_hhUBC9
-////                h_hhUCA9 = protocolModel.h_hhUCA9
-////                h_hhIA9 = protocolModel.h_hhIA9
-////                h_hhIB9 = protocolModel.h_hhIB9
-////                h_hhIC9 = protocolModel.h_hhIC9
-////                h_hhN1 = protocolModel.h_hhP1
-////                h_hhN2 = protocolModel.h_hhP2
-////                h_hhN3 = protocolModel.h_hhP3
-////                h_hhN4 = protocolModel.h_hhP4
-////                h_hhN5 = protocolModel.h_hhP5
-////                h_hhN6 = protocolModel.h_hhP6
-////                h_hhN7 = protocolModel.h_hhP7
-////                h_hhN8 = protocolModel.h_hhP8
-////                h_hhN9 = protocolModel.h_hhP9
-////                h_hhResult = protocolModel.h_hhResult
-//                //N//
-//                nUAB = protocolModel.nUAB
-//                nUBC = protocolModel.nUBC
-//                nUCA = protocolModel.nUCA
-//                nIA = protocolModel.nIA
-//                nIB = protocolModel.nIB
-//                nIC = protocolModel.nIC
-//                nSpeed = protocolModel.nSpeed
-//                nF = protocolModel.nF
-//                nResult = protocolModel.nResult
-//                //KTr//
-//                ktrUAVG1 = protocolModel.ktrUAVG1
-//                ktrUAVG2 = protocolModel.ktrUAVG2
-//                ktrKTR = protocolModel.ktrKTR
-//                ktrResult = protocolModel.ktrResult
-//                //MV//
-//                mvUAB1 = protocolModel.mvUAB1
-//                mvUBC1 = protocolModel.mvUBC1
-//                mvUCA1 = protocolModel.mvUCA1
-//                mvIA1 = protocolModel.mvIA1
-//                mvIB1 = protocolModel.mvIB1
-//                mvIC1 = protocolModel.mvIC1
-//                mvUAB2 = protocolModel.mvUAB2
-//                mvUBC2 = protocolModel.mvUBC2
-//                mvUCA2 = protocolModel.mvUCA2
-//                mvIA2 = protocolModel.mvIA2
-//                mvIB2 = protocolModel.mvIB2
-//                mvIC2 = protocolModel.mvIC2
-//                mvDeviation = protocolModel.mvDeviation
-//                mvResult = protocolModel.mvResult
-//                //KZ//
-//                kzUAB = protocolModel.kzUAB
-//                kzUBC = protocolModel.kzUBC
-//                kzUCA = protocolModel.kzUCA
-//                kzIA = protocolModel.kzIA
-//                kzIB = protocolModel.kzIB
-//                kzIC = protocolModel.kzIC
-//                kzP1 = protocolModel.kzP1
-//                kzResult = protocolModel.kzResult
-//            }
-//        }
+        transaction {
+            Protocol.new {
+                objectName = protocolModel.objectName
+                type = protocolModel.type
+                date = protocolModel.date
+                time = protocolModel.time
+                operator = protocolModel.operator
+                serial = protocolModel.serial
+                p2 = protocolModel.p2
+                uN = protocolModel.uN
+                iN = protocolModel.iN
+                uOV = protocolModel.uOV
+                iOV = protocolModel.iOV
+                nAsync = protocolModel.nAsync
+                kpd = protocolModel.kpd
+                scheme = protocolModel.scheme
+
+
+                mgrU1 = protocolModel.mgrU1
+                mgrU2 = protocolModel.mgrU2
+                mgrU3 = protocolModel.mgrU3
+                mgrR151 = protocolModel.mgrR151
+                mgrR152 = protocolModel.mgrR152
+                mgrR153 = protocolModel.mgrR153
+                mgrR601 = protocolModel.mgrR601
+                mgrR602 = protocolModel.mgrR602
+                mgrR603 = protocolModel.mgrR603
+                mgrkABS1 = protocolModel.mgrkABS1
+                mgrkABS2 = protocolModel.mgrkABS2
+                mgrkABS3 = protocolModel.mgrkABS3
+                mgrTemp = protocolModel.mgrTemp
+                mgrResult1 = protocolModel.mgrResult1
+                mgrResult2 = protocolModel.mgrResult2
+                mgrResult3 = protocolModel.mgrResult3
+
+
+                viuU = protocolModel.viuU
+                viuI = protocolModel.viuI
+                viuTime = protocolModel.viuTime
+                viuResult = protocolModel.viuResult
+
+
+                ikasR1 = protocolModel.ikasR1
+                ikasR2 = protocolModel.ikasR2
+                ikasR3 = protocolModel.ikasR3
+                ikasResult = protocolModel.ikasResult
+
+
+                dptNuOV = protocolModel.dptNuOV
+                dptNiOV = protocolModel.dptNiOV
+                dptNuN = protocolModel.dptNuN
+                dptNiN = protocolModel.dptNiN
+                dptNP1 = protocolModel.dptNP1
+                dptNTOI = protocolModel.dptNTOI
+                dptNTAmb = protocolModel.dptNTAmb
+                dptNN = protocolModel.dptNN
+                dptNResult = protocolModel.dptNResult
+
+
+                dptHHuOV = protocolModel.dptHHuOV
+                dptHHiOV = protocolModel.dptHHiOV
+                dptHHuN = protocolModel.dptHHuN
+                dptHHiN = protocolModel.dptHHiN
+                dptHHP1 = protocolModel.dptHHP1
+                dptHHTOI = protocolModel.dptHHTOI
+                dptHHTAmb = protocolModel.dptHHTAmb
+                dptHHN = protocolModel.dptHHN
+                dptHHResult = protocolModel.dptHHResult
+                dptHHTime = protocolModel.dptHHTime
+
+
+                dptLOADuOV = protocolModel.dptLOADuOV
+                dptLOADiOV = protocolModel.dptLOADiOV
+                dptLOADuN = protocolModel.dptLOADuN
+                dptLOADiN = protocolModel.dptLOADiN
+                dptLOADP1 = protocolModel.dptLOADP1
+                dptLOADTOI = protocolModel.dptLOADTOI
+                dptLOADTAmb = protocolModel.dptLOADTAmb
+                dptLOADN = protocolModel.dptLOADN
+                dptLOADResult = protocolModel.dptLOADResult
+
+
+                gptNuOV = protocolModel.gptNuOV
+                gptNiOV = protocolModel.gptNiOV
+                gptNuN = protocolModel.gptNuN
+                gptNiN = protocolModel.gptNiN
+                gptNP1 = protocolModel.gptNP1
+                gptNTOI = protocolModel.gptNTOI
+                gptNTAmb = protocolModel.gptNTAmb
+                gptNN = protocolModel.gptNN
+                gptNResult = protocolModel.gptNResult
+
+
+                nUAB = protocolModel.nUAB
+                nUBC = protocolModel.nUBC
+                nUCA = protocolModel.nUCA
+                nIA = protocolModel.nIA
+                nIB = protocolModel.nIB
+                nIC = protocolModel.nIC
+                nF = protocolModel.nF
+                nTempOI = protocolModel.nTempOI
+                nTempAmb = protocolModel.nTempAmb
+                nSpeed = protocolModel.nSpeed
+                nVibro1 = protocolModel.nVibro1
+                nVibro2 = protocolModel.nVibro2
+                nTime = protocolModel.nTime
+                nP1 = protocolModel.nP1
+                nCos = protocolModel.nCos
+                nResult = protocolModel.nResult
+
+
+                h_hhuAB1 = protocolModel.h_hhuAB1
+                h_hhuBC1 = protocolModel.h_hhuBC1
+                h_hhuCA1 = protocolModel.h_hhuCA1
+                h_hhiA1 = protocolModel.h_hhiA1
+                h_hhiB1 = protocolModel.h_hhiB1
+                h_hhiC1 = protocolModel.h_hhiC1
+                h_hhuOV1 = protocolModel.h_hhuOV1
+                h_hhuAB2 = protocolModel.h_hhuAB2
+                h_hhuBC2 = protocolModel.h_hhuBC2
+                h_hhuCA2 = protocolModel.h_hhuCA2
+                h_hhiA2 = protocolModel.h_hhiA2
+                h_hhiB2 = protocolModel.h_hhiB2
+                h_hhiC2 = protocolModel.h_hhiC2
+                h_hhuOV2 = protocolModel.h_hhuOV2
+                h_hhuAB3 = protocolModel.h_hhuAB3
+                h_hhuBC3 = protocolModel.h_hhuBC3
+                h_hhuCA3 = protocolModel.h_hhuCA3
+                h_hhiA3 = protocolModel.h_hhiA3
+                h_hhiB3 = protocolModel.h_hhiB3
+                h_hhiC3 = protocolModel.h_hhiC3
+                h_hhuOV3 = protocolModel.h_hhuOV3
+                h_hhuAB4 = protocolModel.h_hhuAB4
+                h_hhuBC4 = protocolModel.h_hhuBC4
+                h_hhuCA4 = protocolModel.h_hhuCA4
+                h_hhiA4 = protocolModel.h_hhiA4
+                h_hhiB4 = protocolModel.h_hhiB4
+                h_hhiC4 = protocolModel.h_hhiC4
+                h_hhuOV4 = protocolModel.h_hhuOV4
+                h_hhuAB5 = protocolModel.h_hhuAB5
+                h_hhuBC5 = protocolModel.h_hhuBC5
+                h_hhuCA5 = protocolModel.h_hhuCA5
+                h_hhiA5 = protocolModel.h_hhiA5
+                h_hhiB5 = protocolModel.h_hhiB5
+                h_hhiC5 = protocolModel.h_hhiC5
+                h_hhuOV5 = protocolModel.h_hhuOV5
+                h_hhuAB6 = protocolModel.h_hhuAB6
+                h_hhuBC6 = protocolModel.h_hhuBC6
+                h_hhuCA6 = protocolModel.h_hhuCA6
+                h_hhiA6 = protocolModel.h_hhiA6
+                h_hhiB6 = protocolModel.h_hhiB6
+                h_hhiC6 = protocolModel.h_hhiC6
+                h_hhuOV6 = protocolModel.h_hhuOV6
+                h_hhuAB7 = protocolModel.h_hhuAB7
+                h_hhuBC7 = protocolModel.h_hhuBC7
+                h_hhuCA7 = protocolModel.h_hhuCA7
+                h_hhiA7 = protocolModel.h_hhiA7
+                h_hhiB7 = protocolModel.h_hhiB7
+                h_hhiC7 = protocolModel.h_hhiC7
+                h_hhuOV7 = protocolModel.h_hhuOV7
+                h_hhuAB8 = protocolModel.h_hhuAB8
+                h_hhuBC8 = protocolModel.h_hhuBC8
+                h_hhuCA8 = protocolModel.h_hhuCA8
+                h_hhiA8 = protocolModel.h_hhiA8
+                h_hhiB8 = protocolModel.h_hhiB8
+                h_hhiC8 = protocolModel.h_hhiC8
+                h_hhuOV8 = protocolModel.h_hhuOV8
+                h_hhuAB9 = protocolModel.h_hhuAB9
+                h_hhuBC9 = protocolModel.h_hhuBC9
+                h_hhuCA9 = protocolModel.h_hhuCA9
+                h_hhiA9 = protocolModel.h_hhiA9
+                h_hhiB9 = protocolModel.h_hhiB9
+                h_hhiC9 = protocolModel.h_hhiC9
+                h_hhuOV9 = protocolModel.h_hhuOV9
+                h_hhResult = protocolModel.h_hhResult
+
+
+                kzUAB = protocolModel.kzUAB
+                kzUBC = protocolModel.kzUBC
+                kzUCA = protocolModel.kzUCA
+                kzIA = protocolModel.kzIA
+                kzIB = protocolModel.kzIB
+                kzIC = protocolModel.kzIC
+                kzP1 = protocolModel.kzP1
+                kzResult = protocolModel.kzResult
+            }
+        }
         runLater {
             infoNotification("Сохранение протокола", "Протокол сохранен")
         }
@@ -383,15 +380,15 @@ class MainViewController : Controller() {
         list.add(viu)
         list.add(ikas)
         list.add(ikasMPT)
-        list.add(hh)
-        list.add(hhMPT)
-        list.add(h_hh)
-        list.add(h_hhSG)
         list.add(nSD)
         list.add(nSG)
         list.add(nMPT)
         list.add(nGPT)
-        list.add(load)
+        list.add(hh)
+        list.add(hhMPT)
+        list.add(h_hh)
+        list.add(h_hhSG)
+//        list.add(load)
         list.add(loadMPT)
         list.add(n)
         list.add(ktr)
@@ -557,8 +554,8 @@ class MainViewController : Controller() {
     }
 
     fun clearProtocol() {
-
         protocolModel.objectName = ""
+        protocolModel.type = ""
         protocolModel.date = ""
         protocolModel.time = ""
         protocolModel.operator = ""
@@ -566,165 +563,173 @@ class MainViewController : Controller() {
         protocolModel.p2 = ""
         protocolModel.uN = ""
         protocolModel.iN = ""
+        protocolModel.uOV = ""
+        protocolModel.iOV = ""
         protocolModel.nAsync = ""
         protocolModel.kpd = ""
         protocolModel.cos = ""
         protocolModel.scheme = ""
-        //MGR//
-        protocolModel.mgrU = ""
-        protocolModel.mgrR15 = ""
-        protocolModel.mgrR60 = ""
-        protocolModel.mgrkABS = ""
+//MGR//,
+        protocolModel.mgrU1 = ""
+        protocolModel.mgrU2 = ""
+        protocolModel.mgrU3 = ""
+        protocolModel.mgrR151 = ""
+        protocolModel.mgrR152 = ""
+        protocolModel.mgrR153 = ""
+        protocolModel.mgrR601 = ""
+        protocolModel.mgrR602 = ""
+        protocolModel.mgrR603 = ""
+        protocolModel.mgrkABS1 = ""
+        protocolModel.mgrkABS2 = ""
+        protocolModel.mgrkABS3 = ""
         protocolModel.mgrTemp = ""
-        protocolModel.mgrResult = ""
-        //VIU//
+        protocolModel.mgrResult1 = ""
+        protocolModel.mgrResult2 = ""
+        protocolModel.mgrResult3 = ""
+//VIU//,
         protocolModel.viuU = ""
         protocolModel.viuI = ""
         protocolModel.viuTime = ""
         protocolModel.viuResult = ""
-//IKAS//
+//IKAS//,
         protocolModel.ikasR1 = ""
         protocolModel.ikasR2 = ""
         protocolModel.ikasR3 = ""
         protocolModel.ikasResult = ""
-        //HH//
-        protocolModel.hhUAB = ""
-        protocolModel.hhUBC = ""
-        protocolModel.hhUCA = ""
-        protocolModel.hhIA = ""
-        protocolModel.hhIB = ""
-        protocolModel.hhIC = ""
-        protocolModel.hhTempOI = ""
-        protocolModel.hhTempAmb = ""
-        protocolModel.hhSpeed = ""
-        protocolModel.hhVibro1 = ""
-        protocolModel.hhVibro2 = ""
-        protocolModel.hhTime = ""
-        protocolModel.hhP1 = ""
-        protocolModel.hhCos = ""
-        protocolModel.hhResult = ""
-//RUNNING//
-        protocolModel.runningUAB = ""
-        protocolModel.runningUBC = ""
-        protocolModel.runningUCA = ""
-        protocolModel.runningIA = ""
-        protocolModel.runningIB = ""
-        protocolModel.runningIC = ""
-        protocolModel.runningTempOI = ""
-        protocolModel.runningTempAmb = ""
-        protocolModel.runningSpeed = ""
-        protocolModel.runningVibro1 = ""
-        protocolModel.runningVibro2 = ""
-        protocolModel.runningTime = ""
-        protocolModel.runningP1 = ""
-        protocolModel.runningCos = ""
-        protocolModel.runningResult = ""
-//LOADMPT//
-        protocolModel.loadResult = ""
-        protocolModel.loadUOV = ""
-        protocolModel.loadIOV = ""
-        protocolModel.loadUOY = ""
-        protocolModel.loadIOY = ""
-        protocolModel.loadN = ""
-        protocolModel.loadP = ""
-        protocolModel.loadTempAmb = ""
-        protocolModel.loadTempOI = ""
-//H_HH//
-//        protocolModel.h_hhUAB1 = ""
-//        protocolModel.h_hhUBC1 = ""
-//        protocolModel.h_hhUCA1 = ""
-//        protocolModel.h_hhIA1 = ""
-//        protocolModel.h_hhIB1 = ""
-//        protocolModel.h_hhIC1 = ""
-//        protocolModel.h_hhP1 = ""
-//        protocolModel.h_hhUAB2 = ""
-//        protocolModel.h_hhUBC2 = ""
-//        protocolModel.h_hhUCA2 = ""
-//        protocolModel.h_hhIA2 = ""
-//        protocolModel.h_hhIB2 = ""
-//        protocolModel.h_hhIC2 = ""
-//        protocolModel.h_hhP2 = ""
-//        protocolModel.h_hhUAB3 = ""
-//        protocolModel.h_hhUBC3 = ""
-//        protocolModel.h_hhUCA3 = ""
-//        protocolModel.h_hhIA3 = ""
-//        protocolModel.h_hhIB3 = ""
-//        protocolModel.h_hhIC3 = ""
-//        protocolModel.h_hhP3 = ""
-//        protocolModel.h_hhUAB4 = ""
-//        protocolModel.h_hhUBC4 = ""
-//        protocolModel.h_hhUCA4 = ""
-//        protocolModel.h_hhIA4 = ""
-//        protocolModel.h_hhIB4 = ""
-//        protocolModel.h_hhIC4 = ""
-//        protocolModel.h_hhP4 = ""
-//        protocolModel.h_hhUAB5 = ""
-//        protocolModel.h_hhUBC5 = ""
-//        protocolModel.h_hhUCA5 = ""
-//        protocolModel.h_hhIA5 = ""
-//        protocolModel.h_hhIB5 = ""
-//        protocolModel.h_hhIC5 = ""
-//        protocolModel.h_hhP5 = ""
-//        protocolModel.h_hhUAB6 = ""
-//        protocolModel.h_hhUBC6 = ""
-//        protocolModel.h_hhUCA6 = ""
-//        protocolModel.h_hhIA6 = ""
-//        protocolModel.h_hhIB6 = ""
-//        protocolModel.h_hhIC6 = ""
-//        protocolModel.h_hhP6 = ""
-//        protocolModel.h_hhUAB7 = ""
-//        protocolModel.h_hhUBC7 = ""
-//        protocolModel.h_hhUCA7 = ""
-//        protocolModel.h_hhIA7 = ""
-//        protocolModel.h_hhIB7 = ""
-//        protocolModel.h_hhIC7 = ""
-//        protocolModel.h_hhP7 = ""
-//        protocolModel.h_hhUAB8 = ""
-//        protocolModel.h_hhUBC8 = ""
-//        protocolModel.h_hhUCA8 = ""
-//        protocolModel.h_hhIA8 = ""
-//        protocolModel.h_hhIB8 = ""
-//        protocolModel.h_hhIC8 = ""
-//        protocolModel.h_hhP8 = ""
-//        protocolModel.h_hhUAB9 = ""
-//        protocolModel.h_hhUBC9 = ""
-//        protocolModel.h_hhUCA9 = ""
-//        protocolModel.h_hhIA9 = ""
-//        protocolModel.h_hhIB9 = ""
-//        protocolModel.h_hhIC9 = ""
-//        protocolModel.h_hhP9 = ""
-//        protocolModel.h_hhResult  = ""
-        //KTR//
-        protocolModel.ktrUAVG1 = ""
-        protocolModel.ktrUAVG2 = ""
-        protocolModel.ktrKTR = ""
-        protocolModel.ktrResult = ""
-        //N//
+//N_DPT//,
+        protocolModel.dptNuOV = ""
+        protocolModel.dptNiOV = ""
+        protocolModel.dptNuN = ""
+        protocolModel.dptNiN = ""
+        protocolModel.dptNP1 = ""
+        protocolModel.dptNTOI = ""
+        protocolModel.dptNTAmb = ""
+        protocolModel.dptNN = ""
+        protocolModel.dptNResult = ""
+//HH_DPT//,
+        protocolModel.dptHHuOV = ""
+        protocolModel.dptHHiOV = ""
+        protocolModel.dptHHuN = ""
+        protocolModel.dptHHiN = ""
+        protocolModel.dptHHP1 = ""
+        protocolModel.dptHHTOI = ""
+        protocolModel.dptHHTAmb = ""
+        protocolModel.dptHHN = ""
+        protocolModel.dptHHResult = ""
+        protocolModel.dptHHTime = ""
+//LOAD_DPT//,
+        protocolModel.dptLOADuOV = ""
+        protocolModel.dptLOADiOV = ""
+        protocolModel.dptLOADuN = ""
+        protocolModel.dptLOADiN = ""
+        protocolModel.dptLOADP1 = ""
+        protocolModel.dptLOADTOI = ""
+        protocolModel.dptLOADTAmb = ""
+        protocolModel.dptLOADN = ""
+        protocolModel.dptLOADResult = ""
+//N_GPT//,
+        protocolModel.gptNuOV = ""
+        protocolModel.gptNiOV = ""
+        protocolModel.gptNuN = ""
+        protocolModel.gptNiN = ""
+        protocolModel.gptNP1 = ""
+        protocolModel.gptNTOI = ""
+        protocolModel.gptNTAmb = ""
+        protocolModel.gptNN = ""
+        protocolModel.gptNResult = ""
+///////////
+//N//,
         protocolModel.nUAB = ""
         protocolModel.nUBC = ""
         protocolModel.nUCA = ""
         protocolModel.nIA = ""
         protocolModel.nIB = ""
         protocolModel.nIC = ""
-        protocolModel.nSpeed = ""
         protocolModel.nF = ""
+        protocolModel.nTempOI = ""
+        protocolModel.nTempAmb = ""
+        protocolModel.nSpeed = ""
+        protocolModel.nVibro1 = ""
+        protocolModel.nVibro2 = ""
+        protocolModel.nTime = ""
+        protocolModel.nP1 = ""
+        protocolModel.nCos = ""
         protocolModel.nResult = ""
-        //MV//
-        protocolModel.mvUAB1 = ""
-        protocolModel.mvUBC1 = ""
-        protocolModel.mvUCA1 = ""
-        protocolModel.mvIA1 = ""
-        protocolModel.mvIB1 = ""
-        protocolModel.mvIC1 = ""
-        protocolModel.mvUAB2 = ""
-        protocolModel.mvUBC2 = ""
-        protocolModel.mvUCA2 = ""
-        protocolModel.mvIA2 = ""
-        protocolModel.mvIB2 = ""
-        protocolModel.mvIC2 = ""
-        protocolModel.mvDeviation = ""
-        protocolModel.mvResult = ""
-        //KZ//
+//H_HH//,
+        protocolModel.h_hhuAB1 = ""
+        protocolModel.h_hhuBC1 = ""
+        protocolModel.h_hhuCA1 = ""
+        protocolModel.h_hhiA1 = ""
+        protocolModel.h_hhiB1 = ""
+        protocolModel.h_hhiC1 = ""
+        protocolModel.h_hhuOV1 = ""
+
+        protocolModel.h_hhuAB2 = ""
+        protocolModel.h_hhuBC2 = ""
+        protocolModel.h_hhuCA2 = ""
+        protocolModel.h_hhiA2 = ""
+        protocolModel.h_hhiB2 = ""
+        protocolModel.h_hhiC2 = ""
+        protocolModel.h_hhuOV2 = ""
+
+        protocolModel.h_hhuAB3 = ""
+        protocolModel.h_hhuBC3 = ""
+        protocolModel.h_hhuCA3 = ""
+        protocolModel.h_hhiA3 = ""
+        protocolModel.h_hhiB3 = ""
+        protocolModel.h_hhiC3 = ""
+        protocolModel.h_hhuOV3 = ""
+
+        protocolModel.h_hhuAB4 = ""
+        protocolModel.h_hhuBC4 = ""
+        protocolModel.h_hhuCA4 = ""
+        protocolModel.h_hhiA4 = ""
+        protocolModel.h_hhiB4 = ""
+        protocolModel.h_hhiC4 = ""
+        protocolModel.h_hhuOV4 = ""
+
+        protocolModel.h_hhuAB5 = ""
+        protocolModel.h_hhuBC5 = ""
+        protocolModel.h_hhuCA5 = ""
+        protocolModel.h_hhiA5 = ""
+        protocolModel.h_hhiB5 = ""
+        protocolModel.h_hhiC5 = ""
+        protocolModel.h_hhuOV5 = ""
+
+        protocolModel.h_hhuAB6 = ""
+        protocolModel.h_hhuBC6 = ""
+        protocolModel.h_hhuCA6 = ""
+        protocolModel.h_hhiA6 = ""
+        protocolModel.h_hhiB6 = ""
+        protocolModel.h_hhiC6 = ""
+        protocolModel.h_hhuOV6 = ""
+
+        protocolModel.h_hhuAB7 = ""
+        protocolModel.h_hhuBC7 = ""
+        protocolModel.h_hhuCA7 = ""
+        protocolModel.h_hhiA7 = ""
+        protocolModel.h_hhiB7 = ""
+        protocolModel.h_hhiC7 = ""
+        protocolModel.h_hhuOV7 = ""
+
+        protocolModel.h_hhuAB8 = ""
+        protocolModel.h_hhuBC8 = ""
+        protocolModel.h_hhuCA8 = ""
+        protocolModel.h_hhiA8 = ""
+        protocolModel.h_hhiB8 = ""
+        protocolModel.h_hhiC8 = ""
+        protocolModel.h_hhuOV8 = ""
+
+        protocolModel.h_hhuAB9 = ""
+        protocolModel.h_hhuBC9 = ""
+        protocolModel.h_hhuCA9 = ""
+        protocolModel.h_hhiA9 = ""
+        protocolModel.h_hhiB9 = ""
+        protocolModel.h_hhiC9 = ""
+        protocolModel.h_hhuOV9 = ""
+
+        protocolModel.h_hhResult = ""
+//KZ//,
         protocolModel.kzUAB = ""
         protocolModel.kzUBC = ""
         protocolModel.kzUCA = ""

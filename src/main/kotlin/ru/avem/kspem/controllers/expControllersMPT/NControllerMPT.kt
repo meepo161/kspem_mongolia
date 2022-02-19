@@ -212,7 +212,6 @@ class NControllerMPT : CustomController() {
             }
             model.data.timeExp.value = "0.0"
         }
-        saveData()
 
         finalizeExperiment()
 
@@ -226,7 +225,7 @@ class NControllerMPT : CustomController() {
                 appendMessageToLog(LogTag.ERROR, "Испытание прервано по причине: $cause")
             }
         }
-        protocolModel.nResult = model.data.result.value
+        saveData()
         restoreData()
     }
 
@@ -530,13 +529,28 @@ class NControllerMPT : CustomController() {
     }
 
     private fun saveData() {
-        protocolModel.nSpeed = model.data.n.value
-        protocolModel.nF = model.data.f.value
-        protocolModel.nResult = model.data.result.value
+        protocolModel.dptNN         = "model.data.n.value"
+        protocolModel.dptNP1        = "model.data.p.value"
+        protocolModel.dptNTOI       = "model.data.tempOI.value"
+        protocolModel.dptNTAmb      = "model.data.tempAmb.value"
+        protocolModel.dptNiOV       = "model.data.iOV.value"
+        protocolModel.dptNuOV       = "model.data.uOV.value"
+        protocolModel.dptNuN        = "model.data.uOY.value"
+        protocolModel.dptNiN        = "model.data.iOY.value"
+        protocolModel.dptNResult    = "model.data.result.value"
+
+//        protocolModel.dptNN = model.data.n.value
+//        protocolModel.dptNP1 = model.data.p.value
+//        protocolModel.dptNTOI = model.data.tempOI.value
+//        protocolModel.dptNTAmb = model.data.tempAmb.value
+//        protocolModel.dptNiOV = model.data.iOV.value
+//        protocolModel.dptNuOV = model.data.uOV.value
+//        protocolModel.dptNuN = model.data.uOY.value
+//        protocolModel.dptNiN = model.data.iOY.value
+//        protocolModel.dptNResult = model.data.result.value
     }
 
     private fun restoreData() {
-        model.data.n.value = protocolModel.nSpeed
-        model.data.f.value = protocolModel.nF
+
     }
 }

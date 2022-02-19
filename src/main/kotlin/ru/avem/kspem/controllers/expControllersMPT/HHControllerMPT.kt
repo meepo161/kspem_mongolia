@@ -18,7 +18,6 @@ import kotlin.math.abs
 class HHControllerMPT : CustomController() {
     override val model: HHViewMPT by inject()
     override val name = model.name
-    private var setTime = 0.0
     private var ktrVoltage = 1.0
 
     private var ktrAmperageOY = 500 / 0.075
@@ -53,6 +52,8 @@ class HHControllerMPT : CustomController() {
 
     @Volatile
     var voltageTRN = 0.0
+
+    private var setTime = objectModel!!.timeHH.toDouble()
 
     override fun start() {
         model.clearTables()
@@ -212,7 +213,7 @@ class HHControllerMPT : CustomController() {
                 appendMessageToLog(LogTag.ERROR, "Испытание прервано по причине: $cause")
             }
         }
-        protocolModel.nResult = model.data.result.value
+        saveData()
         restoreData()
     }
 
@@ -372,22 +373,28 @@ class HHControllerMPT : CustomController() {
     }
 
     private fun saveData() {
-        model.data.tempOI.value
-        model.data.tempAmb.value
-        model.data.n.value
-        model.data.uOV.value
-        model.data.iOV.value
-        model.data.uOY.value
-        model.data.iOY.value
-        model.data.timeExp.value
-        model.data.result.value
-        model.data.p.value
-
-        protocolModel.nSpeed = model.data.n.value
-        protocolModel.nResult = model.data.result.value
+        protocolModel.dptHHN        = "model.data.n.value"
+        protocolModel.dptHHP1       = "model.data.p.value"
+        protocolModel.dptHHResult   = "model.data.result.value"
+        protocolModel.dptHHTOI      = "model.data.tempOI.value"
+        protocolModel.dptHHTAmb     = "model.data.tempAmb.value"
+        protocolModel.dptHHiOV      = "model.data.iOV.value"
+        protocolModel.dptHHuOV      = "model.data.uOV.value"
+        protocolModel.dptHHuN       = "model.data.uOY.value"
+        protocolModel.dptHHiN       = "model.data.iOY.value"
+        protocolModel.dptHHTime     = "setTime.autoformat()"
+//        protocolModel.dptHHN = model.data.n.value
+//        protocolModel.dptHHP1 = model.data.p.value
+//        protocolModel.dptHHResult = model.data.result.value
+//        protocolModel.dptHHTOI = model.data.tempOI.value
+//        protocolModel.dptHHTAmb = model.data.tempAmb.value
+//        protocolModel.dptHHiOV = model.data.iOV.value
+//        protocolModel.dptHHuOV = model.data.uOV.value
+//        protocolModel.dptHHuN = model.data.uOY.value
+//        protocolModel.dptHHiN = model.data.iOY.value
+//        protocolModel.dptHHTime = setTime.autoformat()
     }
 
     private fun restoreData() {
-        model.data.n.value = protocolModel.nSpeed
     }
 }

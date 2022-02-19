@@ -7,7 +7,7 @@ import javafx.scene.control.TableView
 import javafx.scene.control.TextField
 import javafx.scene.layout.Priority
 import ru.avem.kspem.communication.utils.toHHmmss
-import ru.avem.kspem.controllers.expControllersMPT.LoadControllerMPT
+import ru.avem.kspem.data.loadMPT
 import ru.avem.kspem.utils.Singleton
 import ru.avem.kspem.utils.Toast
 import tornadofx.*
@@ -17,7 +17,6 @@ import kotlin.time.ExperimentalTime
 class LoadViewMPT : View() {
     val name = "Проверка коммутации при номинальной нагрузке и кратковременной перегрузки по току"
     val data = LoadDataMPT()
-    private val controller: LoadControllerMPT by inject()
 
     var tfSparking1: TextField by singleAssign()
     var tfSparking2: TextField by singleAssign()
@@ -108,7 +107,11 @@ class LoadViewMPT : View() {
                 button("Сохранить") {
                     action {
                         try {
-                            Singleton.sparkingTime.add(toHHmmss(((controller.timerMyStart * 1000) - (data.timeExp.value.toDouble() * 1000)).toLong()))
+                            if (loadMPT.loadNomStarted) {
+                                Singleton.sparkingTime.add(toHHmmss(((loadMPT.timerLoadNom * 1000) - (data.timeExp.value.toDouble() * 1000)).toLong()))
+                            } else {
+                                Singleton.sparkingTime.add(toHHmmss(((loadMPT.timerLoad * 1000) - (data.timeExp.value.toDouble() * 1000)).toLong()))
+                            }
                             Singleton.sparking1.add(tfSparking1.text.replace(",", "."))
                             Singleton.sparking2.add(tfSparking2.text.replace(",", "."))
                             Singleton.sparking3.add(tfSparking3.text.replace(",", "."))

@@ -163,8 +163,6 @@ class MGRController : CustomController() {
         model.data.tempAmb.value = "5"
         model.data.result.value = "6"
         saveData()
-
-        protocolModel.mgrResult = model.data.result.value
     }
 
 
@@ -174,11 +172,11 @@ class MGRController : CustomController() {
     }
 
     private fun saveData() {
-        protocolModel.mgrU = model.data.U.value
-        protocolModel.mgrR15 = model.data.R15.value
-        protocolModel.mgrR60 = model.data.R60.value
-        protocolModel.mgrkABS = model.data.K_ABS.value
-        protocolModel.mgrTemp = model.data.tempAmb.value
-        protocolModel.mgrResult = model.data.result.value
+        protocolModel.mgrTemp = model.data.tempOI.value
+        protocolModel.mgrU1 = model.data.U.value
+        protocolModel.mgrR151 = model.data.R15.value
+        protocolModel.mgrR601 = model.data.R60.value
+        protocolModel.mgrkABS1 = model.data.K_ABS.value
+        protocolModel.mgrResult1 = model.data.result.value
     }
 }

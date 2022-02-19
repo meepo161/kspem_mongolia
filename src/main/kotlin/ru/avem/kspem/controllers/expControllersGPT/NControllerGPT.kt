@@ -328,7 +328,7 @@ class NControllerGPT : CustomController() {
                 appendMessageToLog(LogTag.ERROR, "Испытание прервано по причине: $cause")
             }
         }
-        protocolModel.nResult = model.data.result.value
+        protocolModel.gptNResult = model.data.result.value
         restoreData()
     }
 
@@ -618,11 +618,26 @@ class NControllerGPT : CustomController() {
     }
 
     private fun saveData() {
-        protocolModel.nSpeed = model.data.n.value
-        protocolModel.nResult = model.data.result.value
+        protocolModel.gptNN = model.data.n.value
+        protocolModel.gptNP1 = model.data.p.value
+        protocolModel.gptNTOI = model.data.tempOI.value
+        protocolModel.gptNTAmb = model.data.tempAmb.value
+        protocolModel.gptNiOV = model.data.iOV.value
+        protocolModel.gptNuOV = model.data.uOV.value
+        protocolModel.gptNuN = model.data.uOY.value
+        protocolModel.gptNiN = model.data.iOY.value
+        protocolModel.gptNResult = model.data.result.value
     }
 
     private fun restoreData() {
-        model.data.n.value = protocolModel.nSpeed
+        model.data.n.value =  protocolModel.gptNN
+        model.data.p.value =  protocolModel.gptNP1
+        model.data.tempOI.value =  protocolModel.gptNTOI
+        model.data.tempAmb.value =  protocolModel.gptNTAmb
+        model.data.iOV.value =  protocolModel.gptNiOV
+        model.data.uOV.value =  protocolModel.gptNuOV
+        model.data.uOY.value =  protocolModel.gptNuN
+        model.data.iOY.value =  protocolModel.gptNiN
+        model.data.result.value =  protocolModel.gptNResult
     }
 }

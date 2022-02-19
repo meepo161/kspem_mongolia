@@ -310,14 +310,19 @@ class NControllerSG : CustomController() {
             }
         }
 
-        protocolModel.nUAB = model.data.uAB.value
-        protocolModel.nUBC = model.data.uBC.value
-        protocolModel.nUCA = model.data.uCA.value
-        protocolModel.nIA = model.data.iA.value
-        protocolModel.nIB = model.data.iB.value
-        protocolModel.nIC = model.data.iC.value
-        protocolModel.nSpeed = model.data.n.value
-        protocolModel.nF = model.data.f.value
+        try {
+            saveData()
+        } catch (e:Exception) {
+            appendMessageToLog(LogTag.ERROR, "Ошибка сохранения протокола")
+        }
+//        protocolModel.nUAB = model.data.uAB.value
+//        protocolModel.nUBC = model.data.uBC.value
+//        protocolModel.nUCA = model.data.uCA.value
+//        protocolModel.nIA = model.data.iA.value
+//        protocolModel.nIB = model.data.iB.value
+//        protocolModel.nIC = model.data.iC.value
+//        protocolModel.nSpeed = model.data.n.value
+//        protocolModel.nF = model.data.f.value
 
         delta.stopObject()
 
@@ -469,7 +474,7 @@ class NControllerSG : CustomController() {
         protocolModel.nIC = model.data.iC.value
         protocolModel.nSpeed = model.data.n.value
         protocolModel.nF = model.data.f.value
-        protocolModel.nResult = model.data.result.value
+//        protocolModel.nResult = model.data.result.value
     }
 
     private fun restoreData() {

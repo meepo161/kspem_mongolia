@@ -28,7 +28,6 @@ import kotlin.math.abs
 class LoadControllerMPT : CustomController() {
     override val model: LoadViewMPT by inject()
     override val name = model.name
-    private var setTime = 0.0
     private var ktrVoltage = 1.0
 
     private var ktrAmperageOY = 500 / 0.075
@@ -92,6 +91,9 @@ class LoadControllerMPT : CustomController() {
     var currentFreqLast = 0.0
 
     @Volatile
+    var loadNomStarted = false
+
+    @Volatile
     var regulateStarted = false
 
     @Volatile
@@ -100,17 +102,18 @@ class LoadControllerMPT : CustomController() {
     @Volatile
     var unmStarted = false
 
-    var timerMy = 20.0
+    var timerLoad = objectModel!!.timeMVZ.toDouble()
 
-    var timerMyStart = 20.0
+    var timerLoadNom = objectModel!!.timeRUNNING.toDouble()
 
     override fun start() {
         model.clearTables()
         super.start()
         // (value-4)*0.625
 
-        timerMy = 20.0
-        timerMyStart = 20.0
+        timerLoad = objectModel!!.timeMVZ.toDouble()
+        timerLoadNom = objectModel!!.timeRUNNING.toDouble()
+
         isReverseNM = false
         isReverseOI = false
         voltageTVN = 0.0
@@ -119,7 +122,6 @@ class LoadControllerMPT : CustomController() {
         rotateSpeedSet = objectModel!!.nAsync.toDouble()
         voltageOVSet = objectModel!!.uOV.toDouble()
         amperageSet = objectModel!!.iN.toDouble()
-        setTime = objectModel!!.timeHH.toDouble()
         sparkingTime.clear()
         sparking1.clear()
         sparking2.clear()
@@ -480,19 +482,21 @@ class LoadControllerMPT : CustomController() {
         }
 
         regulateStarted = false
+        loadNomStarted = true
 
         if (isExperimentRunning) {
-            appendMessageToLog(LogTag.MESSAGE, "Выдержка 20 секунд")
-            while (isExperimentRunning && timerMy > 0) {
-                timerMy -= 0.1
-                if (timerMy >= 0) {
-                    model.data.timeExp.value = timerMy.autoformat()
+            appendMessageToLog(LogTag.MESSAGE, "Выдержка ${timerLoadNom.autoformat()} секунд")
+            while (isExperimentRunning && timerLoadNom > 0) {
+                timerLoadNom -= 0.1
+                if (timerLoadNom >= 0) {
+                    model.data.timeExp.value = timerLoadNom.autoformat()
                 }
                 sleep(100)
             }
-            model.data.timeExp.value = "0.0"
+            model.data.timeExp.value = ""
         }
 
+        loadNomStarted = false
         regulate12Started = true
 
         if (isExperimentRunning) {
@@ -516,16 +520,16 @@ class LoadControllerMPT : CustomController() {
         unmStarted = true
 
         if (isExperimentRunning) {
-            appendMessageToLog(LogTag.MESSAGE, "Выдержка 20 секунд")
-            timerMy = 20.0
-            while (isExperimentRunning && timerMy > 0) {
-                timerMy -= 0.1
-                if (timerMy >= 0) {
-                    model.data.timeExp.value = timerMy.autoformat()
+            appendMessageToLog(LogTag.MESSAGE, "Выдержка ${timerLoad.autoformat()} секунд")
+            timerLoad = 20.0
+            while (isExperimentRunning && timerLoad > 0) {
+                timerLoad -= 0.1
+                if (timerLoad >= 0) {
+                    model.data.timeExp.value = timerLoad.autoformat()
                 }
                 sleep(100)
             }
-            model.data.timeExp.value = "0.0"
+            model.data.timeExp.value = ""
         }
 
         unmStarted = false
@@ -568,7 +572,6 @@ class LoadControllerMPT : CustomController() {
 
         isExperimentRunning = false
         finalizeExperiment()
-        restoreData()
 
         when (cause) {
             "" -> {
@@ -580,7 +583,7 @@ class LoadControllerMPT : CustomController() {
                 appendMessageToLog(LogTag.ERROR, "Испытание прервано по причине: $cause")
             }
         }
-        protocolModel.nResult = model.data.result.value
+        protocolModel.dptLOADResult = model.data.result.value
         restoreData()
     }
 
@@ -803,28 +806,36 @@ class LoadControllerMPT : CustomController() {
     }
 
     private fun saveData() {
-        protocolModel.loadResult = model.data.uOV.value
-        protocolModel.loadUOV = model.data.uOV.value
-        protocolModel.loadIOV = model.data.iOV.value
-        protocolModel.loadUOY = model.data.uOY.value
-        protocolModel.loadIOY = model.data.iOY.value
-        protocolModel.loadN = model.data.n.value
-        protocolModel.loadP = model.data.p.value
-        protocolModel.loadTempAmb = model.data.tempAmb.value
-        protocolModel.loadTempOI = model.data.tempOI.value
-        protocolModel.loadResult = model.data.timeExp.value
+        protocolModel.dptLOADN = "model.data.n.value"
+        protocolModel.dptLOADP1 = "model.data.p.value"
+        //protocolModel.dptLOADResult = model.data.result.value
+        protocolModel.dptLOADTOI = "model.data.tempOI.value"
+        protocolModel.dptLOADTAmb = "model.data.tempAmb.value"
+        protocolModel.dptLOADiOV = "model.data.iOV.value"
+        protocolModel.dptLOADuOV = "model.data.uOV.value"
+        protocolModel.dptLOADuN = "model.data.uOY.value"
+        protocolModel.dptLOADiN = "model.data.iOY.value"
+
+//        protocolModel.dptLOADN = model.data.n.value
+//        protocolModel.dptLOADP1 = model.data.p.value
+//        //protocolModel.dptLOADResult = model.data.result.value
+//        protocolModel.dptLOADTOI = model.data.tempOI.value
+//        protocolModel.dptLOADTAmb = model.data.tempAmb.value
+//        protocolModel.dptLOADiOV = model.data.iOV.value
+//        protocolModel.dptLOADuOV = model.data.uOV.value
+//        protocolModel.dptLOADuN = model.data.uOY.value
+//        protocolModel.dptLOADiN = model.data.iOY.value
     }
 
     private fun restoreData() {
-        model.data.uOV.value = protocolModel.loadResult
-        model.data.uOV.value = protocolModel.loadUOV
-        model.data.iOV.value = protocolModel.loadIOV
-        model.data.uOY.value = protocolModel.loadUOY
-        model.data.iOY.value = protocolModel.loadIOY
-        model.data.n.value = protocolModel.loadN
-        model.data.p.value = protocolModel.loadP
-        model.data.tempAmb.value = protocolModel.loadTempAmb
-        model.data.tempOI.value = protocolModel.loadTempOI
-        model.data.timeExp.value = protocolModel.loadResult
+        model.data.n.value = protocolModel.dptLOADN
+        model.data.p.value = protocolModel.dptLOADP1
+       // model.data.result.value = protocolModel.dptLOADResult
+        model.data.tempOI.value = protocolModel.dptLOADTOI
+        model.data.tempAmb.value = protocolModel.dptLOADTAmb
+        model.data.iOV.value = protocolModel.dptLOADiOV
+        model.data.uOV.value = protocolModel.dptLOADuOV
+        model.data.uOY.value = protocolModel.dptLOADuN
+        model.data.iOY.value = protocolModel.dptLOADiN
     }
 }
