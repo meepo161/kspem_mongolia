@@ -16,60 +16,15 @@ class H_HHViewSG : View() {
     val name = "Определение характеристики холостого хода и испытание межвитковой изоляции на электрическую прочность"
 
     val h_hhTablePoints = observableListOf(
-        H_HHPointsSG(
-            SimpleStringProperty("1.3"),
-            SimpleStringProperty(),
-            SimpleStringProperty(),
-            SimpleStringProperty()
-        ),
-        H_HHPointsSG(
-            SimpleStringProperty("1.2"),
-            SimpleStringProperty(),
-            SimpleStringProperty(),
-            SimpleStringProperty()
-        ),
-        H_HHPointsSG(
-            SimpleStringProperty("1.1"),
-            SimpleStringProperty(),
-            SimpleStringProperty(),
-            SimpleStringProperty()
-        ),
-        H_HHPointsSG(
-            SimpleStringProperty("1.0"),
-            SimpleStringProperty(),
-            SimpleStringProperty(),
-            SimpleStringProperty()
-        ),
-        H_HHPointsSG(
-            SimpleStringProperty("0.9"),
-            SimpleStringProperty(),
-            SimpleStringProperty(),
-            SimpleStringProperty()
-        ),
-        H_HHPointsSG(
-            SimpleStringProperty("0.8"),
-            SimpleStringProperty(),
-            SimpleStringProperty(),
-            SimpleStringProperty()
-        ),
-        H_HHPointsSG(
-            SimpleStringProperty("0.7"),
-            SimpleStringProperty(),
-            SimpleStringProperty(),
-            SimpleStringProperty()
-        ),
-        H_HHPointsSG(
-            SimpleStringProperty("0.6"),
-            SimpleStringProperty(),
-            SimpleStringProperty(),
-            SimpleStringProperty()
-        ),
-        H_HHPointsSG(
-            SimpleStringProperty("0.5"),
-            SimpleStringProperty(),
-            SimpleStringProperty(),
-            SimpleStringProperty()
-        )
+        H_HHPointsSG(SimpleStringProperty("1.3"),SimpleStringProperty(), SimpleStringProperty(), SimpleStringProperty()),
+        H_HHPointsSG(SimpleStringProperty("1.2"),SimpleStringProperty(), SimpleStringProperty(), SimpleStringProperty()),
+        H_HHPointsSG(SimpleStringProperty("1.1"),SimpleStringProperty(), SimpleStringProperty(), SimpleStringProperty()),
+        H_HHPointsSG(SimpleStringProperty("1.0"),SimpleStringProperty(), SimpleStringProperty(), SimpleStringProperty()),
+        H_HHPointsSG(SimpleStringProperty("0.9"),SimpleStringProperty(), SimpleStringProperty(), SimpleStringProperty()),
+        H_HHPointsSG(SimpleStringProperty("0.8"),SimpleStringProperty(), SimpleStringProperty(), SimpleStringProperty()),
+        H_HHPointsSG(SimpleStringProperty("0.7"),SimpleStringProperty(), SimpleStringProperty(), SimpleStringProperty()),
+        H_HHPointsSG(SimpleStringProperty("0.6"),SimpleStringProperty(), SimpleStringProperty(), SimpleStringProperty()),
+        H_HHPointsSG(SimpleStringProperty("0.5"),SimpleStringProperty(), SimpleStringProperty(), SimpleStringProperty())
     )
 
     var lineChart: LineChart<Number, Number> by singleAssign()
@@ -89,76 +44,74 @@ class H_HHViewSG : View() {
         }
     }
 
-    override val root = scrollpane {
-        vbox(16.0, Pos.CENTER) {
-            label(name)
-            separator()
-            padding = insets(8)
+    override val root = vbox(16.0, Pos.CENTER) {
+        label(name)
+        separator()
+        padding = insets(8)
 
+        hboxConstraints {
+            hGrow = Priority.ALWAYS
+        }
+        label("Измеренные значения")
+        tableview(observableListOf(data)) {
             hboxConstraints {
-                hGrow = Priority.ALWAYS
+                useMaxWidth = true
             }
-            label("Измеренные значения")
-            tableview(observableListOf(data)) {
-                hboxConstraints {
-                    useMaxWidth = true
-                }
-                minHeight = 120.0
-                maxHeight = 120.0
-                isMouseTransparent = true
-                column("U ОВ, В", H_HHDataSG::uOV.getter).isEditable = false
-                column("I ОВ, А", H_HHDataSG::iOV.getter).isEditable = false
-                column("f, Гц", H_HHDataSG::f.getter).isEditable = false
-                column("P1, кВт", H_HHDataSG::p.getter).isEditable = false
-                column("cosφ, о.е.", H_HHDataSG::cos.getter).isEditable = false
-                columnResizePolicy = TableView.CONSTRAINED_RESIZE_POLICY
+            minHeight = 120.0
+            maxHeight = 120.0
+            isMouseTransparent = true
+            column("U ОВ, В", H_HHDataSG::uOV.getter).isEditable = false
+            column("I ОВ, А", H_HHDataSG::iOV.getter).isEditable = false
+            column("f, Гц", H_HHDataSG::f.getter).isEditable = false
+            column("P1, кВт", H_HHDataSG::p.getter).isEditable = false
+            column("cosφ, о.е.", H_HHDataSG::cos.getter).isEditable = false
+            columnResizePolicy = TableView.CONSTRAINED_RESIZE_POLICY
+        }
+        tableview(observableListOf(data)) {
+            hboxConstraints {
+                useMaxWidth = true
             }
-            tableview(observableListOf(data)) {
-                hboxConstraints {
-                    useMaxWidth = true
-                }
-                minHeight = 120.0
-                maxHeight = 120.0
-                isMouseTransparent = true
-                column("U AB, В", H_HHDataSG::uAB.getter).isEditable = false
-                column("U BC, В", H_HHDataSG::uBC.getter).isEditable = false
-                column("U CA, В", H_HHDataSG::uCA.getter).isEditable = false
-                column("I A, А", H_HHDataSG::iA.getter).isEditable = false
-                column("I B, А", H_HHDataSG::iB.getter).isEditable = false
-                column("I C, А", H_HHDataSG::iC.getter).isEditable = false
-                columnResizePolicy = TableView.CONSTRAINED_RESIZE_POLICY
+            minHeight = 120.0
+            maxHeight = 120.0
+            isMouseTransparent = true
+            column("U AB, В", H_HHDataSG::uAB.getter).isEditable = false
+            column("U BC, В", H_HHDataSG::uBC.getter).isEditable = false
+            column("U CA, В", H_HHDataSG::uCA.getter).isEditable = false
+            column("I A, А", H_HHDataSG::iA.getter).isEditable = false
+            column("I B, А", H_HHDataSG::iB.getter).isEditable = false
+            column("I C, А", H_HHDataSG::iC.getter).isEditable = false
+            columnResizePolicy = TableView.CONSTRAINED_RESIZE_POLICY
+        }
+        tableview(observableListOf(data)) {
+            hboxConstraints {
+                useMaxWidth = true
             }
-            tableview(observableListOf(data)) {
-                hboxConstraints {
-                    useMaxWidth = true
-                }
-                minHeight = 120.0
-                maxHeight = 120.0
-                isMouseTransparent = true
-                column("n, об/мин", H_HHDataSG::n.getter).isEditable = false
-                column("t воздуха, °C", H_HHDataSG::tempAmb.getter)
-                column("t ОИ, °C", H_HHDataSG::tempOI.getter)
-                columnResizePolicy = TableView.CONSTRAINED_RESIZE_POLICY
+            minHeight = 120.0
+            maxHeight = 120.0
+            isMouseTransparent = true
+            column("n, об/мин", H_HHDataSG::n.getter).isEditable = false
+            column("t воздуха, °C", H_HHDataSG::tempAmb.getter)
+            column("t ОИ, °C", H_HHDataSG::tempOI.getter)
+            columnResizePolicy = TableView.CONSTRAINED_RESIZE_POLICY
+        }
+        tableview(observableListOf(data)) {
+            hboxConstraints {
+                useMaxWidth = true
             }
-            tableview(observableListOf(data)) {
-                hboxConstraints {
-                    useMaxWidth = true
-                }
-                minHeight = 120.0
-                maxHeight = 120.0
-                isMouseTransparent = true
-                column("Время, сек", H_HHDataSG::timeExp.getter)
-                column("Результат", H_HHDataSG::result.getter)
-                columnResizePolicy = TableView.CONSTRAINED_RESIZE_POLICY
-            }
-            lineChart = linechart("", NumberAxis(), NumberAxis()) {
-                prefHeight = 460.0
-                prefWidth = 1860.0
-                data.add(series)
-                animated = false
-//                createSymbols = false
-                isLegendVisible = false
-            }
+            minHeight = 120.0
+            maxHeight = 120.0
+            isMouseTransparent = true
+            column("Время, сек", H_HHDataSG::timeExp.getter)
+            column("Результат", H_HHDataSG  ::result.getter)
+            columnResizePolicy = TableView.CONSTRAINED_RESIZE_POLICY
+        }
+        lineChart = linechart("", NumberAxis(), NumberAxis()) {
+            prefHeight = 460.0
+            prefWidth = 1860.0
+            data.add(series)
+            animated = false
+            createSymbols = false
+            isLegendVisible = false
         }
     }
 

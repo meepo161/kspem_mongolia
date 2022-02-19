@@ -167,11 +167,8 @@ class IKASControllerMPT : CustomController() {
     }
 
     private fun saveData() {
-        protocolModel.ikasR1        = "model.data.R1.value"
-        protocolModel.ikasR2        = "model.data.R2.value"
-        protocolModel.ikasResult    = "model.data.result.value"
-//        protocolModel.ikasR1 = model.data.R1.value
-//        protocolModel.ikasR2 = model.data.R2.value
-//        protocolModel.ikasResult = model.data.result.value
+        protocolModel.ikasR1 = model.data.R1.value
+        protocolModel.ikasR2 = model.data.R2.value
+        protocolModel.ikasResult = model.data.result.value
     }
 }

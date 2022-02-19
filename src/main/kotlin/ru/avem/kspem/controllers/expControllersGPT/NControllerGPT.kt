@@ -201,11 +201,11 @@ class NControllerGPT : CustomController() {
             }
         }
 
+
         if (isExperimentRunning) {
             regulateToRPM(rotateSpeedSet * 0.5, 100, 50, 100L, 200L)
         }
 
-        var isNeedBreak = false
         if (isExperimentRunning) {
             while (abs(voltageOY - 30) > 10 && isExperimentRunning) {
                 if (voltageOY < 30) {
@@ -220,18 +220,16 @@ class NControllerGPT : CustomController() {
                     while (isExperimentRunning && timer > 0) {
                         timer -= 0.1
                         sleep(100)
-                        if (amperageOY > 2) {
+                        if (amperageOY > 0.3) {
+                            appendMessageToLog(LogTag.ERROR, "Ток = $amperageOY")
+                            appendMessageToLog(LogTag.ERROR, "Изменена полярность ОВ")
                             voltageTRN = 0.0
                             pr102.setTRN(voltageTRN)
                             pr102.ov_oi(false)
                             pr102.ov_oi_obr(true)
-                            isNeedBreak = true
                             break
                         }
                     }
-                }
-                if (isNeedBreak) {
-                    break
                 }
             }
         }

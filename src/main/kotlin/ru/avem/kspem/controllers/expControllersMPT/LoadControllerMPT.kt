@@ -1,5 +1,6 @@
 package ru.avem.kspem.controllers.expControllersMPT
 
+import javafx.stage.Modality
 import ru.avem.kspem.communication.model.CommunicationModel
 import ru.avem.kspem.communication.model.devices.avem.avem4.Avem4Model
 import ru.avem.kspem.communication.model.devices.avem.avem7.Avem7Model
@@ -13,21 +14,19 @@ import ru.avem.kspem.data.objectModel
 import ru.avem.kspem.data.protocolModel
 import ru.avem.kspem.utils.LogTag
 import ru.avem.kspem.utils.Singleton
-import ru.avem.kspem.utils.Singleton.sparking1
-import ru.avem.kspem.utils.Singleton.sparking2
-import ru.avem.kspem.utils.Singleton.sparking3
-import ru.avem.kspem.utils.Singleton.sparking4
-import ru.avem.kspem.utils.Singleton.sparkingTime
 import ru.avem.kspem.utils.showTwoWayDialog
 import ru.avem.kspem.utils.sleep
+import ru.avem.kspem.view.AlertView
 import ru.avem.kspem.view.expViews.expViewsMPT.LoadViewMPT
 import ru.avem.stand.utils.autoformat
+import tornadofx.runLater
 import kotlin.concurrent.thread
 import kotlin.math.abs
 
 class LoadControllerMPT : CustomController() {
     override val model: LoadViewMPT by inject()
     override val name = model.name
+    private var setTime = 0.0
     private var ktrVoltage = 1.0
 
     private var ktrAmperageOY = 500 / 0.075
@@ -91,29 +90,22 @@ class LoadControllerMPT : CustomController() {
     var currentFreqLast = 0.0
 
     @Volatile
-    var loadNomStarted = false
-
-    @Volatile
     var regulateStarted = false
 
     @Volatile
     var regulate12Started = false
 
-    @Volatile
-    var unmStarted = false
+    var timerMy = 20.0
 
-    var timerLoad = objectModel!!.timeMVZ.toDouble()
-
-    var timerLoadNom = objectModel!!.timeRUNNING.toDouble()
+    var timerMyStart = 20.0
 
     override fun start() {
         model.clearTables()
         super.start()
         // (value-4)*0.625
 
-        timerLoad = objectModel!!.timeMVZ.toDouble()
-        timerLoadNom = objectModel!!.timeRUNNING.toDouble()
-
+        timerMy = 20.0
+        timerMyStart = 20.0
         isReverseNM = false
         isReverseOI = false
         voltageTVN = 0.0
@@ -122,11 +114,7 @@ class LoadControllerMPT : CustomController() {
         rotateSpeedSet = objectModel!!.nAsync.toDouble()
         voltageOVSet = objectModel!!.uOV.toDouble()
         amperageSet = objectModel!!.iN.toDouble()
-        sparkingTime.clear()
-        sparking1.clear()
-        sparking2.clear()
-        sparking3.clear()
-        sparking4.clear()
+        setTime = objectModel!!.timeHH.toDouble()
 
 
         if (isExperimentRunning) {
@@ -174,7 +162,7 @@ class LoadControllerMPT : CustomController() {
                 voltageOY = abs(value.toDouble())
                 if (voltageOY > 80 && rotateSpeed < 100) cause = "Проверьте датчик скорости"
 
-                if (regulateStarted && voltageOV > 50 && voltageOV < 500 && amperageOY < 0.05) {
+                if (regulateStarted && voltageOV > 50 && voltageOV < 500 && amperageOY < 0.1) {
                     cause = "Нет тока на ОЯ"
                 }
 
@@ -213,7 +201,7 @@ class LoadControllerMPT : CustomController() {
         }
 
         if (isExperimentRunning) {
-            initButtonPost()
+//            initButtonPost()
         }
 
         if (isExperimentRunning) {
@@ -253,9 +241,6 @@ class LoadControllerMPT : CustomController() {
                 pr102.setTRN(voltageTRN)
                 pr102.setTVN(voltageTVN)
                 sleep(1000)
-                if (voltageTVN > 0.5) {
-                    cause = "Проверьте датчик оборотов"
-                }
             }
             voltageTRN = 0.0
             voltageTVN = 0.0
@@ -303,9 +288,6 @@ class LoadControllerMPT : CustomController() {
                 pr102.setTRN(voltageTRN)
                 pr102.setTVN(voltageTVN)
                 sleep(1000)
-                if (voltageTVN > 0.5) {
-                    cause = "Проверьте датчик оборотов"
-                }
             }
             voltageTRN = 0.0
             voltageTVN = 0.0
@@ -322,13 +304,8 @@ class LoadControllerMPT : CustomController() {
                 sleep(100)
             }
             delta.stopObject()
-            var i = 0
             while (isExperimentRunning && rotateSpeed > 100) {
-                sleep(1000)
-                i += 1
-                if (i > 30) {
-                    cause = "НМ не остановилась"
-                }
+                sleep(100)
             }
         }
 
@@ -397,30 +374,8 @@ class LoadControllerMPT : CustomController() {
         regulateStarted = true
 
         if (isExperimentRunning) {
-            appendMessageToLog(LogTag.DEBUG, "Подъем напряжения обмотки возбуждения.")
+            appendMessageToLog(LogTag.DEBUG, "Подъем напряжения обмотки возбуждения и обмотки якоря.")
             voltageRegulationTRN(voltageOVSet, 300, 600)
-        }
-
-        thread(isDaemon = true) {
-            if (isExperimentRunning) {
-                var timer = 10.0
-                if (isExperimentRunning) {
-                    while (isExperimentRunning && timer > 0) {
-                        timer -= 0.1
-                        sleep(100)
-                    }
-                }
-            }
-            while (isExperimentRunning) {
-                if (rotateSpeed < 100 && !unmStarted) {
-                    cause = "Проверьте датчик оборотов"
-                }
-                sleep(1000)
-            }
-        }
-
-        if (isExperimentRunning) {
-            appendMessageToLog(LogTag.DEBUG, "Подъем напряжения обмотки якоря.")
             voltageRegulationTVN(voltageOYSet, 300, 600)
         }
 
@@ -480,25 +435,21 @@ class LoadControllerMPT : CustomController() {
 
             appendMessageToLog(LogTag.MESSAGE, "Регулировка до номинальной нагрузки завершена")
         }
-
         regulateStarted = false
-        loadNomStarted = true
 
         if (isExperimentRunning) {
-            appendMessageToLog(LogTag.MESSAGE, "Выдержка ${timerLoadNom.autoformat()} секунд")
-            while (isExperimentRunning && timerLoadNom > 0) {
-                timerLoadNom -= 0.1
-                if (timerLoadNom >= 0) {
-                    model.data.timeExp.value = timerLoadNom.autoformat()
+            appendMessageToLog(LogTag.MESSAGE, "Выдержка 20 секунд")
+            while (isExperimentRunning && timerMy > 0) {
+                timerMy -= 0.1
+                if (timerMy >= 0) {
+                    model.data.timeExp.value = timerMy.autoformat()
                 }
                 sleep(100)
             }
-            model.data.timeExp.value = ""
+            model.data.timeExp.value = "0.0"
         }
 
-        loadNomStarted = false
         regulate12Started = true
-
         if (isExperimentRunning) {
             appendMessageToLog(LogTag.MESSAGE, "Регулировка до номинальной нагрузки * 1.2")
             thread(isDaemon = true) {
@@ -514,25 +465,20 @@ class LoadControllerMPT : CustomController() {
             regulationTo(amperageSet * 1.2)
             appendMessageToLog(LogTag.MESSAGE, "Регулировка до номинальной нагрузки * 1.2 завершена")
         }
-
         regulate12Started = false
 
-        unmStarted = true
-
         if (isExperimentRunning) {
-            appendMessageToLog(LogTag.MESSAGE, "Выдержка ${timerLoad.autoformat()} секунд")
-            timerLoad = 20.0
-            while (isExperimentRunning && timerLoad > 0) {
-                timerLoad -= 0.1
-                if (timerLoad >= 0) {
-                    model.data.timeExp.value = timerLoad.autoformat()
+            appendMessageToLog(LogTag.MESSAGE, "Выдержка 20 секунд")
+            timerMy = 20.0
+            while (isExperimentRunning && timerMy > 0) {
+                timerMy -= 0.1
+                if (timerMy >= 0) {
+                    model.data.timeExp.value = timerMy.autoformat()
                 }
                 sleep(100)
             }
-            model.data.timeExp.value = ""
+            model.data.timeExp.value = "0.0"
         }
-
-        unmStarted = false
 
         if (Singleton.sparking1.isNotEmpty()) {
             for (i in 0 until Singleton.sparking1.size) {
@@ -583,7 +529,7 @@ class LoadControllerMPT : CustomController() {
                 appendMessageToLog(LogTag.ERROR, "Испытание прервано по причине: $cause")
             }
         }
-        protocolModel.dptLOADResult = model.data.result.value
+//        protocolModel.nResult = model.data.result.value
         restoreData()
     }
 
@@ -806,31 +752,21 @@ class LoadControllerMPT : CustomController() {
     }
 
     private fun saveData() {
-        protocolModel.dptLOADN = "model.data.n.value"
-        protocolModel.dptLOADP1 = "model.data.p.value"
-        //protocolModel.dptLOADResult = model.data.result.value
-        protocolModel.dptLOADTOI = "model.data.tempOI.value"
-        protocolModel.dptLOADTAmb = "model.data.tempAmb.value"
-        protocolModel.dptLOADiOV = "model.data.iOV.value"
-        protocolModel.dptLOADuOV = "model.data.uOV.value"
-        protocolModel.dptLOADuN = "model.data.uOY.value"
-        protocolModel.dptLOADiN = "model.data.iOY.value"
-
-//        protocolModel.dptLOADN = model.data.n.value
-//        protocolModel.dptLOADP1 = model.data.p.value
-//        //protocolModel.dptLOADResult = model.data.result.value
-//        protocolModel.dptLOADTOI = model.data.tempOI.value
-//        protocolModel.dptLOADTAmb = model.data.tempAmb.value
-//        protocolModel.dptLOADiOV = model.data.iOV.value
-//        protocolModel.dptLOADuOV = model.data.uOV.value
-//        protocolModel.dptLOADuN = model.data.uOY.value
-//        protocolModel.dptLOADiN = model.data.iOY.value
+        protocolModel.dptLOADN = model.data.n.value
+        protocolModel.dptLOADP1 = model.data.p.value
+        protocolModel.dptLOADResult = model.data.result.value
+        protocolModel.dptLOADTOI = model.data.tempOI.value
+        protocolModel.dptLOADTAmb = model.data.tempAmb.value
+        protocolModel.dptLOADiOV = model.data.iOV.value
+        protocolModel.dptLOADuOV = model.data.uOV.value
+        protocolModel.dptLOADuN = model.data.uOY.value
+        protocolModel.dptLOADiN = model.data.iOY.value
     }
 
     private fun restoreData() {
         model.data.n.value = protocolModel.dptLOADN
         model.data.p.value = protocolModel.dptLOADP1
-       // model.data.result.value = protocolModel.dptLOADResult
+        model.data.result.value = protocolModel.dptLOADResult
         model.data.tempOI.value = protocolModel.dptLOADTOI
         model.data.tempAmb.value = protocolModel.dptLOADTAmb
         model.data.iOV.value = protocolModel.dptLOADiOV

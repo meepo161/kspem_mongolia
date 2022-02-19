@@ -153,6 +153,21 @@ abstract class CustomController() : Component(), ScopedInstance {
                 ikzIN = value.toShort() and 128 > 0              // 6
 //                ikzVIU = value.toShort() and 64 > 0             // 7
 //                tempDros = value.toShort() and 128 > 0        // 8
+                if (doorZone) {
+//                    cause = "Открыты двери зоны"
+                }
+                if (doorSCO) {
+//                    cause = "Открыты двери ШСО"
+                }
+                if (ikzOI) {
+                    cause = "сработала токовая защита ОИ"
+                }
+                if (ikzIN) {
+                    cause = "сработала токовая защита ВХОД"
+                }
+                if (isStopPressed) {
+                    cause = "отменено оператором"
+                }
             }
             cm.startPoll(CommunicationModel.DeviceID.DD2_1, OwenPrModel.INPUTS_REGISTER2) { value ->
                 iViu = value.toShort() and 1 > 0       // 1
@@ -163,19 +178,26 @@ abstract class CustomController() : Component(), ScopedInstance {
                 speedUNM = value.toShort() and 32 > 0              // 6
 //                = value.toShort() and 64 > 0             // 7
 //                = value.toShort() and 128 > 0        // 8
+                if (iViu) {
+                    cause = "сработала токовая защита ВИУ"
+                }
+                if (tempUNM) {
+                    cause = "сработал температурный датчик УНМ"
+                }
+                if (speedUNM) {
+//                    cause = "сработала токовая защита ВИУ"
+                }
             }
             sleep(1000)
             thread(isDaemon = true) {
                 while (isExperimentRunning) {
-//                    if (doorZone)cause = "Открыты двери зоны"
-//                    if (doorSCO)cause = "Открыты двери ШСО"
-                    if (ikzOI) cause = "сработала токовая защита ОИ"
-                    if (ikzIN) cause = "сработала токовая защита ВХОД"
-                    if (isStopPressed) cause = "отменено оператором"
-                    if (iViu) cause = "сработала токовая защита ВИУ"
-                    if (tempUNM) cause = "сработал температурный датчик УНМ"
-                    if (!pr102.isResponding) cause = "потеряна связь с ПР102"
-                    if (isStopPressed) cause = "нажата кнопка <СТОП>"
+//                    if (!pr102.isResponding) cause = "потеряна связь с ПР102"
+//                    if (isStopPressed) cause = "нажата кнопка <СТОП>"
+//                    if (doorZone) cause = "открыты двери зоны"
+//                    if (doorSCO) cause = "открыты двери ШСО"
+//                    if (ikzOI) cause = "превышение тока ОИ"
+//                    if (ikzIN) cause = "превышение входного тока"
+//                    if (tempDros) cause = "превышение температуры дросселей"
                     sleep(100)
                 }
             }

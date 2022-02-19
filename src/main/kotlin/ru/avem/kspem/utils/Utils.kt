@@ -92,7 +92,7 @@ fun showTwoWayDialog(
 }
 
 fun getFullType(type: String): String {
-    return when (type) {
+        return when (type) {
         motorType.sd -> "Синхронный двигатель"
         motorType.sg -> "Синхронный генератор"
         motorType.dpt -> "Двигатель постоянного тока"

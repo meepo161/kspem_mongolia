@@ -132,6 +132,7 @@ object ProtocolsTable : IntIdTable() {
     var h_hhiB1 = varchar("h_hhiB1", 128)
     var h_hhiC1 = varchar("h_hhiC1", 128)
     var h_hhuOV1 = varchar("h_hhuOV1", 128)
+    var h_hhiOV1 = varchar("h_hhiOV1", 128)
 
     var h_hhuAB2 = varchar("h_hhuAB2", 128)
     var h_hhuBC2 = varchar("h_hhuBC2", 128)
@@ -140,6 +141,7 @@ object ProtocolsTable : IntIdTable() {
     var h_hhiB2 = varchar("h_hhiB2", 128)
     var h_hhiC2 = varchar("h_hhiC2", 128)
     var h_hhuOV2 = varchar("h_hhuOV2", 128)
+    var h_hhiOV2 = varchar("h_hhiOV2", 128)
 
     var h_hhuAB3 = varchar("h_hhuAB3", 128)
     var h_hhuBC3 = varchar("h_hhuBC3", 128)
@@ -148,6 +150,7 @@ object ProtocolsTable : IntIdTable() {
     var h_hhiB3 = varchar("h_hhiB3", 128)
     var h_hhiC3 = varchar("h_hhiC3", 128)
     var h_hhuOV3 = varchar("h_hhuOV3", 128)
+    var h_hhiOV3 = varchar("h_hhiOV3", 128)
 
     var h_hhuAB4 = varchar("h_hhuAB4", 128)
     var h_hhuBC4 = varchar("h_hhuBC4", 128)
@@ -156,6 +159,7 @@ object ProtocolsTable : IntIdTable() {
     var h_hhiB4 = varchar("h_hhiB4", 128)
     var h_hhiC4 = varchar("h_hhiC4", 128)
     var h_hhuOV4 = varchar("h_hhuOV4", 128)
+    var h_hhiOV4 = varchar("h_hhiOV4", 128)
 
     var h_hhuAB5 = varchar("h_hhuAB5", 128)
     var h_hhuBC5 = varchar("h_hhuBC5", 128)
@@ -164,6 +168,7 @@ object ProtocolsTable : IntIdTable() {
     var h_hhiB5 = varchar("h_hhiB5", 128)
     var h_hhiC5 = varchar("h_hhiC5", 128)
     var h_hhuOV5 = varchar("h_hhuOV5", 128)
+    var h_hhiOV5 = varchar("h_hhiOV5", 128)
 
     var h_hhuAB6 = varchar("h_hhuAB6", 128)
     var h_hhuBC6 = varchar("h_hhuBC6", 128)
@@ -172,6 +177,7 @@ object ProtocolsTable : IntIdTable() {
     var h_hhiB6 = varchar("h_hhiB6", 128)
     var h_hhiC6 = varchar("h_hhiC6", 128)
     var h_hhuOV6 = varchar("h_hhuOV6", 128)
+    var h_hhiOV6 = varchar("h_hhiOV6", 128)
 
     var h_hhuAB7 = varchar("h_hhuAB7", 128)
     var h_hhuBC7 = varchar("h_hhuBC7", 128)
@@ -180,6 +186,7 @@ object ProtocolsTable : IntIdTable() {
     var h_hhiB7 = varchar("h_hhiB7", 128)
     var h_hhiC7 = varchar("h_hhiC7", 128)
     var h_hhuOV7 = varchar("h_hhuOV7", 128)
+    var h_hhiOV7 = varchar("h_hhiOV7", 128)
 
     var h_hhuAB8 = varchar("h_hhuAB8", 128)
     var h_hhuBC8 = varchar("h_hhuBC8", 128)
@@ -188,6 +195,7 @@ object ProtocolsTable : IntIdTable() {
     var h_hhiB8 = varchar("h_hhiB8", 128)
     var h_hhiC8 = varchar("h_hhiC8", 128)
     var h_hhuOV8 = varchar("h_hhuOV8", 128)
+    var h_hhiOV8 = varchar("h_hhiOV8", 128)
 
     var h_hhuAB9 = varchar("h_hhuAB9", 128)
     var h_hhuBC9 = varchar("h_hhuBC9", 128)
@@ -196,6 +204,7 @@ object ProtocolsTable : IntIdTable() {
     var h_hhiB9 = varchar("h_hhiB9", 128)
     var h_hhiC9 = varchar("h_hhiC9", 128)
     var h_hhuOV9 = varchar("h_hhuOV9", 128)
+    var h_hhiOV9 = varchar("h_hhiOV9", 128)
 
     var h_hhResult = varchar("h_hhResult", 128)
     //KZ//,
@@ -336,6 +345,7 @@ class Protocol(id: EntityID<Int>) : IntEntity(id) {
     var h_hhiB1 by ProtocolsTable.h_hhiB1
     var h_hhiC1 by ProtocolsTable.h_hhiC1
     var h_hhuOV1 by ProtocolsTable.h_hhuOV1
+    var h_hhiOV1 by ProtocolsTable.h_hhiOV1
     var h_hhuAB2 by ProtocolsTable.h_hhuAB2
     var h_hhuBC2 by ProtocolsTable.h_hhuBC2
     var h_hhuCA2 by ProtocolsTable.h_hhuCA2
@@ -343,6 +353,7 @@ class Protocol(id: EntityID<Int>) : IntEntity(id) {
     var h_hhiB2 by ProtocolsTable.h_hhiB2
     var h_hhiC2 by ProtocolsTable.h_hhiC2
     var h_hhuOV2 by ProtocolsTable.h_hhuOV2
+    var h_hhiOV2 by ProtocolsTable.h_hhiOV2
     var h_hhuAB3 by ProtocolsTable.h_hhuAB3
     var h_hhuBC3 by ProtocolsTable.h_hhuBC3
     var h_hhuCA3 by ProtocolsTable.h_hhuCA3
@@ -350,6 +361,7 @@ class Protocol(id: EntityID<Int>) : IntEntity(id) {
     var h_hhiB3 by ProtocolsTable.h_hhiB3
     var h_hhiC3 by ProtocolsTable.h_hhiC3
     var h_hhuOV3 by ProtocolsTable.h_hhuOV3
+    var h_hhiOV3 by ProtocolsTable.h_hhiOV3
     var h_hhuAB4 by ProtocolsTable.h_hhuAB4
     var h_hhuBC4 by ProtocolsTable.h_hhuBC4
     var h_hhuCA4 by ProtocolsTable.h_hhuCA4
@@ -357,6 +369,7 @@ class Protocol(id: EntityID<Int>) : IntEntity(id) {
     var h_hhiB4 by ProtocolsTable.h_hhiB4
     var h_hhiC4 by ProtocolsTable.h_hhiC4
     var h_hhuOV4 by ProtocolsTable.h_hhuOV4
+    var h_hhiOV4 by ProtocolsTable.h_hhiOV4
     var h_hhuAB5 by ProtocolsTable.h_hhuAB5
     var h_hhuBC5 by ProtocolsTable.h_hhuBC5
     var h_hhuCA5 by ProtocolsTable.h_hhuCA5
@@ -364,6 +377,7 @@ class Protocol(id: EntityID<Int>) : IntEntity(id) {
     var h_hhiB5 by ProtocolsTable.h_hhiB5
     var h_hhiC5 by ProtocolsTable.h_hhiC5
     var h_hhuOV5 by ProtocolsTable.h_hhuOV5
+    var h_hhiOV5 by ProtocolsTable.h_hhiOV5
     var h_hhuAB6 by ProtocolsTable.h_hhuAB6
     var h_hhuBC6 by ProtocolsTable.h_hhuBC6
     var h_hhuCA6 by ProtocolsTable.h_hhuCA6
@@ -371,6 +385,7 @@ class Protocol(id: EntityID<Int>) : IntEntity(id) {
     var h_hhiB6 by ProtocolsTable.h_hhiB6
     var h_hhiC6 by ProtocolsTable.h_hhiC6
     var h_hhuOV6 by ProtocolsTable.h_hhuOV6
+    var h_hhiOV6 by ProtocolsTable.h_hhiOV6
     var h_hhuAB7 by ProtocolsTable.h_hhuAB7
     var h_hhuBC7 by ProtocolsTable.h_hhuBC7
     var h_hhuCA7 by ProtocolsTable.h_hhuCA7
@@ -378,6 +393,7 @@ class Protocol(id: EntityID<Int>) : IntEntity(id) {
     var h_hhiB7 by ProtocolsTable.h_hhiB7
     var h_hhiC7 by ProtocolsTable.h_hhiC7
     var h_hhuOV7 by ProtocolsTable.h_hhuOV7
+    var h_hhiOV7 by ProtocolsTable.h_hhiOV7
     var h_hhuAB8 by ProtocolsTable.h_hhuAB8
     var h_hhuBC8 by ProtocolsTable.h_hhuBC8
     var h_hhuCA8 by ProtocolsTable.h_hhuCA8
@@ -385,6 +401,7 @@ class Protocol(id: EntityID<Int>) : IntEntity(id) {
     var h_hhiB8 by ProtocolsTable.h_hhiB8
     var h_hhiC8 by ProtocolsTable.h_hhiC8
     var h_hhuOV8 by ProtocolsTable.h_hhuOV8
+    var h_hhiOV8 by ProtocolsTable.h_hhiOV8
     var h_hhuAB9 by ProtocolsTable.h_hhuAB9
     var h_hhuBC9 by ProtocolsTable.h_hhuBC9
     var h_hhuCA9 by ProtocolsTable.h_hhuCA9
@@ -392,6 +409,7 @@ class Protocol(id: EntityID<Int>) : IntEntity(id) {
     var h_hhiB9 by ProtocolsTable.h_hhiB9
     var h_hhiC9 by ProtocolsTable.h_hhiC9
     var h_hhuOV9 by ProtocolsTable.h_hhuOV9
+    var h_hhiOV9 by ProtocolsTable.h_hhiOV9
     var h_hhResult by ProtocolsTable.h_hhResult
 //,var  by ProtocolsTable.//
     var kzUAB by ProtocolsTable.kzUAB

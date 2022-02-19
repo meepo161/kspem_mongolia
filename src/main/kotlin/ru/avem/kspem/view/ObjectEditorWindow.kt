@@ -25,7 +25,7 @@ class ObjectEditorWindow : View("Редактор объектов испыта�
 //    var toInsert: VBox by singleAssign()
 
     var tfp2: TextField by singleAssign()
-    var tfuN: TextField by singleAssign()
+    var tfuN: ComboBox<String> by singleAssign()
     var tfiN: TextField by singleAssign()
     var tfnAsync: TextField by singleAssign()
     var tfkpd: TextField by singleAssign()
@@ -185,14 +185,9 @@ class ObjectEditorWindow : View("Редактор объектов испыта�
                         }
                         useMaxWidth = true
                     }
-                    tfuN = textfield {
-                        validator.addValidator(this) {
-                            if (it?.toDoubleOrNull() == null) {
-                                error("Обязательное поле")
-                            } else if ((it.toDouble()) < 0 || (it.toDouble()) > 750) {
-                                error("Значение не в диапазоне 0 — 750")
-                            } else null
-                        }
+                    tfuN = combobox() {
+                        minWidth = 266.0
+                        items = observableListOf("220", "380")
                     }
                 }
                 hbox(16.0, Pos.CENTER) {
@@ -363,7 +358,7 @@ class ObjectEditorWindow : View("Редактор объектов испыта�
                     }
                 }
                 hbox(16.0, Pos.CENTER) {
-                    label("Время испытания номинальной нагрузкой, с") {
+                    label("Время испытания МВЗ, с") {
                         hboxConstraints {
                             hGrow = Priority.ALWAYS
                         }
@@ -380,7 +375,7 @@ class ObjectEditorWindow : View("Редактор объектов испыта�
                     }
                 }
                 hbox(16.0, Pos.CENTER) {
-                    label("Время испытания повышенной нагрузкой, с") {
+                    label("Время испытания Обкатка, с") {
                         hboxConstraints {
                             hGrow = Priority.ALWAYS
                         }
@@ -416,7 +411,7 @@ class ObjectEditorWindow : View("Редактор объектов испыта�
         with(cbObjects.selectionModel.selectedItem) {
             runLater {
                 tfp2.text = p2
-                tfuN.text = uNom
+                tfuN.selectionModel.select(uNom)
                 tfiN.text = iN
                 tfnAsync.text = nAsync
                 tfkpd.text = kpd
@@ -456,7 +451,7 @@ class ObjectEditorWindow : View("Редактор объектов испыта�
                     name = tempName
                     type = cbObjectType.selectedItem.toString()
                     p2 = tfp2.text
-                    uNom = tfuN.text
+                    uNom = tfuN.selectionModel.selectedItem
                     iN = tfiN.text
                     nAsync = tfnAsync.text
                     kpd = tfkpd.text
