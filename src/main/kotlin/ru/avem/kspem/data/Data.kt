@@ -197,6 +197,7 @@ data class ProtocolModel(
     var h_hhiB1:String = "",
     var h_hhiC1:String = "",
     var h_hhuOV1:String = "",
+    var h_hhiOV1:String = "",
 
     var h_hhuAB2:String = "",
     var h_hhuBC2:String = "",
@@ -205,6 +206,7 @@ data class ProtocolModel(
     var h_hhiB2:String = "",
     var h_hhiC2:String = "",
     var h_hhuOV2:String = "",
+    var h_hhiOV2:String = "",
 
     var h_hhuAB3:String = "",
     var h_hhuBC3:String = "",
@@ -213,6 +215,7 @@ data class ProtocolModel(
     var h_hhiB3:String = "",
     var h_hhiC3:String = "",
     var h_hhuOV3:String = "",
+    var h_hhiOV3:String = "",
 
     var h_hhuAB4:String = "",
     var h_hhuBC4:String = "",
@@ -221,6 +224,7 @@ data class ProtocolModel(
     var h_hhiB4:String = "",
     var h_hhiC4:String = "",
     var h_hhuOV4:String = "",
+    var h_hhiOV4:String = "",
 
     var h_hhuAB5:String = "",
     var h_hhuBC5:String = "",
@@ -229,6 +233,7 @@ data class ProtocolModel(
     var h_hhiB5:String = "",
     var h_hhiC5:String = "",
     var h_hhuOV5:String = "",
+    var h_hhiOV5:String = "",
 
     var h_hhuAB6:String = "",
     var h_hhuBC6:String = "",
@@ -237,6 +242,7 @@ data class ProtocolModel(
     var h_hhiB6:String = "",
     var h_hhiC6:String = "",
     var h_hhuOV6:String = "",
+    var h_hhiOV6:String = "",
 
     var h_hhuAB7:String = "",
     var h_hhuBC7:String = "",
@@ -245,6 +251,7 @@ data class ProtocolModel(
     var h_hhiB7:String = "",
     var h_hhiC7:String = "",
     var h_hhuOV7:String = "",
+    var h_hhiOV7:String = "",
 
     var h_hhuAB8:String = "",
     var h_hhuBC8:String = "",
@@ -253,6 +260,7 @@ data class ProtocolModel(
     var h_hhiB8:String = "",
     var h_hhiC8:String = "",
     var h_hhuOV8:String = "",
+    var h_hhiOV8:String = "",
 
     var h_hhuAB9:String = "",
     var h_hhuBC9:String = "",
@@ -261,6 +269,7 @@ data class ProtocolModel(
     var h_hhiB9:String = "",
     var h_hhiC9:String = "",
     var h_hhuOV9:String = "",
+    var h_hhiOV9:String = "",
 
     var h_hhResult:String = "",
 //MV//,

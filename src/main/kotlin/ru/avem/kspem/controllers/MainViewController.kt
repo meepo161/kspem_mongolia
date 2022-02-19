@@ -299,6 +299,7 @@ class MainViewController : Controller() {
                 h_hhiB1 = protocolModel.h_hhiB1
                 h_hhiC1 = protocolModel.h_hhiC1
                 h_hhuOV1 = protocolModel.h_hhuOV1
+                h_hhiOV1 = protocolModel.h_hhiOV1
                 h_hhuAB2 = protocolModel.h_hhuAB2
                 h_hhuBC2 = protocolModel.h_hhuBC2
                 h_hhuCA2 = protocolModel.h_hhuCA2
@@ -306,6 +307,7 @@ class MainViewController : Controller() {
                 h_hhiB2 = protocolModel.h_hhiB2
                 h_hhiC2 = protocolModel.h_hhiC2
                 h_hhuOV2 = protocolModel.h_hhuOV2
+                h_hhiOV2 = protocolModel.h_hhiOV2
                 h_hhuAB3 = protocolModel.h_hhuAB3
                 h_hhuBC3 = protocolModel.h_hhuBC3
                 h_hhuCA3 = protocolModel.h_hhuCA3
@@ -313,6 +315,7 @@ class MainViewController : Controller() {
                 h_hhiB3 = protocolModel.h_hhiB3
                 h_hhiC3 = protocolModel.h_hhiC3
                 h_hhuOV3 = protocolModel.h_hhuOV3
+                h_hhiOV3 = protocolModel.h_hhiOV3
                 h_hhuAB4 = protocolModel.h_hhuAB4
                 h_hhuBC4 = protocolModel.h_hhuBC4
                 h_hhuCA4 = protocolModel.h_hhuCA4
@@ -320,6 +323,7 @@ class MainViewController : Controller() {
                 h_hhiB4 = protocolModel.h_hhiB4
                 h_hhiC4 = protocolModel.h_hhiC4
                 h_hhuOV4 = protocolModel.h_hhuOV4
+                h_hhiOV4 = protocolModel.h_hhiOV4
                 h_hhuAB5 = protocolModel.h_hhuAB5
                 h_hhuBC5 = protocolModel.h_hhuBC5
                 h_hhuCA5 = protocolModel.h_hhuCA5
@@ -327,13 +331,15 @@ class MainViewController : Controller() {
                 h_hhiB5 = protocolModel.h_hhiB5
                 h_hhiC5 = protocolModel.h_hhiC5
                 h_hhuOV5 = protocolModel.h_hhuOV5
+                h_hhiOV5 = protocolModel.h_hhiOV5
                 h_hhuAB6 = protocolModel.h_hhuAB6
                 h_hhuBC6 = protocolModel.h_hhuBC6
                 h_hhuCA6 = protocolModel.h_hhuCA6
                 h_hhiA6 = protocolModel.h_hhiA6
                 h_hhiB6 = protocolModel.h_hhiB6
                 h_hhiC6 = protocolModel.h_hhiC6
-                h_hhuOV6 = protocolModel.h_hhuOV6
+                h_hhuOV6 = protocolModel.h_hhiOV6
+                h_hhiOV6 = protocolModel.h_hhuOV6
                 h_hhuAB7 = protocolModel.h_hhuAB7
                 h_hhuBC7 = protocolModel.h_hhuBC7
                 h_hhuCA7 = protocolModel.h_hhuCA7
@@ -341,6 +347,7 @@ class MainViewController : Controller() {
                 h_hhiB7 = protocolModel.h_hhiB7
                 h_hhiC7 = protocolModel.h_hhiC7
                 h_hhuOV7 = protocolModel.h_hhuOV7
+                h_hhiOV7 = protocolModel.h_hhiOV7
                 h_hhuAB8 = protocolModel.h_hhuAB8
                 h_hhuBC8 = protocolModel.h_hhuBC8
                 h_hhuCA8 = protocolModel.h_hhuCA8
@@ -348,6 +355,7 @@ class MainViewController : Controller() {
                 h_hhiB8 = protocolModel.h_hhiB8
                 h_hhiC8 = protocolModel.h_hhiC8
                 h_hhuOV8 = protocolModel.h_hhuOV8
+                h_hhiOV8 = protocolModel.h_hhiOV8
                 h_hhuAB9 = protocolModel.h_hhuAB9
                 h_hhuBC9 = protocolModel.h_hhuBC9
                 h_hhuCA9 = protocolModel.h_hhuCA9
@@ -355,6 +363,7 @@ class MainViewController : Controller() {
                 h_hhiB9 = protocolModel.h_hhiB9
                 h_hhiC9 = protocolModel.h_hhiC9
                 h_hhuOV9 = protocolModel.h_hhuOV9
+                h_hhiOV9 = protocolModel.h_hhiOV9
                 h_hhResult = protocolModel.h_hhResult
 
 
@@ -663,6 +672,7 @@ class MainViewController : Controller() {
         protocolModel.h_hhiB1 = ""
         protocolModel.h_hhiC1 = ""
         protocolModel.h_hhuOV1 = ""
+        protocolModel.h_hhiOV1 = ""
 
         protocolModel.h_hhuAB2 = ""
         protocolModel.h_hhuBC2 = ""
@@ -671,6 +681,7 @@ class MainViewController : Controller() {
         protocolModel.h_hhiB2 = ""
         protocolModel.h_hhiC2 = ""
         protocolModel.h_hhuOV2 = ""
+        protocolModel.h_hhiOV2 = ""
 
         protocolModel.h_hhuAB3 = ""
         protocolModel.h_hhuBC3 = ""
@@ -679,6 +690,7 @@ class MainViewController : Controller() {
         protocolModel.h_hhiB3 = ""
         protocolModel.h_hhiC3 = ""
         protocolModel.h_hhuOV3 = ""
+        protocolModel.h_hhiOV3 = ""
 
         protocolModel.h_hhuAB4 = ""
         protocolModel.h_hhuBC4 = ""
@@ -687,6 +699,7 @@ class MainViewController : Controller() {
         protocolModel.h_hhiB4 = ""
         protocolModel.h_hhiC4 = ""
         protocolModel.h_hhuOV4 = ""
+        protocolModel.h_hhiOV4 = ""
 
         protocolModel.h_hhuAB5 = ""
         protocolModel.h_hhuBC5 = ""
@@ -695,6 +708,7 @@ class MainViewController : Controller() {
         protocolModel.h_hhiB5 = ""
         protocolModel.h_hhiC5 = ""
         protocolModel.h_hhuOV5 = ""
+        protocolModel.h_hhiOV5 = ""
 
         protocolModel.h_hhuAB6 = ""
         protocolModel.h_hhuBC6 = ""
@@ -703,6 +717,7 @@ class MainViewController : Controller() {
         protocolModel.h_hhiB6 = ""
         protocolModel.h_hhiC6 = ""
         protocolModel.h_hhuOV6 = ""
+        protocolModel.h_hhiOV6 = ""
 
         protocolModel.h_hhuAB7 = ""
         protocolModel.h_hhuBC7 = ""
@@ -711,6 +726,7 @@ class MainViewController : Controller() {
         protocolModel.h_hhiB7 = ""
         protocolModel.h_hhiC7 = ""
         protocolModel.h_hhuOV7 = ""
+        protocolModel.h_hhiOV7 = ""
 
         protocolModel.h_hhuAB8 = ""
         protocolModel.h_hhuBC8 = ""
@@ -719,6 +735,7 @@ class MainViewController : Controller() {
         protocolModel.h_hhiB8 = ""
         protocolModel.h_hhiC8 = ""
         protocolModel.h_hhuOV8 = ""
+        protocolModel.h_hhiOV8 = ""
 
         protocolModel.h_hhuAB9 = ""
         protocolModel.h_hhuBC9 = ""
@@ -727,6 +744,7 @@ class MainViewController : Controller() {
         protocolModel.h_hhiB9 = ""
         protocolModel.h_hhiC9 = ""
         protocolModel.h_hhuOV9 = ""
+        protocolModel.h_hhiOV9 = ""
 
         protocolModel.h_hhResult = ""
 //KZ//,
