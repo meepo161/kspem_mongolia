@@ -167,14 +167,14 @@ class NController : CustomController() {
             }
         }
 
-        protocolModel.nUAB = model.data.uAB.value
-        protocolModel.nUBC = model.data.uBC.value
-        protocolModel.nUCA = model.data.uCA.value
-        protocolModel.nIA = model.data.iA.value
-        protocolModel.nIB = model.data.iB.value
-        protocolModel.nIC = model.data.iC.value
-        protocolModel.nSpeed = model.data.n.value
-        protocolModel.nF = model.data.f.value
+//        protocolModel.nUAB = model.data.uAB.value
+//        protocolModel.nUBC = model.data.uBC.value
+//        protocolModel.nUCA = model.data.uCA.value
+//        protocolModel.nIA = model.data.iA.value
+//        protocolModel.nIB = model.data.iB.value
+//        protocolModel.nIC = model.data.iC.value
+//        protocolModel.nSpeed = model.data.n.value
+//        protocolModel.nF = model.data.f.value
 
         stopRegulation()
 
@@ -200,7 +200,7 @@ class NController : CustomController() {
                 appendMessageToLog(LogTag.ERROR, "Испытание прервано по причине: $cause")
             }
         }
-        protocolModel.nResult = model.data.result.value
+//        protocolModel.nResult = model.data.result.value
         restoreData()
     }
 
@@ -257,25 +257,25 @@ class NController : CustomController() {
     }
 
     private fun saveData() {
-        protocolModel.nUAB = model.data.uAB.value
-        protocolModel.nUBC = model.data.uBC.value
-        protocolModel.nUCA = model.data.uCA.value
-        protocolModel.nIA = model.data.iA.value
-        protocolModel.nIB = model.data.iB.value
-        protocolModel.nIC = model.data.iC.value
-        protocolModel.nSpeed = model.data.n.value
-        protocolModel.nF = model.data.f.value
-        protocolModel.nResult = model.data.result.value
+//        protocolModel.nUAB = model.data.uAB.value
+//        protocolModel.nUBC = model.data.uBC.value
+//        protocolModel.nUCA = model.data.uCA.value
+//        protocolModel.nIA = model.data.iA.value
+//        protocolModel.nIB = model.data.iB.value
+//        protocolModel.nIC = model.data.iC.value
+//        protocolModel.nSpeed = model.data.n.value
+//        protocolModel.nF = model.data.f.value
+//        protocolModel.nResult = model.data.result.value
     }
 
     private fun restoreData() {
-        model.data.uAB.value = protocolModel.nUAB
-        model.data.uBC.value = protocolModel.nUBC
-        model.data.uCA.value = protocolModel.nUCA
-        model.data.iA.value = protocolModel.nIA
-        model.data.iB.value = protocolModel.nIB
-        model.data.iC.value = protocolModel.nIC
-        model.data.n.value = protocolModel.nSpeed
-        model.data.f.value = protocolModel.nF
+//        model.data.uAB.value = protocolModel.nUAB
+//        model.data.uBC.value = protocolModel.nUBC
+//        model.data.uCA.value = protocolModel.nUCA
+//        model.data.iA.value = protocolModel.nIA
+//        model.data.iB.value = protocolModel.nIB
+//        model.data.iC.value = protocolModel.nIC
+//        model.data.n.value = protocolModel.nSpeed
+//        model.data.f.value = protocolModel.nF
     }
 }

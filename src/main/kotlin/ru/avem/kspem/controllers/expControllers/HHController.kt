@@ -136,9 +136,9 @@ class HHController : CustomController() {
             }
         }
 
-        protocolModel.hhTempOI = model.data.tempOI.value
-        protocolModel.hhSpeed = model.data.n.value
-        protocolModel.hhTime = objectModel!!.timeHH
+//        protocolModel.hhTempOI = model.data.tempOI.value
+//        protocolModel.hhSpeed = model.data.n.value
+//        protocolModel.hhTime = objectModel!!.timeHH
 
 
 
@@ -153,7 +153,7 @@ class HHController : CustomController() {
                 appendMessageToLog(LogTag.ERROR, "Испытание прервано по причине: $cause")
             }
         }
-        protocolModel.hhResult = model.data.result.value
+//        protocolModel.hhResult = model.data.result.value
         restoreData()
     }
 
@@ -164,14 +164,14 @@ class HHController : CustomController() {
     }
 
     private fun saveData() {
-        protocolModel.hhTempOI = model.data.tempOI.value
-        protocolModel.hhSpeed = model.data.n.value
-        protocolModel.hhTime = objectModel!!.timeHH
-        protocolModel.hhResult = model.data.result.value
+//        protocolModel.hhTempOI = model.data.tempOI.value
+//        protocolModel.hhSpeed = model.data.n.value
+//        protocolModel.hhTime = objectModel!!.timeHH
+//        protocolModel.hhResult = model.data.result.value
     }
 
     private fun restoreData() {
-        model.data.tempOI.value = protocolModel.hhTempOI
-        model.data.n.value = protocolModel.hhSpeed
+//        model.data.tempOI.value = protocolModel.hhTempOI
+//        model.data.n.value = protocolModel.hhSpeed
     }
 }

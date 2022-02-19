@@ -337,16 +337,17 @@ class MainView : View("КСПЭМ") {
                                     SimpleDateFormat("HH:mm:ss").format(System.currentTimeMillis()).toString()
                                 protocolModel.operator = controller.position1
                                 protocolModel.objectName = cbObjects.selectionModel.selectedItem.name
-                                protocolModel.type = labelType.text
                                 protocolModel.serial =
                                     if (tfSerial.text.isNullOrEmpty()) "Не задан" else tfSerial.text
-                                protocolModel.p2 = cbObjects.selectionModel.selectedItem.p2
-                                protocolModel.uN = cbObjects.selectionModel.selectedItem.uNom
-                                protocolModel.iN = cbObjects.selectionModel.selectedItem.iN
-                                protocolModel.nAsync = cbObjects.selectionModel.selectedItem.nAsync
-                                protocolModel.kpd = cbObjects.selectionModel.selectedItem.kpd
-                                protocolModel.cos = cbObjects.selectionModel.selectedItem.cos
-                                protocolModel.scheme = cbObjects.selectionModel.selectedItem.scheme
+                                protocolModel.type = objectModel!!.type
+                                protocolModel.p2 = objectModel!!.p2
+                                protocolModel.uN = objectModel!!.uNom
+                                protocolModel.iN = objectModel!!.iN
+                                protocolModel.uOV = objectModel!!.uOV
+                                protocolModel.iOV = objectModel!!.iOV
+                                protocolModel.nAsync = objectModel!!.nAsync
+                                protocolModel.kpd = objectModel!!.kpd
+                                protocolModel.scheme = objectModel!!.scheme
                                 replaceWith<ExpView>()
                             } else {
                                 runLater {

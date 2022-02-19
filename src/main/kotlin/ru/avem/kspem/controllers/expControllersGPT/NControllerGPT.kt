@@ -201,11 +201,11 @@ class NControllerGPT : CustomController() {
             }
         }
 
+
         if (isExperimentRunning) {
             regulateToRPM(rotateSpeedSet * 0.5, 100, 50, 100L, 200L)
         }
 
-        var isNeedBreak = false
         if (isExperimentRunning) {
             while (abs(voltageOY - 30) > 10 && isExperimentRunning) {
                 if (voltageOY < 30) {
@@ -220,18 +220,16 @@ class NControllerGPT : CustomController() {
                     while (isExperimentRunning && timer > 0) {
                         timer -= 0.1
                         sleep(100)
-                        if (amperageOY > 2) {
+                        if (amperageOY > 0.3) {
+                            appendMessageToLog(LogTag.ERROR, "Ток = $amperageOY")
+                            appendMessageToLog(LogTag.ERROR, "Изменена полярность ОВ")
                             voltageTRN = 0.0
                             pr102.setTRN(voltageTRN)
                             pr102.ov_oi(false)
                             pr102.ov_oi_obr(true)
-                            isNeedBreak = true
                             break
                         }
                     }
-                }
-                if (isNeedBreak) {
-                    break
                 }
             }
         }
@@ -328,7 +326,7 @@ class NControllerGPT : CustomController() {
                 appendMessageToLog(LogTag.ERROR, "Испытание прервано по причине: $cause")
             }
         }
-        protocolModel.nResult = model.data.result.value
+        protocolModel.gptNResult = model.data.result.value
         restoreData()
     }
 
@@ -618,11 +616,26 @@ class NControllerGPT : CustomController() {
     }
 
     private fun saveData() {
-        protocolModel.nSpeed = model.data.n.value
-        protocolModel.nResult = model.data.result.value
+        protocolModel.gptNN = model.data.n.value
+        protocolModel.gptNP1 = model.data.p.value
+        protocolModel.gptNTOI = model.data.tempOI.value
+        protocolModel.gptNTAmb = model.data.tempAmb.value
+        protocolModel.gptNiOV = model.data.iOV.value
+        protocolModel.gptNuOV = model.data.uOV.value
+        protocolModel.gptNuN = model.data.uOY.value
+        protocolModel.gptNiN = model.data.iOY.value
+        protocolModel.gptNResult = model.data.result.value
     }
 
     private fun restoreData() {
-        model.data.n.value = protocolModel.nSpeed
+        model.data.n.value =  protocolModel.gptNN
+        model.data.p.value =  protocolModel.gptNP1
+        model.data.tempOI.value =  protocolModel.gptNTOI
+        model.data.tempAmb.value =  protocolModel.gptNTAmb
+        model.data.iOV.value =  protocolModel.gptNiOV
+        model.data.uOV.value =  protocolModel.gptNuOV
+        model.data.uOY.value =  protocolModel.gptNuN
+        model.data.iOY.value =  protocolModel.gptNiN
+        model.data.result.value =  protocolModel.gptNResult
     }
 }

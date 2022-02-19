@@ -109,9 +109,7 @@ class VIUController : CustomController() {
 
         if (isExperimentRunning) {
             if (objectModel!!.uVIU.toDoubleOrNull() != null) {
-                for (i in 1..3) {
-                    voltageRegulation(voltageSet)
-                }
+                voltageRegulation(voltageSet)
                 appendMessageToLog(LogTag.MESSAGE, "Регулировка завершена")
             } else cause = "ошибка задания напряжения"
         }
@@ -215,14 +213,14 @@ class VIUController : CustomController() {
                 timePulsePerc = 95f
             }
             if (System.currentTimeMillis() - timer > 60000) cause = "Превышено время регулирования"
-            latr.startUpLATRPulse(direction, false, timePulsePerc)
+            latr.startUpLATRPulse(direction,false, timePulsePerc)
         }
         latr.stopLATR()
         timer = System.currentTimeMillis()
         if (isExperimentRunning) {
             appendMessageToLog(LogTag.DEBUG, "Точная регулировка")
         }
-        while (abs(voltage - volt) > volt / 100 * 1.5 && isExperimentRunning) {
+        while (abs(voltage - volt) > 20 && isExperimentRunning) {
             if (voltage < volt) {
                 direction = up
                 timePulsePerc = 90f
@@ -230,11 +228,8 @@ class VIUController : CustomController() {
                 direction = down
                 timePulsePerc = 90f
             }
-            latr.startUpLATRPulse(direction, false, timePulsePerc)
-            sleep(500)
-            latr.stopLATR()
-            sleep(500)
             if (System.currentTimeMillis() - timer > 60000) cause = "Превышено время регулирования"
+            latr.startUpLATRPulse(direction,false, timePulsePerc)
         }
         latr.stopLATR()
     }

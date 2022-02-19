@@ -107,20 +107,14 @@ class LoadViewMPT : View() {
                 label("")
                 button("Сохранить") {
                     action {
-                        try {
-                            Singleton.sparkingTime.add(toHHmmss(((controller.timerMyStart * 1000) - (data.timeExp.value.toDouble() * 1000)).toLong()))
-                            Singleton.sparking1.add(tfSparking1.text.replace(",", "."))
-                            Singleton.sparking2.add(tfSparking2.text.replace(",", "."))
-                            Singleton.sparking3.add(tfSparking3.text.replace(",", "."))
-                            Singleton.sparking4.add(tfSparking4.text.replace(",", "."))
-                            runLater {
-                                Toast.makeText("Точка сохранена").show(Toast.ToastType.INFORMATION)
-                            }
-                        } catch (e: Exception) {
-                            runLater {
-                                Toast.makeText("Ошибка сохранения точки").show(Toast.ToastType.ERROR)
-                            }
+                        runLater {
+                            Toast.makeText("Точка сохранена").show(Toast.ToastType.INFORMATION)
                         }
+                        Singleton.sparkingTime.add(toHHmmss(((controller.timerMyStart * 1000) - (data.timeExp.value.toDouble() * 1000)).toLong()))
+                        Singleton.sparking1.add(tfSparking1.text)
+                        Singleton.sparking2.add(tfSparking2.text)
+                        Singleton.sparking3.add(tfSparking3.text)
+                        Singleton.sparking4.add(tfSparking4.text)
                     }
                 }
             }

@@ -4,6 +4,7 @@ import javafx.scene.chart.XYChart
 import ru.avem.kspem.communication.model.CommunicationModel
 import ru.avem.kspem.communication.model.devices.avem.avem4.Avem4Model
 import ru.avem.kspem.communication.model.devices.avem.avem7.Avem7Model
+import ru.avem.kspem.communication.model.devices.delta.DeltaModel
 import ru.avem.kspem.communication.model.devices.pm130.PM130Model
 import ru.avem.kspem.communication.model.devices.th01.TH01Model
 import ru.avem.kspem.communication.model.devices.trm202.TRM202Model
@@ -14,8 +15,6 @@ import ru.avem.kspem.utils.LogTag
 import ru.avem.kspem.utils.sleep
 import ru.avem.kspem.view.expViews.expViewsSG.H_HHViewSG
 import ru.avem.stand.utils.autoformat
-import tornadofx.runLater
-import kotlin.concurrent.thread
 import kotlin.math.abs
 
 class H_HHControllerSG : CustomController() {
@@ -93,9 +92,7 @@ class H_HHControllerSG : CustomController() {
         rotateSpeedSet = objectModel!!.nAsync.toDouble()
         voltageOVSet = objectModel!!.uOV.toDouble()
         setTime = objectModel!!.timeHH.toDouble()
-        runLater {
-            model.series.data.clear()
-        }
+        model.series.data.clear()
 
 
         if (isExperimentRunning) {
@@ -186,8 +183,17 @@ class H_HHControllerSG : CustomController() {
             }
         }
 
+//        if (isExperimentRunning) {
+//            appendMessageToLog(LogTag.MESSAGE, "Инициализация АРН...")
+//            latr.resetLATR()
+//            cm.startPoll(CommunicationModel.DeviceID.GV240, LatrModel.U_RMS_REGISTER) { value ->
+//                voltageLatr = value.toDouble()
+//                if (!latr.isResponding && isExperimentRunning) cause = "АРН не отвечает"
+//            }
+//        }
+
         if (isExperimentRunning) {
-            initButtonPost()
+//            initButtonPost()
         }
 
         if (isExperimentRunning) {
@@ -221,27 +227,9 @@ class H_HHControllerSG : CustomController() {
             delta.startObject()
         }
 
-        thread(isDaemon = true) {
-            if (isExperimentRunning) {
-                var timer = 10.0
-                if (isExperimentRunning) {
-                    while (isExperimentRunning && timer > 0) {
-                        timer -= 0.1
-                        sleep(100)
-                    }
-                }
-            }
-            while (isExperimentRunning) {
-                if (rotateSpeed < 100 || rotateSpeed > rotateSpeedSet * 2) {
-                    cause = "Проверьте датчик оборотов"
-                }
-                sleep(1000)
-            }
-        }
-
         if (isExperimentRunning) {
             for (i in 1..3) {
-                regulateToRPM(rotateSpeedSet, 200, 75, 100L, 200L)
+                regulateToRPM(rotateSpeedSet, 50, 25, 100L, 200L)
                 var timer = 2.0
                 if (isExperimentRunning) {
                     while (isExperimentRunning && timer > 0) {
@@ -255,17 +243,20 @@ class H_HHControllerSG : CustomController() {
         }
 
         if (isExperimentRunning) {
-            appendMessageToLog(LogTag.DEBUG, "Подъем напряжения обмотки возбуждения")
-            for (i in 1..3) {
-                voltageRegulationTRN(voltageOYSet, 1000, 1500)
-                var timer = 2.0
-                if (isExperimentRunning) {
-                    while (isExperimentRunning && timer > 0) {
-                        timer -= 0.1
-                        sleep(100)
+            if (objectModel!!.uVIU.toDoubleOrNull() != null) {
+                appendMessageToLog(LogTag.DEBUG, "Подъем напряжения обмотки возбуждения")
+                for (i in 1..3) {
+//                    voltageRegulation(voltageOYSet, 100, 50, 10)
+                    voltageRegulationTRN(voltageOYSet,300,600)
+                    var timer = 2.0
+                    if (isExperimentRunning) {
+                        while (isExperimentRunning && timer > 0) {
+                            timer -= 0.1
+                            sleep(100)
+                        }
                     }
                 }
-            }
+            } else cause = "ошибка задания напряжения"
         }
 
         if (isExperimentRunning) {
@@ -274,6 +265,7 @@ class H_HHControllerSG : CustomController() {
 
         var timer = 30.0
         if (isExperimentRunning) {
+//            appendMessageToLog(LogTag.MESSAGE, "Выдержка 5 минут")
             appendMessageToLog(LogTag.MESSAGE, "Выдержка 30 секунд")
             while (isExperimentRunning && timer > 0) {
                 timer -= 0.1
@@ -284,17 +276,19 @@ class H_HHControllerSG : CustomController() {
             }
         }
 
-        saveData()
 
         var step = 1.4
         for (i in 0..8) {
             step -= 0.1
             if (isExperimentRunning) {
-                appendMessageToLog(
-                    LogTag.MESSAGE,
-                    "Установка напряжения обмотки возбуждения завершена. Ступень: ${step.autoformat()}"
-                )
-                voltageRegulationTRN(voltageOYSet * step, 1000, 1500)
+                if (objectModel!!.uVIU.toDoubleOrNull() != null) {
+                    appendMessageToLog(
+                        LogTag.MESSAGE,
+                        "Установка напряжения обмотки возбуждения завершена. Ступень: ${step.autoformat()}"
+                    )
+//                    voltageRegulation(voltageOYSet * step, 150, 100, 10)
+                    voltageRegulationTRN(voltageOYSet * step,300,600)
+                } else cause = "ошибка задания напряжения"
             }
 
             timer = 10.0
@@ -318,12 +312,13 @@ class H_HHControllerSG : CustomController() {
             model.h_hhTablePoints[i].uOV.value = model.data.uOV.value
             model.h_hhTablePoints[i].iOV.value = model.data.iOV.value
             model.h_hhTablePoints[i].power.value = model.data.p.value
-            runLater {
-                model.series.data.add(XYChart.Data(amperageOV, voltageOY))
-            }
+            model.series.data.add(XYChart.Data(amperageOV, voltageOY))
         }
-        runLater {
-            model.series.data.add(XYChart.Data(0.0, 0.0))
+
+        try {
+            saveData()
+        } catch (e:Exception) {
+            appendMessageToLog(LogTag.ERROR, "Ошибка сохранения протокола")
         }
 
         delta.stopObject()
@@ -349,21 +344,21 @@ class H_HHControllerSG : CustomController() {
                 appendMessageToLog(LogTag.ERROR, "Испытание прервано по причине: $cause")
             }
         }
-        protocolModel.nResult = model.data.result.value
-        restoreData()
+        protocolModel.h_hhResult = model.data.result.value
     }
 
     private fun voltageRegulationTRN(volt: Double, coarseSleep: Long, fineSleep: Long) {
+        val slow = 100.0
         val fast = 20.0
         val accurate = 2.0
 
         var timer = System.currentTimeMillis()
-        while (abs(voltageOY - volt) > fast && isExperimentRunning) {
-            if (voltageOY < volt) {
-                voltageTRN += 0.005
+        while (abs(voltageOV - volt) > slow && isExperimentRunning) {
+            if (voltageOV < volt) {
+                voltageTRN += 0.01
                 pr102.setTRN(voltageTRN)
             } else {
-                voltageTRN -= 0.005
+                voltageTRN -= 0.01
                 pr102.setTRN(voltageTRN)
             }
             if (System.currentTimeMillis() - timer > 90000) cause = "Превышено время регулирования"
@@ -371,8 +366,21 @@ class H_HHControllerSG : CustomController() {
         }
 
         timer = System.currentTimeMillis()
-        while (abs(voltageOY - volt) > accurate && isExperimentRunning) {
-            if (voltageOY < volt) {
+        while (abs(voltageOV - volt) > fast && isExperimentRunning) {
+            if (voltageOV < volt) {
+                voltageTRN += 0.005
+                pr102.setTRN(voltageTRN)
+            } else {
+                voltageTRN -= 0.005
+                pr102.setTRN(voltageTRN)
+            }
+            if (System.currentTimeMillis() - timer > 90000) cause = "Превышено время регулирования"
+            sleep(fineSleep)
+        }
+
+        timer = System.currentTimeMillis()
+        while (abs(voltageOV - volt) > accurate && isExperimentRunning) {
+            if (voltageOV < volt) {
                 voltageTRN += 0.003
                 pr102.setTRN(voltageTRN)
             } else {
@@ -414,6 +422,82 @@ class H_HHControllerSG : CustomController() {
                 sleep(fineSleep)
             }
         }
+    }
+
+    private fun voltageRegulation(volt: Double, coarse: Int = 10, fine: Int = 5, accurate: Int = 2) {
+        var timer = 0L
+        var speedPerc = 100f
+        var timePulsePerc = 20f
+        val up = 220f
+        val down = 1f
+        var direction: Float
+//        timer = System.currentTimeMillis()
+//        appendMessageToLog(LogTag.DEBUG, "Быстрая регулировка")
+//        while (abs(voltageOY - volt) > fine && isExperimentRunning) {
+//            if (voltageOY < volt) {
+//                direction = up
+//                speedPerc = 100f
+//            } else {
+//                direction = down
+//                speedPerc = 100f
+//            }
+//            if (System.currentTimeMillis() - timer > 90000) cause = "Превышено время регулирования"
+//            latr.startUpLATRUp(direction, false, speedPerc)
+//        }
+//        latr.stopLATR()
+//        timer = System.currentTimeMillis()
+//        if (isExperimentRunning) {
+//            appendMessageToLog(LogTag.DEBUG, "Грубая регулировка")
+//        }
+//        while (abs(voltageOY - volt) > coarse && isExperimentRunning) {
+//            if (voltageOY < volt) {
+//                direction = up
+//                timePulsePerc = 85f
+//            } else {
+//                direction = down
+//                timePulsePerc = 100f
+//            }
+//            if (System.currentTimeMillis() - timer > 60000) cause = "Превышено время регулирования"
+//            latr.startUpLATRPulse(direction, false, timePulsePerc)
+//        }
+//        latr.stopLATR()
+        timer = System.currentTimeMillis()
+//        if (isExperimentRunning) {
+//            appendMessageToLog(LogTag.DEBUG, "Быстрая регулировка")
+//        }
+        while (abs(voltageOY - volt) > fine && isExperimentRunning) {
+            if (voltageOY < volt) {
+                direction = up
+                timePulsePerc = 70f
+            } else {
+                direction = down
+                timePulsePerc = 100f
+            }
+            if (System.currentTimeMillis() - timer > 180000) cause = "Превышено время регулирования"
+            latr.startUpLATRPulse(direction, false, timePulsePerc)
+            sleep(500)
+            latr.stopLATR()
+            sleep(500)
+        }
+        timer = System.currentTimeMillis()
+//        if (isExperimentRunning) {
+//            appendMessageToLog(LogTag.DEBUG, "Точная регулировка")
+//        }
+        while (abs(voltageOY - volt) > accurate && isExperimentRunning) {
+            if (voltageOY < volt) {
+                direction = up
+                timePulsePerc = 70f
+            } else {
+                direction = down
+                timePulsePerc = 100f
+            }
+            if (System.currentTimeMillis() - timer > 180000) cause = "Превышено время регулирования"
+            latr.startUpLATRPulse(direction, false, timePulsePerc)
+            sleep(250)
+            latr.stopLATR()
+            sleep(2000)
+        }
+        latr.stopLATR()
     }
 
     private fun regulation(
@@ -468,36 +552,73 @@ class H_HHControllerSG : CustomController() {
     }
 
     private fun saveData() {
-        protocolModel.hhUAB = model.data.uAB.value
-        protocolModel.hhUBC = model.data.uBC.value
-        protocolModel.hhUCA = model.data.uCA.value
-        protocolModel.hhIA = model.data.iA.value
-        protocolModel.hhIB = model.data.iB.value
-        protocolModel.hhIC = model.data.iC.value
-        protocolModel.hhUOV = model.data.uOV.value
-        protocolModel.hhIOV = model.data.iOV.value
-        protocolModel.hhSpeed = model.data.n.value
-        protocolModel.hhF = model.data.f.value
-        protocolModel.hhTempOI = model.data.tempOI.value
-        protocolModel.hhSpeed = model.data.n.value
-        protocolModel.hhTime = objectModel!!.timeHH
-        protocolModel.hhResult = model.data.result.value
+        protocolModel.h_hhuAB1 = model.h_hhTablePoints[0].uAB.value
+        protocolModel.h_hhuBC1 = model.h_hhTablePoints[0].uBC.value
+        protocolModel.h_hhuCA1 = model.h_hhTablePoints[0].uCA.value
+        protocolModel.h_hhiA1  = model.h_hhTablePoints[0].iA.value
+        protocolModel.h_hhiB1  = model.h_hhTablePoints[0].iB.value
+        protocolModel.h_hhiC1  = model.h_hhTablePoints[0].iC.value
+        protocolModel.h_hhuOV1 = model.h_hhTablePoints[0].uOV.value
+        protocolModel.h_hhuAB2 = model.h_hhTablePoints[1].uAB.value
+        protocolModel.h_hhuBC2 = model.h_hhTablePoints[1].uBC.value
+        protocolModel.h_hhuCA2 = model.h_hhTablePoints[1].uCA.value
+        protocolModel.h_hhiA2  = model.h_hhTablePoints[1].iA.value
+        protocolModel.h_hhiB2  = model.h_hhTablePoints[1].iB.value
+        protocolModel.h_hhiC2  = model.h_hhTablePoints[1].iC.value
+        protocolModel.h_hhuOV2 = model.h_hhTablePoints[1].uOV.value
+        protocolModel.h_hhuAB3 = model.h_hhTablePoints[2].uAB.value
+        protocolModel.h_hhuBC3 = model.h_hhTablePoints[2].uBC.value
+        protocolModel.h_hhuCA3 = model.h_hhTablePoints[2].uCA.value
+        protocolModel.h_hhiA3  = model.h_hhTablePoints[2].iA.value
+        protocolModel.h_hhiB3  = model.h_hhTablePoints[2].iB.value
+        protocolModel.h_hhiC3  = model.h_hhTablePoints[2].iC.value
+        protocolModel.h_hhuOV3 = model.h_hhTablePoints[2].uOV.value
+        protocolModel.h_hhuAB4 = model.h_hhTablePoints[3].uAB.value
+        protocolModel.h_hhuBC4 = model.h_hhTablePoints[3].uBC.value
+        protocolModel.h_hhuCA4 = model.h_hhTablePoints[3].uCA.value
+        protocolModel.h_hhiA4  = model.h_hhTablePoints[3].iA.value
+        protocolModel.h_hhiB4  = model.h_hhTablePoints[3].iB.value
+        protocolModel.h_hhiC4  = model.h_hhTablePoints[3].iC.value
+        protocolModel.h_hhuOV4 = model.h_hhTablePoints[3].uOV.value
+        protocolModel.h_hhuAB5 = model.h_hhTablePoints[4].uAB.value
+        protocolModel.h_hhuBC5 = model.h_hhTablePoints[4].uBC.value
+        protocolModel.h_hhuCA5 = model.h_hhTablePoints[4].uCA.value
+        protocolModel.h_hhiA5  = model.h_hhTablePoints[4].iA.value
+        protocolModel.h_hhiB5  = model.h_hhTablePoints[4].iB.value
+        protocolModel.h_hhiC5  = model.h_hhTablePoints[4].iC.value
+        protocolModel.h_hhuOV5 = model.h_hhTablePoints[4].uOV.value
+        protocolModel.h_hhuAB6 = model.h_hhTablePoints[5].uAB.value
+        protocolModel.h_hhuBC6 = model.h_hhTablePoints[5].uBC.value
+        protocolModel.h_hhuCA6 = model.h_hhTablePoints[5].uCA.value
+        protocolModel.h_hhiA6  = model.h_hhTablePoints[5].iA.value
+        protocolModel.h_hhiB6  = model.h_hhTablePoints[5].iB.value
+        protocolModel.h_hhiC6  = model.h_hhTablePoints[5].iC.value
+        protocolModel.h_hhuOV6 = model.h_hhTablePoints[5].uOV.value
+        protocolModel.h_hhuAB7 = model.h_hhTablePoints[6].uAB.value
+        protocolModel.h_hhuBC7 = model.h_hhTablePoints[6].uBC.value
+        protocolModel.h_hhuCA7 = model.h_hhTablePoints[6].uCA.value
+        protocolModel.h_hhiA7  = model.h_hhTablePoints[6].iA.value
+        protocolModel.h_hhiB7  = model.h_hhTablePoints[6].iB.value
+        protocolModel.h_hhiC7  = model.h_hhTablePoints[6].iC.value
+        protocolModel.h_hhuOV7 = model.h_hhTablePoints[6].uOV.value
+        protocolModel.h_hhuAB8 = model.h_hhTablePoints[7].uAB.value
+        protocolModel.h_hhuBC8 = model.h_hhTablePoints[7].uBC.value
+        protocolModel.h_hhuCA8 = model.h_hhTablePoints[7].uCA.value
+        protocolModel.h_hhiA8  = model.h_hhTablePoints[7].iA.value
+        protocolModel.h_hhiB8  = model.h_hhTablePoints[7].iB.value
+        protocolModel.h_hhiC8  = model.h_hhTablePoints[7].iC.value
+        protocolModel.h_hhuOV8 = model.h_hhTablePoints[7].uOV.value
+        protocolModel.h_hhuAB9 = model.h_hhTablePoints[8].uAB.value
+        protocolModel.h_hhuBC9 = model.h_hhTablePoints[8].uBC.value
+        protocolModel.h_hhuCA9 = model.h_hhTablePoints[8].uCA.value
+        protocolModel.h_hhiA9  = model.h_hhTablePoints[8].iA.value
+        protocolModel.h_hhiB9  = model.h_hhTablePoints[8].iB.value
+        protocolModel.h_hhiC9  = model.h_hhTablePoints[8].iC.value
+        protocolModel.h_hhuOV9 = model.h_hhTablePoints[8].uOV.value
+//        protocolModel.h_hhResult = model.data.result.value
     }
 
     private fun restoreData() {
-        model.data.uAB.value = protocolModel.hhUAB
-        model.data.uBC.value = protocolModel.hhUBC
-        model.data.uCA.value = protocolModel.hhUCA
-        model.data.iA.value = protocolModel.hhIA
-        model.data.iB.value = protocolModel.hhIB
-        model.data.iC.value = protocolModel.hhIC
-        model.data.uOV.value = protocolModel.hhUOV
-        model.data.iOV.value = protocolModel.hhIOV
-        model.data.n.value = protocolModel.hhSpeed
-        model.data.f.value = protocolModel.hhF
-        model.data.tempOI.value = protocolModel.hhTempOI
-        model.data.n.value = protocolModel.hhSpeed
-        model.data.timeExp.value = protocolModel.hhTime
-        model.data.result.value = protocolModel.hhResult
+
     }
 }

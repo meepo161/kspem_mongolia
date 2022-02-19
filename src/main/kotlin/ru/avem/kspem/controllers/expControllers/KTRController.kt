@@ -192,10 +192,10 @@ class KTRController : CustomController() {
     }
 
     private fun saveData() {
-        protocolModel.ktrUAVG1 = model.data.uAvg1.value
-        protocolModel.ktrUAVG2 = model.data.uAvg2.value
-        protocolModel.ktrKTR = model.data.kTR.value
-        protocolModel.ktrResult = model.data.result.value
+//        protocolModel.ktrUAVG1 = model.data.uAvg1.value
+//        protocolModel.ktrUAVG2 = model.data.uAvg2.value
+//        protocolModel.ktrKTR = model.data.kTR.value
+//        protocolModel.ktrResult = model.data.result.value
     }
 
     private fun restoreData() {

@@ -12,7 +12,6 @@ import ru.avem.kspem.utils.LogTag
 import ru.avem.kspem.utils.sleep
 import ru.avem.kspem.view.expViews.expViewsMPT.HHViewMPT
 import ru.avem.stand.utils.autoformat
-import kotlin.concurrent.thread
 import kotlin.math.abs
 
 class HHControllerMPT : CustomController() {
@@ -133,7 +132,7 @@ class HHControllerMPT : CustomController() {
         }
 
         if (isExperimentRunning) {
-            initButtonPost()
+//            initButtonPost()
         }
 
         if (isExperimentRunning) {
@@ -157,30 +156,8 @@ class HHControllerMPT : CustomController() {
             appendMessageToLog(LogTag.MESSAGE, "Регулировка до номинальной частоты вращения завершена")
         }
         if (isExperimentRunning) {
-            appendMessageToLog(LogTag.DEBUG, "Подъем напряжения обмотки возбуждения.")
+            appendMessageToLog(LogTag.DEBUG, "Подъем напряжения обмотки возбуждения и обмотки якоря.")
             voltageRegulationTRN(voltageOVSet, 300, 600)
-        }
-
-        thread(isDaemon = true) {
-            if (isExperimentRunning) {
-                var timer = 10.0
-                if (isExperimentRunning) {
-                    while (isExperimentRunning && timer > 0) {
-                        timer -= 0.1
-                        sleep(100)
-                    }
-                }
-            }
-            while (isExperimentRunning) {
-                if (rotateSpeed < 100 || rotateSpeed > rotateSpeedSet * 2) {
-                    cause = "Проверьте датчик оборотов"
-                }
-                sleep(1000)
-            }
-        }
-
-        if (isExperimentRunning) {
-            appendMessageToLog(LogTag.DEBUG, "Подъем напряжения обмотки якоря.")
             voltageRegulationTVN(voltageOYSet, 300, 600)
         }
 
@@ -198,7 +175,6 @@ class HHControllerMPT : CustomController() {
             }
             model.data.timeExp.value = "0.0"
         }
-        saveData()
 
         finalizeExperiment()
 
@@ -212,7 +188,7 @@ class HHControllerMPT : CustomController() {
                 appendMessageToLog(LogTag.ERROR, "Испытание прервано по причине: $cause")
             }
         }
-        protocolModel.nResult = model.data.result.value
+        saveData()
         restoreData()
     }
 
@@ -372,22 +348,18 @@ class HHControllerMPT : CustomController() {
     }
 
     private fun saveData() {
-        model.data.tempOI.value
-        model.data.tempAmb.value
-        model.data.n.value
-        model.data.uOV.value
-        model.data.iOV.value
-        model.data.uOY.value
-        model.data.iOY.value
-        model.data.timeExp.value
-        model.data.result.value
-        model.data.p.value
-
-        protocolModel.nSpeed = model.data.n.value
-        protocolModel.nResult = model.data.result.value
+        protocolModel.dptHHN = model.data.n.value
+        protocolModel.dptHHP1 = model.data.p.value
+        protocolModel.dptHHResult = model.data.result.value
+        protocolModel.dptHHTOI = model.data.tempOI.value
+        protocolModel.dptHHTAmb = model.data.tempAmb.value
+        protocolModel.dptHHiOV = model.data.iOV.value
+        protocolModel.dptHHuOV = model.data.uOV.value
+        protocolModel.dptHHuN = model.data.uOY.value
+        protocolModel.dptHHiN = model.data.iOY.value
+        protocolModel.dptHHTime = setTime.autoformat()
     }
 
     private fun restoreData() {
-        model.data.n.value = protocolModel.nSpeed
     }
 }
