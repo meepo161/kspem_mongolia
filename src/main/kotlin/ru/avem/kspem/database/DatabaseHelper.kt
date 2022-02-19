@@ -172,6 +172,7 @@ fun validateDB() {
                 dptLOADTOI = "dptLOADTOI"
                 dptLOADTAmb = "dptLOADTAmb"
                 dptLOADN = "dptLOADN"
+                dptLOADDots = "00:00:05, 1, 2, 3, 4"
                 dptLOADResult = "dptLOADResult"
 
 
@@ -279,6 +280,10 @@ fun validateDB() {
                 h_hhResult = "h_hhResult"
 
 
+                kzN = "kzN"
+                kzCos = "kzCos"
+                kzUOV = "kzUOV"
+                kzIOV = "kzIOV"
                 kzUAB = "kzUAB"
                 kzUBC = "kzUBC"
                 kzUCA = "kzUCA"

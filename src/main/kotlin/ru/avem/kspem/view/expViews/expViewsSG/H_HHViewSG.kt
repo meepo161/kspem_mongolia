@@ -20,10 +20,26 @@ class H_HHViewSG : View() {
             SimpleStringProperty("1.3"),
             SimpleStringProperty(),
             SimpleStringProperty(),
+            SimpleStringProperty(),
+            SimpleStringProperty(),
+            SimpleStringProperty(),
+            SimpleStringProperty(),
+            SimpleStringProperty(),
+            SimpleStringProperty(),
+            SimpleStringProperty(),
+            SimpleStringProperty(),
             SimpleStringProperty()
         ),
         H_HHPointsSG(
             SimpleStringProperty("1.2"),
+            SimpleStringProperty(),
+            SimpleStringProperty(),
+            SimpleStringProperty(),
+            SimpleStringProperty(),
+            SimpleStringProperty(),
+            SimpleStringProperty(),
+            SimpleStringProperty(),
+            SimpleStringProperty(),
             SimpleStringProperty(),
             SimpleStringProperty(),
             SimpleStringProperty()
@@ -32,10 +48,26 @@ class H_HHViewSG : View() {
             SimpleStringProperty("1.1"),
             SimpleStringProperty(),
             SimpleStringProperty(),
+            SimpleStringProperty(),
+            SimpleStringProperty(),
+            SimpleStringProperty(),
+            SimpleStringProperty(),
+            SimpleStringProperty(),
+            SimpleStringProperty(),
+            SimpleStringProperty(),
+            SimpleStringProperty(),
             SimpleStringProperty()
         ),
         H_HHPointsSG(
             SimpleStringProperty("1.0"),
+            SimpleStringProperty(),
+            SimpleStringProperty(),
+            SimpleStringProperty(),
+            SimpleStringProperty(),
+            SimpleStringProperty(),
+            SimpleStringProperty(),
+            SimpleStringProperty(),
+            SimpleStringProperty(),
             SimpleStringProperty(),
             SimpleStringProperty(),
             SimpleStringProperty()
@@ -44,10 +76,26 @@ class H_HHViewSG : View() {
             SimpleStringProperty("0.9"),
             SimpleStringProperty(),
             SimpleStringProperty(),
+            SimpleStringProperty(),
+            SimpleStringProperty(),
+            SimpleStringProperty(),
+            SimpleStringProperty(),
+            SimpleStringProperty(),
+            SimpleStringProperty(),
+            SimpleStringProperty(),
+            SimpleStringProperty(),
             SimpleStringProperty()
         ),
         H_HHPointsSG(
             SimpleStringProperty("0.8"),
+            SimpleStringProperty(),
+            SimpleStringProperty(),
+            SimpleStringProperty(),
+            SimpleStringProperty(),
+            SimpleStringProperty(),
+            SimpleStringProperty(),
+            SimpleStringProperty(),
+            SimpleStringProperty(),
             SimpleStringProperty(),
             SimpleStringProperty(),
             SimpleStringProperty()
@@ -56,16 +104,40 @@ class H_HHViewSG : View() {
             SimpleStringProperty("0.7"),
             SimpleStringProperty(),
             SimpleStringProperty(),
+            SimpleStringProperty(),
+            SimpleStringProperty(),
+            SimpleStringProperty(),
+            SimpleStringProperty(),
+            SimpleStringProperty(),
+            SimpleStringProperty(),
+            SimpleStringProperty(),
+            SimpleStringProperty(),
             SimpleStringProperty()
         ),
         H_HHPointsSG(
             SimpleStringProperty("0.6"),
             SimpleStringProperty(),
             SimpleStringProperty(),
+            SimpleStringProperty(),
+            SimpleStringProperty(),
+            SimpleStringProperty(),
+            SimpleStringProperty(),
+            SimpleStringProperty(),
+            SimpleStringProperty(),
+            SimpleStringProperty(),
+            SimpleStringProperty(),
             SimpleStringProperty()
         ),
         H_HHPointsSG(
             SimpleStringProperty("0.5"),
+            SimpleStringProperty(),
+            SimpleStringProperty(),
+            SimpleStringProperty(),
+            SimpleStringProperty(),
+            SimpleStringProperty(),
+            SimpleStringProperty(),
+            SimpleStringProperty(),
+            SimpleStringProperty(),
             SimpleStringProperty(),
             SimpleStringProperty(),
             SimpleStringProperty()
@@ -186,7 +258,7 @@ class H_HHViewSG : View() {
             it.iA.value = ""
             it.iB.value = ""
             it.iC.value = ""
-            it.power.value = ""
+            it.p.value = ""
         }
     }
 }
@@ -220,5 +292,7 @@ data class H_HHPointsSG(
     var iC: StringProperty = SimpleStringProperty(""),
     val uOV: StringProperty = SimpleStringProperty(""),
     val iOV: StringProperty = SimpleStringProperty(""),
-    var power: StringProperty = SimpleStringProperty("")
+    val n: StringProperty = SimpleStringProperty(""),
+    val p: StringProperty = SimpleStringProperty(""),
+    val cos: StringProperty = SimpleStringProperty("")
 )

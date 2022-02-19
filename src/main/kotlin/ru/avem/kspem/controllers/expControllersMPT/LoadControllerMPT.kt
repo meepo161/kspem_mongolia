@@ -805,29 +805,83 @@ class LoadControllerMPT : CustomController() {
     }
 
     private fun saveData() {
-//        protocolModel.dptLOADN = "model.data.n.value"
-//        protocolModel.dptLOADP1 = "model.data.p.value"
-//        protocolModel.dptLOADTOI = "model.data.tempOI.value"
-//        protocolModel.dptLOADTAmb = "model.data.tempAmb.value"
-//        protocolModel.dptLOADiOV = "model.data.iOV.value"
-//        protocolModel.dptLOADuOV = "model.data.uOV.value"
-//        protocolModel.dptLOADuN = "model.data.uOY.value"
-//        protocolModel.dptLOADiN = "model.data.iOY.value"
+//        protocolModel.dptLOADN = model.data.n.value
+//        protocolModel.dptLOADP1 = model.data.p.value
+//        protocolModel.dptLOADTOI = model.data.tempOI.value
+//        protocolModel.dptLOADTAmb = model.data.tempAmb.value
+//        protocolModel.dptLOADiOV = model.data.iOV.value
+//        protocolModel.dptLOADuOV = model.data.uOV.value
+//        protocolModel.dptLOADuN = model.data.uOY.value
+//        val listDots = mutableListOf<String>()
+//        if (sparkingTime.isNotEmpty()) {
+//            for (i in 0 until sparkingTime.size) {
+//                listDots.add(sparkingTime[i])
+//            }
+//            for (i in 0 until sparkingTime.size) {
+//                listDots.add(sparking1[i])
+//            }
+//            for (i in 0 until sparkingTime.size) {
+//                listDots.add(sparking2[i])
+//            }
+//            for (i in 0 until sparkingTime.size) {
+//                listDots.add(sparking3[i])
+//            }
+//            for (i in 0 until sparkingTime.size) {
+//                listDots.add(sparking4[i])
+//            }
+//        }
+//        protocolModel.dptLOADDots = listDots.toString()
+//        protocolModel.dptLOADiN = model.data.iOY.value
 
-        protocolModel.dptLOADN = model.data.n.value
-        protocolModel.dptLOADP1 = model.data.p.value
-        protocolModel.dptLOADTOI = model.data.tempOI.value
-        protocolModel.dptLOADTAmb = model.data.tempAmb.value
-        protocolModel.dptLOADiOV = model.data.iOV.value
-        protocolModel.dptLOADuOV = model.data.uOV.value
-        protocolModel.dptLOADuN = model.data.uOY.value
-        protocolModel.dptLOADiN = model.data.iOY.value
+
+        protocolModel.dptLOADN = "model.data.n.value"
+        protocolModel.dptLOADP1 = "model.data.p.value"
+        protocolModel.dptLOADTOI = "model.data.tempOI.value"
+        protocolModel.dptLOADTAmb = "model.data.tempAmb.value"
+        protocolModel.dptLOADiOV = "model.data.iOV.value"
+        protocolModel.dptLOADuOV = "model.data.uOV.value"
+        protocolModel.dptLOADuN = "model.data.uOY.value"
+        val listDots = mutableListOf<String>()
+        for (i in 0..9) {
+            listDots.add("00:00:0${i}")
+        }
+        for (i in 0..9) {
+            listDots.add("${i + 0}")
+        }
+        for (i in 0..9) {
+            listDots.add("${i + 1}")
+        }
+        for (i in 0..9) {
+            listDots.add("${i + 2}")
+        }
+        for (i in 0..9) {
+            listDots.add("${i + 3}")
+        }
+        if (sparkingTime.isNotEmpty()) {
+            for (i in 0 until sparkingTime.size) {
+                listDots.add(sparkingTime[i])
+            }
+            for (i in 0 until sparkingTime.size) {
+                listDots.add(sparking1[i])
+            }
+            for (i in 0 until sparkingTime.size) {
+                listDots.add(sparking2[i])
+            }
+            for (i in 0 until sparkingTime.size) {
+                listDots.add(sparking3[i])
+            }
+            for (i in 0 until sparkingTime.size) {
+                listDots.add(sparking4[i])
+            }
+        }
+        protocolModel.dptLOADDots = listDots.toString()
+        protocolModel.dptLOADiN = "model.data.iOY.value"
     }
 
     private fun restoreData() {
         model.data.n.value = protocolModel.dptLOADN
         model.data.p.value = protocolModel.dptLOADP1
-       // model.data.result.value = protocolModel.dptLOADResult
+        // model.data.result.value = protocolModel.dptLOADResult
         model.data.tempOI.value = protocolModel.dptLOADTOI
         model.data.tempAmb.value = protocolModel.dptLOADTAmb
         model.data.iOV.value = protocolModel.dptLOADiOV

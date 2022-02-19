@@ -316,15 +316,19 @@ class KZControllerSG : CustomController() {
                 }
             }
 
-//            model.kzTablePoints[i].uAB.value = model.data.uAB.value
-//            model.kzTablePoints[i].uBC.value = model.data.uBC.value
-//            model.kzTablePoints[i].uCA.value = model.data.uCA.value
-//            model.kzTablePoints[i].iA.value = model.data.iA.value
-//            model.kzTablePoints[i].iB.value = model.data.iB.value
-//            model.kzTablePoints[i].iC.value = model.data.iC.value
-//            model.kzTablePoints[i].uOV.value = model.data.uOV.value
-//            model.kzTablePoints[i].iOV.value = model.data.iOV.value
-//            model.kzTablePoints[i].power.value = model.data.p.value
+            model.kzTablePoints[i].uOV.value = model.data.uOV.value
+            model.kzTablePoints[i].iOV.value = model.data.iOV.value
+            model.kzTablePoints[i].n.value = model.data.n.value
+            model.kzTablePoints[i].uAB.value = model.data.uAB.value
+            model.kzTablePoints[i].uBC.value = model.data.uBC.value
+            model.kzTablePoints[i].uCA.value = model.data.uCA.value
+            model.kzTablePoints[i].iA.value = model.data.iA.value
+            model.kzTablePoints[i].iB.value = model.data.iB.value
+            model.kzTablePoints[i].iC.value = model.data.iC.value
+            model.kzTablePoints[i].f.value = model.data.f.value
+            model.kzTablePoints[i].p.value = model.data.p.value
+            model.kzTablePoints[i].cos.value = model.data.cos.value
+
             runLater {
                 model.series.data.add(XYChart.Data(amperageOV, amperageOY))
             }
@@ -333,14 +337,6 @@ class KZControllerSG : CustomController() {
         runLater {
             model.series.data.add(XYChart.Data(0.0, 0.0))
         }
-
-        protocolModel.kzUAB = model.data.uAB.value
-        protocolModel.kzUBC = model.data.uBC.value
-        protocolModel.kzUCA = model.data.uCA.value
-        protocolModel.kzIA = model.data.iA.value
-        protocolModel.kzIB = model.data.iB.value
-        protocolModel.kzIC = model.data.iC.value
-        protocolModel.kzP1 = model.data.p.value
 
         delta.stopObject()
 
@@ -498,6 +494,8 @@ class KZControllerSG : CustomController() {
     }
 
     private fun saveData() {
+        protocolModel.kzUOV = model.data.uOV.value
+        protocolModel.kzIOV = model.data.iOV.value
         protocolModel.kzUAB = model.data.uAB.value
         protocolModel.kzUBC = model.data.uBC.value
         protocolModel.kzUCA = model.data.uCA.value
@@ -505,6 +503,8 @@ class KZControllerSG : CustomController() {
         protocolModel.kzIB = model.data.iB.value
         protocolModel.kzIC = model.data.iC.value
         protocolModel.kzP1 = model.data.p.value
+        protocolModel.kzN = model.data.n.value
+        protocolModel.kzCos = model.data.cos.value
         protocolModel.kzResult = model.data.result.value
 
 //        protocolModel.kzUAB     = "model.data.uAB.value"
@@ -518,6 +518,10 @@ class KZControllerSG : CustomController() {
     }
 
     private fun restoreData() {
+        model.data.cos.value = protocolModel.kzCos
+        model.data.n.value = protocolModel.kzN
+        model.data.uOV.value = protocolModel.kzUOV
+        model.data.iOV.value = protocolModel.kzIOV
         model.data.uAB.value = protocolModel.kzUAB
         model.data.uBC.value = protocolModel.kzUBC
         model.data.uCA.value = protocolModel.kzUCA

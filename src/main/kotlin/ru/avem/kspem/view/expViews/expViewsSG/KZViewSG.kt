@@ -18,6 +18,99 @@ class KZViewSG : View() {
     var lineChart: LineChart<Number, Number> by singleAssign()
     var series = XYChart.Series<Number, Number>()
 
+    val kzTablePoints = observableListOf(
+        KZPointsSG(
+            SimpleStringProperty("1.0"),
+            SimpleStringProperty(),
+            SimpleStringProperty(),
+            SimpleStringProperty(),
+            SimpleStringProperty(),
+            SimpleStringProperty(),
+            SimpleStringProperty(),
+            SimpleStringProperty(),
+            SimpleStringProperty(),
+            SimpleStringProperty(),
+            SimpleStringProperty(),
+            SimpleStringProperty(),
+            SimpleStringProperty()
+        ),
+        KZPointsSG(
+            SimpleStringProperty("0.9"),
+            SimpleStringProperty(),
+            SimpleStringProperty(),
+            SimpleStringProperty(),
+            SimpleStringProperty(),
+            SimpleStringProperty(),
+            SimpleStringProperty(),
+            SimpleStringProperty(),
+            SimpleStringProperty(),
+            SimpleStringProperty(),
+            SimpleStringProperty(),
+            SimpleStringProperty(),
+            SimpleStringProperty()
+        ),
+        KZPointsSG(
+            SimpleStringProperty("0.8"),
+            SimpleStringProperty(),
+            SimpleStringProperty(),
+            SimpleStringProperty(),
+            SimpleStringProperty(),
+            SimpleStringProperty(),
+            SimpleStringProperty(),
+            SimpleStringProperty(),
+            SimpleStringProperty(),
+            SimpleStringProperty(),
+            SimpleStringProperty(),
+            SimpleStringProperty(),
+            SimpleStringProperty()
+        ),
+        KZPointsSG(
+            SimpleStringProperty("0.7"),
+            SimpleStringProperty(),
+            SimpleStringProperty(),
+            SimpleStringProperty(),
+            SimpleStringProperty(),
+            SimpleStringProperty(),
+            SimpleStringProperty(),
+            SimpleStringProperty(),
+            SimpleStringProperty(),
+            SimpleStringProperty(),
+            SimpleStringProperty(),
+            SimpleStringProperty(),
+            SimpleStringProperty()
+        ),
+        KZPointsSG(
+            SimpleStringProperty("0.6"),
+            SimpleStringProperty(),
+            SimpleStringProperty(),
+            SimpleStringProperty(),
+            SimpleStringProperty(),
+            SimpleStringProperty(),
+            SimpleStringProperty(),
+            SimpleStringProperty(),
+            SimpleStringProperty(),
+            SimpleStringProperty(),
+            SimpleStringProperty(),
+            SimpleStringProperty(),
+            SimpleStringProperty()
+        ),
+        KZPointsSG(
+            SimpleStringProperty("0.5"),
+            SimpleStringProperty(),
+            SimpleStringProperty(),
+            SimpleStringProperty(),
+            SimpleStringProperty(),
+            SimpleStringProperty(),
+            SimpleStringProperty(),
+            SimpleStringProperty(),
+            SimpleStringProperty(),
+            SimpleStringProperty(),
+            SimpleStringProperty(),
+            SimpleStringProperty(),
+            SimpleStringProperty()
+        )
+    )
+
     override fun onDock() {
         super.onDock()
         runLater {
@@ -119,6 +212,15 @@ class KZViewSG : View() {
         data.uOV.value = ""
         data.iOV.value = ""
         data.timeExp.value = ""
+        kzTablePoints.forEach {
+            it.uAB.value = ""
+            it.uBC.value = ""
+            it.uCA.value = ""
+            it.iA.value = ""
+            it.iB.value = ""
+            it.iC.value = ""
+            it.p.value = ""
+        }
     }
 }
 
@@ -136,6 +238,22 @@ data class KZDataSG(
     val iA: StringProperty = SimpleStringProperty(""),
     val iB: StringProperty = SimpleStringProperty(""),
     val iC: StringProperty = SimpleStringProperty(""),
+    val f: StringProperty = SimpleStringProperty(""),
+    val p: StringProperty = SimpleStringProperty(""),
+    val cos: StringProperty = SimpleStringProperty("")
+)
+
+data class KZPointsSG(
+    var point: StringProperty = SimpleStringProperty(""),
+    val uOV: StringProperty = SimpleStringProperty(""),
+    val iOV: StringProperty = SimpleStringProperty(""),
+    val n: StringProperty = SimpleStringProperty(""),
+    val uAB: StringProperty = SimpleStringProperty(""),
+    val uBC: StringProperty = SimpleStringProperty(""),
+    val uCA: StringProperty = SimpleStringProperty(""),
+    val iA: StringProperty = SimpleStringProperty(""),
+    val iB: StringProperty = SimpleStringProperty(""),
+    var iC: StringProperty = SimpleStringProperty(""),
     val f: StringProperty = SimpleStringProperty(""),
     val p: StringProperty = SimpleStringProperty(""),
     val cos: StringProperty = SimpleStringProperty("")

@@ -1,10 +1,11 @@
 package ru.avem.kspem.protocol
 
-import org.apache.poi.ss.usermodel.CellType
+import org.apache.logging.log4j.message.StringFormattedMessage
+import org.apache.poi.ss.usermodel.*
+import org.apache.poi.xssf.usermodel.XSSFCellStyle
 import org.apache.poi.xssf.usermodel.XSSFWorkbook
 import ru.avem.kspem.app.Main
 import ru.avem.kspem.data.motorType
-import ru.avem.kspem.data.objectModel
 import ru.avem.kspem.database.entities.Protocol
 import ru.avem.kspem.utils.Toast
 import ru.avem.kspem.utils.copyFileFromStream
@@ -12,6 +13,7 @@ import tornadofx.controlsfx.errorNotification
 import java.io.ByteArrayOutputStream
 import java.io.File
 import java.io.FileNotFoundException
+import java.util.*
 
 
 fun saveProtocolAsWorkbook(protocol: Protocol, path: String = "cfg/lastOpened.xlsx") {
@@ -227,6 +229,14 @@ fun saveProtocolAsWorkbook(protocol: Protocol, path: String = "cfg/lastOpened.xl
                     }
                 }
             }
+
+            fillDotsInProtocol(
+                wb,
+                protocol.dptLOADDots,
+                0,
+                75
+            )
+
             val outStream = ByteArrayOutputStream()
             wb.write(outStream)
             outStream.close()
@@ -234,6 +244,73 @@ fun saveProtocolAsWorkbook(protocol: Protocol, path: String = "cfg/lastOpened.xl
     } catch (e: FileNotFoundException) {
         Toast.makeText("Не удалось сохранить протокол на диск")
     }
+}
+
+fun fillDotsInProtocol(
+    wb: XSSFWorkbook,
+    dots1: String,
+    columnNumber: Int,
+    rawNumber: Int
+) {
+    val values1 = dots1.removePrefix("[").removePrefix("'").removeSuffix("]").split(", ")
+
+    val valuesTime = arrayListOf<String>()
+    val valuesDot1 = arrayListOf<String>()
+    val valuesDot2 = arrayListOf<String>()
+    val valuesDot3 = arrayListOf<String>()
+    val valuesDot4 = arrayListOf<String>()
+    for (i in 0 until values1.size / 5) {
+        valuesTime.add(values1[i])
+    }
+    for (i in 0 until values1.size / 5) {
+        valuesDot1.add(values1[i + values1.size / 5 * 1])
+    }
+    for (i in 0 until values1.size / 5) {
+        valuesDot2.add(values1[i + values1.size / 5 * 2])
+    }
+    for (i in 0 until values1.size / 5) {
+        valuesDot3.add(values1[i + values1.size / 5 * 3])
+    }
+    for (i in 0 until values1.size / 5) {
+        valuesDot4.add(values1[i + values1.size / 5 * 4])
+    }
+    println(valuesTime)
+    println(valuesDot1)
+    println(valuesDot2)
+    println(valuesDot3)
+    println(valuesDot4)
+    val sheet = wb.getSheetAt(0)
+    var row: Row
+    val cellStyle: XSSFCellStyle = generateStyles(wb) as XSSFCellStyle
+    var rowNum = rawNumber
+    row = sheet.createRow(rowNum)
+    for (i in 0 until valuesTime.size) {
+        fillOneCell(row, columnNumber + 1, cellStyle, valuesTime[i])
+        fillOneCell(row, columnNumber + 2, cellStyle, valuesDot1[i])
+        fillOneCell(row, columnNumber + 3, cellStyle, valuesDot2[i])
+        fillOneCell(row, columnNumber + 4, cellStyle, valuesDot3[i])
+        fillOneCell(row, columnNumber + 5, cellStyle, valuesDot4[i])
+        row = sheet.createRow(++rowNum)
+    }
+}
+
+private fun generateStyles(wb: XSSFWorkbook): CellStyle {
+    val headStyle: CellStyle = wb.createCellStyle()
+    headStyle.wrapText = true
+    headStyle.borderBottom = BorderStyle.THIN
+    headStyle.borderTop = BorderStyle.THIN
+    headStyle.borderLeft = BorderStyle.THIN
+    headStyle.borderRight = BorderStyle.THIN
+    headStyle.alignment = HorizontalAlignment.CENTER
+    headStyle.verticalAlignment = VerticalAlignment.CENTER
+    return headStyle
+}
+
+private fun fillOneCell(row: Row, columnNum: Int, cellStyle: XSSFCellStyle, points: String): Int {
+    val cell: Cell = row.createCell(columnNum)
+    cell.cellStyle = cellStyle
+    cell.setCellValue(points)
+    return columnNum + 1
 }
 
 

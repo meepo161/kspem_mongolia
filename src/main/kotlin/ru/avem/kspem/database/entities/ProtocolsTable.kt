@@ -20,6 +20,7 @@ object ProtocolsTable : IntIdTable() {
     var nAsync = varchar("nAsync", 128)
     var kpd = varchar("kpd", 128)
     var scheme = varchar("scheme", 128)
+
     //MGR//
     var mgrU1 = varchar("mgrU1", 128)
     var mgrU2 = varchar("mgrU2", 128)
@@ -37,16 +38,19 @@ object ProtocolsTable : IntIdTable() {
     var mgrResult1 = varchar("mgrResult1", 128)
     var mgrResult2 = varchar("mgrResult2", 128)
     var mgrResult3 = varchar("mgrResult3", 128)
+
     //VIU//
     var viuU = varchar("viuU", 128)
     var viuI = varchar("viuI", 128)
     var viuTime = varchar("viuTime", 128)
     var viuResult = varchar("viuResult", 128)
+
     //IKAS//
     var ikasR1 = varchar("ikasR1", 128)
     var ikasR2 = varchar("ikasR2", 128)
     var ikasR3 = varchar("ikasR3", 128)
     var ikasResult = varchar("ikasResult", 128)
+
     //N_DPT//
     var dptNuOV = varchar("dptNuOV", 128)
     var dptNiOV = varchar("dptNiOV", 128)
@@ -57,6 +61,7 @@ object ProtocolsTable : IntIdTable() {
     var dptNTAmb = varchar("dptNTAmb", 128)
     var dptNN = varchar("dptNN", 128)
     var dptNResult = varchar("dptNResult", 128)
+
     //HH_DPT//
     var dptHHuOV = varchar("dptHHuOV", 128)
     var dptHHiOV = varchar("dptHHiOV", 128)
@@ -68,6 +73,7 @@ object ProtocolsTable : IntIdTable() {
     var dptHHN = varchar("dptHHN", 128)
     var dptHHResult = varchar("dptHHResult", 128)
     var dptHHTime = varchar("dptHHTime", 128)
+
     //LOAD_DPT//
     var dptLOADuOV = varchar("dptLOADuOV", 128)
     var dptLOADiOV = varchar("dptLOADiOV", 128)
@@ -77,7 +83,9 @@ object ProtocolsTable : IntIdTable() {
     var dptLOADTOI = varchar("dptLOADTOI", 128)
     var dptLOADTAmb = varchar("dptLOADTAmb", 128)
     var dptLOADN = varchar("dptLOADN", 128)
+    var dptLOADDots = varchar("dptLOADDots", 8128)
     var dptLOADResult = varchar("dptLOADResult", 128)
+
     //N_GPT//
     var gptNuOV = varchar("gptNuOV", 128)
     var gptNiOV = varchar("gptNiOV", 128)
@@ -88,6 +96,7 @@ object ProtocolsTable : IntIdTable() {
     var gptNTAmb = varchar("gptNTAmb", 128)
     var gptNN = varchar("gptNN", 128)
     var gptNResult = varchar("gptNResult", 128)
+
     ///////////
     //N//,
     var nUAB = varchar("nUAB", 128)
@@ -106,6 +115,7 @@ object ProtocolsTable : IntIdTable() {
     var nP1 = varchar("nP1", 128)
     var nCos = varchar("nCos", 128)
     var nResult = varchar("nResult", 128)
+
     //HH//
 //    var hhUAB = varchar("hhUAB", 128)
 //    var hhUBC = varchar("hhUBC", 128)
@@ -207,7 +217,12 @@ object ProtocolsTable : IntIdTable() {
     var h_hhiOV9 = varchar("h_hhiOV9", 128)
 
     var h_hhResult = varchar("h_hhResult", 128)
-    //KZ//,
+
+    //KZ//,`
+    var kzN = varchar("kzN", 128)
+    var kzCos = varchar("kzCos", 128)
+    var kzUOV = varchar("kzUOV", 128)
+    var kzIOV = varchar("kzIOV", 128)
     var kzUAB = varchar("kzUAB", 128)
     var kzUBC = varchar("kzUBC", 128)
     var kzUCA = varchar("kzUCA", 128)
@@ -215,11 +230,12 @@ object ProtocolsTable : IntIdTable() {
     var kzIB = varchar("kzIB", 128)
     var kzIC = varchar("kzIC", 128)
     var kzP1 = varchar("kzP1", 128)
-    var kzResult= varchar("kzResult", 128)
+    var kzResult = varchar("kzResult", 128)
 }
 
 class Protocol(id: EntityID<Int>) : IntEntity(id) {
     companion object : IntEntityClass<Protocol>(ProtocolsTable)
+
     var objectName by ProtocolsTable.objectName
     var type by ProtocolsTable.type
     var date by ProtocolsTable.date
@@ -234,6 +250,7 @@ class Protocol(id: EntityID<Int>) : IntEntity(id) {
     var nAsync by ProtocolsTable.nAsync
     var kpd by ProtocolsTable.kpd
     var scheme by ProtocolsTable.scheme
+
     //MGR//
     var mgrU1 by ProtocolsTable.mgrU1
     var mgrU2 by ProtocolsTable.mgrU2
@@ -251,16 +268,19 @@ class Protocol(id: EntityID<Int>) : IntEntity(id) {
     var mgrResult1 by ProtocolsTable.mgrResult1
     var mgrResult2 by ProtocolsTable.mgrResult2
     var mgrResult3 by ProtocolsTable.mgrResult3
+
     //VIU//
     var viuU by ProtocolsTable.viuU
     var viuI by ProtocolsTable.viuI
     var viuTime by ProtocolsTable.viuTime
     var viuResult by ProtocolsTable.viuResult
+
     //IKAS//
     var ikasR1 by ProtocolsTable.ikasR1
     var ikasR2 by ProtocolsTable.ikasR2
     var ikasR3 by ProtocolsTable.ikasR3
     var ikasResult by ProtocolsTable.ikasResult
+
     //DPT//
     var dptNuOV by ProtocolsTable.dptNuOV
     var dptNiOV by ProtocolsTable.dptNiOV
@@ -271,6 +291,7 @@ class Protocol(id: EntityID<Int>) : IntEntity(id) {
     var dptNTAmb by ProtocolsTable.dptNTAmb
     var dptNN by ProtocolsTable.dptNN
     var dptNResult by ProtocolsTable.dptNResult
+
     //HHDPT//
     var dptHHuOV by ProtocolsTable.dptHHuOV
     var dptHHiOV by ProtocolsTable.dptHHiOV
@@ -282,6 +303,7 @@ class Protocol(id: EntityID<Int>) : IntEntity(id) {
     var dptHHN by ProtocolsTable.dptHHN
     var dptHHResult by ProtocolsTable.dptHHResult
     var dptHHTime by ProtocolsTable.dptHHTime
+
     //LOAD_DPT//
     var dptLOADuOV by ProtocolsTable.dptLOADuOV
     var dptLOADiOV by ProtocolsTable.dptLOADiOV
@@ -291,7 +313,9 @@ class Protocol(id: EntityID<Int>) : IntEntity(id) {
     var dptLOADTOI by ProtocolsTable.dptLOADTOI
     var dptLOADTAmb by ProtocolsTable.dptLOADTAmb
     var dptLOADN by ProtocolsTable.dptLOADN
+    var dptLOADDots by ProtocolsTable.dptLOADDots
     var dptLOADResult by ProtocolsTable.dptLOADResult
+
     //N_GPT//
     var gptNuOV by ProtocolsTable.gptNuOV
     var gptNiOV by ProtocolsTable.gptNiOV
@@ -302,7 +326,8 @@ class Protocol(id: EntityID<Int>) : IntEntity(id) {
     var gptNTAmb by ProtocolsTable.gptNTAmb
     var gptNN by ProtocolsTable.gptNN
     var gptNResult by ProtocolsTable.gptNResult
-/////////
+
+    /////////
     var nUAB by ProtocolsTable.nUAB
     var nUBC by ProtocolsTable.nUBC
     var nUCA by ProtocolsTable.nUCA
@@ -319,7 +344,8 @@ class Protocol(id: EntityID<Int>) : IntEntity(id) {
     var nP1 by ProtocolsTable.nP1
     var nCos by ProtocolsTable.nCos
     var nResult by ProtocolsTable.nResult
-////
+
+    ////
 //    var hhUAB by ProtocolsTable.hhUAB
 //    var hhUBC by ProtocolsTable.hhUBC
 //    var hhUCA by ProtocolsTable.hhUCA
@@ -411,7 +437,12 @@ class Protocol(id: EntityID<Int>) : IntEntity(id) {
     var h_hhuOV9 by ProtocolsTable.h_hhuOV9
     var h_hhiOV9 by ProtocolsTable.h_hhiOV9
     var h_hhResult by ProtocolsTable.h_hhResult
-//,var  by ProtocolsTable.//
+
+    //,var  by ProtocolsTable.//
+    var kzN by ProtocolsTable.kzN
+    var kzCos by ProtocolsTable.kzCos
+    var kzUOV by ProtocolsTable.kzUOV
+    var kzIOV by ProtocolsTable.kzIOV
     var kzUAB by ProtocolsTable.kzUAB
     var kzUBC by ProtocolsTable.kzUBC
     var kzUCA by ProtocolsTable.kzUCA

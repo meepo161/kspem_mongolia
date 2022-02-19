@@ -260,6 +260,7 @@ class MainViewController : Controller() {
                 dptLOADTOI = protocolModel.dptLOADTOI
                 dptLOADTAmb = protocolModel.dptLOADTAmb
                 dptLOADN = protocolModel.dptLOADN
+                dptLOADDots = protocolModel.dptLOADDots
                 dptLOADResult = protocolModel.dptLOADResult
 
 
@@ -367,6 +368,10 @@ class MainViewController : Controller() {
                 h_hhResult = protocolModel.h_hhResult
 
 
+                kzN = protocolModel.kzN
+                kzCos = protocolModel.kzCos
+                kzUOV = protocolModel.kzUOV
+                kzIOV = protocolModel.kzIOV
                 kzUAB = protocolModel.kzUAB
                 kzUBC = protocolModel.kzUBC
                 kzUCA = protocolModel.kzUCA
