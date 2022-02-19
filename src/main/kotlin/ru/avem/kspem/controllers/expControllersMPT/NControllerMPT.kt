@@ -529,25 +529,25 @@ class NControllerMPT : CustomController() {
     }
 
     private fun saveData() {
-        protocolModel.dptNN         = "model.data.n.value"
-        protocolModel.dptNP1        = "model.data.p.value"
-        protocolModel.dptNTOI       = "model.data.tempOI.value"
-        protocolModel.dptNTAmb      = "model.data.tempAmb.value"
-        protocolModel.dptNiOV       = "model.data.iOV.value"
-        protocolModel.dptNuOV       = "model.data.uOV.value"
-        protocolModel.dptNuN        = "model.data.uOY.value"
-        protocolModel.dptNiN        = "model.data.iOY.value"
-        protocolModel.dptNResult    = "model.data.result.value"
+//        protocolModel.dptNN         = "model.data.n.value"
+//        protocolModel.dptNP1        = "model.data.p.value"
+//        protocolModel.dptNTOI       = "model.data.tempOI.value"
+//        protocolModel.dptNTAmb      = "model.data.tempAmb.value"
+//        protocolModel.dptNiOV       = "model.data.iOV.value"
+//        protocolModel.dptNuOV       = "model.data.uOV.value"
+//        protocolModel.dptNuN        = "model.data.uOY.value"
+//        protocolModel.dptNiN        = "model.data.iOY.value"
+//        protocolModel.dptNResult    = "model.data.result.value"
 
-//        protocolModel.dptNN = model.data.n.value
-//        protocolModel.dptNP1 = model.data.p.value
-//        protocolModel.dptNTOI = model.data.tempOI.value
-//        protocolModel.dptNTAmb = model.data.tempAmb.value
-//        protocolModel.dptNiOV = model.data.iOV.value
-//        protocolModel.dptNuOV = model.data.uOV.value
-//        protocolModel.dptNuN = model.data.uOY.value
-//        protocolModel.dptNiN = model.data.iOY.value
-//        protocolModel.dptNResult = model.data.result.value
+        protocolModel.dptNN = model.data.n.value
+        protocolModel.dptNP1 = model.data.p.value
+        protocolModel.dptNTOI = model.data.tempOI.value
+        protocolModel.dptNTAmb = model.data.tempAmb.value
+        protocolModel.dptNiOV = model.data.iOV.value
+        protocolModel.dptNuOV = model.data.uOV.value
+        protocolModel.dptNuN = model.data.uOY.value
+        protocolModel.dptNiN = model.data.iOY.value
+        protocolModel.dptNResult = model.data.result.value
     }
 
     private fun restoreData() {

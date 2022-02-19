@@ -6,6 +6,7 @@ import ru.avem.kspem.controllers.CustomController
 import ru.avem.kspem.data.objectModel
 import ru.avem.kspem.data.protocolModel
 import ru.avem.kspem.utils.LogTag
+import ru.avem.kspem.utils.showTwoWayDialog
 import ru.avem.kspem.utils.sleep
 import ru.avem.kspem.view.expViews.MGRView
 import ru.avem.stand.utils.autoformat
@@ -35,8 +36,33 @@ class MGRController : CustomController() {
             }
         }
 
+        var isClicked = false
+
         if (isExperimentRunning) {
-//            initButtonPost()
+            showTwoWayDialog(
+                title = "Внимание!",
+                text = "Подключить ТОЛЬКО Высоковольтный провод с зажимом типа «крокодил» (XA1) к Испытуемой обмотке/выводу ОИ" +
+                        "\nПровод измерительный (ХА2) к корпусу и/или частям, относительно которых будет проходить проверка." +
+                        "\nСиловые провода НЕ ДОЛЖНЫ быть подключены к ОИ",
+                way1Title = "Подтвердить",
+                way2Title = "Отменить",
+                way1 = {
+                    isClicked = true
+                },
+                way2 = {
+                    isClicked = true
+                    cause = "Отменено оператором"
+                },
+                currentWindow = primaryStage.scene.window
+            )
+        }
+
+        while (isExperimentRunning && !isClicked) {
+            sleep(100)
+        }
+
+        if (isExperimentRunning) {
+            initButtonPost()
         }
 
         if (isExperimentRunning) {

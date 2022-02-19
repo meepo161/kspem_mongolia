@@ -148,29 +148,28 @@ abstract class CustomController() : Component(), ScopedInstance {
                 isStopPressed = value.toShort() and 1 > 0       // 1
                 isStartPressed = value.toShort() and 2 > 0      // 2
                 doorZone = value.toShort() and 4 > 0            // 3
-                doorSCO = value.toShort() and 8 > 0            // 4
-                ikzOI = value.toShort() and 32 > 0            // 5
-                ikzIN = value.toShort() and 128 > 0              // 6
-//                ikzVIU = value.toShort() and 64 > 0             // 7
+//                doorSCO    = value.toShort() and 8 > 0            // 4
+                doorSCO = value.toShort() and 16 > 0            // 5
+                ikzOI = value.toShort() and 32 > 0              // 6
+//                ikzIN = value.toShort() and 64 > 0             // 7
 //                tempDros = value.toShort() and 128 > 0        // 8
             }
             cm.startPoll(CommunicationModel.DeviceID.DD2_1, OwenPrModel.INPUTS_REGISTER2) { value ->
                 iViu = value.toShort() and 1 > 0       // 1
-//                = value.toShort() and 2 > 0      // 2
+//                = value.toShort() and 2 > 1      // 2
                 onGround = value.toShort() and 4 > 0            // 3
                 onVV = value.toShort() and 8 > 0            // 4
                 tempUNM = value.toShort() and 16 > 0            // 5
-                speedUNM = value.toShort() and 32 > 0              // 6
+//                speedUNM = value.toShort() and 32 > 0              // 6
 //                = value.toShort() and 64 > 0             // 7
 //                = value.toShort() and 128 > 0        // 8
             }
             sleep(1000)
             thread(isDaemon = true) {
                 while (isExperimentRunning) {
-//                    if (doorZone)cause = "Открыты двери зоны"
-//                    if (doorSCO)cause = "Открыты двери ШСО"
+//                    if (doorZone) cause = "Открыты двери зоны"
+                    if (doorSCO) cause = "Открыты двери ШСО"
                     if (ikzOI) cause = "сработала токовая защита ОИ"
-                    if (ikzIN) cause = "сработала токовая защита ВХОД"
                     if (isStopPressed) cause = "отменено оператором"
                     if (iViu) cause = "сработала токовая защита ВИУ"
                     if (tempUNM) cause = "сработал температурный датчик УНМ"

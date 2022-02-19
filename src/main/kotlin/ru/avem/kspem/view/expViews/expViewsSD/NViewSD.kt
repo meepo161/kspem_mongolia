@@ -9,7 +9,7 @@ import tornadofx.*
 
 
 class NViewSD : View() {
-    val name = "Испытание при повышенной частоте вращения"
+    val name = "Определение частоты вращения синхронного двигателя на холостом ходу"
     val data = NDataSD()
 
     override fun onDock() {
@@ -37,33 +37,8 @@ class NViewSD : View() {
             isMouseTransparent = true
             column("U ОВ, В", NDataSD::uOV.getter).isEditable = false
             column("I ОВ, А", NDataSD::iOV.getter).isEditable = false
-            columnResizePolicy = TableView.CONSTRAINED_RESIZE_POLICY
-        }
-        tableview(observableListOf(data)) {
-            hboxConstraints {
-                useMaxWidth = true
-            }
-            minHeight = 120.0
-            maxHeight = 120.0
-            isMouseTransparent = true
-            column("U AB, В", NDataSD::uAB.getter).isEditable = false
-            column("U BC, В", NDataSD::uBC.getter).isEditable = false
-            column("U CA, В", NDataSD::uCA.getter).isEditable = false
-            column("I A, А", NDataSD::iA.getter).isEditable = false
-            column("I B, А", NDataSD::iB.getter).isEditable = false
-            column("I C, А", NDataSD::iC.getter).isEditable = false
-            columnResizePolicy = TableView.CONSTRAINED_RESIZE_POLICY
-        }
-        tableview(observableListOf(data)) {
-            hboxConstraints {
-                useMaxWidth = true
-            }
-            minHeight = 120.0
-            maxHeight = 120.0
-            isMouseTransparent = true
-            column("f, Гц", NDataSD::f.getter).isEditable = false
-            column("P1, кВт", NDataSD::p.getter).isEditable = false
-            column("cosφ, о.е.", NDataSD::cos.getter).isEditable = false
+            column("U ОЯ, В", NDataSD::uAB.getter).isEditable = false
+            column("I ОЯ, А", NDataSD::iA.getter).isEditable = false
             columnResizePolicy = TableView.CONSTRAINED_RESIZE_POLICY
         }
         tableview(observableListOf(data)) {
@@ -100,11 +75,7 @@ class NViewSD : View() {
         data.tempAmb.value = ""
         data.tempOI.value = ""
         data.uAB.value = ""
-        data.uBC.value = ""
-        data.uCA.value = ""
         data.iA.value = ""
-        data.iB.value = ""
-        data.iC.value = ""
         data.f.value = ""
         data.timeExp.value = ""
     }
@@ -117,11 +88,7 @@ data class NDataSD(
     val uOV: StringProperty = SimpleStringProperty(""),
     val iOV: StringProperty = SimpleStringProperty(""),
     val uAB: StringProperty = SimpleStringProperty(""),
-    val uBC: StringProperty = SimpleStringProperty(""),
-    val uCA: StringProperty = SimpleStringProperty(""),
     val iA: StringProperty = SimpleStringProperty(""),
-    val iB: StringProperty = SimpleStringProperty(""),
-    val iC: StringProperty = SimpleStringProperty(""),
     val f: StringProperty = SimpleStringProperty(""),
     val timeExp: StringProperty = SimpleStringProperty(""),
     val result: StringProperty = SimpleStringProperty(""),

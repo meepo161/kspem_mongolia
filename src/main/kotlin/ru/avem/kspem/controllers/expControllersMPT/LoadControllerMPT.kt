@@ -102,9 +102,9 @@ class LoadControllerMPT : CustomController() {
     @Volatile
     var unmStarted = false
 
-    var timerLoad = objectModel!!.timeMVZ.toDouble()
+    var timerLoad = 0.0
 
-    var timerLoadNom = objectModel!!.timeRUNNING.toDouble()
+    var timerLoadNom = 0.0
 
     override fun start() {
         model.clearTables()
@@ -521,7 +521,6 @@ class LoadControllerMPT : CustomController() {
 
         if (isExperimentRunning) {
             appendMessageToLog(LogTag.MESSAGE, "Выдержка ${timerLoad.autoformat()} секунд")
-            timerLoad = 20.0
             while (isExperimentRunning && timerLoad > 0) {
                 timerLoad -= 0.1
                 if (timerLoad >= 0) {
@@ -806,25 +805,23 @@ class LoadControllerMPT : CustomController() {
     }
 
     private fun saveData() {
-        protocolModel.dptLOADN = "model.data.n.value"
-        protocolModel.dptLOADP1 = "model.data.p.value"
-        //protocolModel.dptLOADResult = model.data.result.value
-        protocolModel.dptLOADTOI = "model.data.tempOI.value"
-        protocolModel.dptLOADTAmb = "model.data.tempAmb.value"
-        protocolModel.dptLOADiOV = "model.data.iOV.value"
-        protocolModel.dptLOADuOV = "model.data.uOV.value"
-        protocolModel.dptLOADuN = "model.data.uOY.value"
-        protocolModel.dptLOADiN = "model.data.iOY.value"
+//        protocolModel.dptLOADN = "model.data.n.value"
+//        protocolModel.dptLOADP1 = "model.data.p.value"
+//        protocolModel.dptLOADTOI = "model.data.tempOI.value"
+//        protocolModel.dptLOADTAmb = "model.data.tempAmb.value"
+//        protocolModel.dptLOADiOV = "model.data.iOV.value"
+//        protocolModel.dptLOADuOV = "model.data.uOV.value"
+//        protocolModel.dptLOADuN = "model.data.uOY.value"
+//        protocolModel.dptLOADiN = "model.data.iOY.value"
 
-//        protocolModel.dptLOADN = model.data.n.value
-//        protocolModel.dptLOADP1 = model.data.p.value
-//        //protocolModel.dptLOADResult = model.data.result.value
-//        protocolModel.dptLOADTOI = model.data.tempOI.value
-//        protocolModel.dptLOADTAmb = model.data.tempAmb.value
-//        protocolModel.dptLOADiOV = model.data.iOV.value
-//        protocolModel.dptLOADuOV = model.data.uOV.value
-//        protocolModel.dptLOADuN = model.data.uOY.value
-//        protocolModel.dptLOADiN = model.data.iOY.value
+        protocolModel.dptLOADN = model.data.n.value
+        protocolModel.dptLOADP1 = model.data.p.value
+        protocolModel.dptLOADTOI = model.data.tempOI.value
+        protocolModel.dptLOADTAmb = model.data.tempAmb.value
+        protocolModel.dptLOADiOV = model.data.iOV.value
+        protocolModel.dptLOADuOV = model.data.uOV.value
+        protocolModel.dptLOADuN = model.data.uOY.value
+        protocolModel.dptLOADiN = model.data.iOY.value
     }
 
     private fun restoreData() {

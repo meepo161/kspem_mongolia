@@ -384,8 +384,9 @@ class NControllerSG : CustomController() {
     }
 
     private fun voltageRegulationTRN(volt: Double, coarseSleep: Long, fineSleep: Long) {
-        val fast = 20.0
-        val accurate = 2.0
+        val fast = volt / 100 * 20
+        val slow = volt / 100 * 10
+        val accurate = volt / 100 * 3
 
         var timer = System.currentTimeMillis()
         while (abs(voltageOY - volt) > fast && isExperimentRunning) {
@@ -401,12 +402,25 @@ class NControllerSG : CustomController() {
         }
 
         timer = System.currentTimeMillis()
-        while (abs(voltageOY - volt) > accurate && isExperimentRunning) {
+        while (abs(voltageOY - volt) > slow && isExperimentRunning) {
             if (voltageOY < volt) {
                 voltageTRN += 0.003
                 pr102.setTRN(voltageTRN)
             } else {
                 voltageTRN -= 0.003
+                pr102.setTRN(voltageTRN)
+            }
+            if (System.currentTimeMillis() - timer > 90000) cause = "Превышено время регулирования"
+            sleep(fineSleep)
+        }
+
+        timer = System.currentTimeMillis()
+        while (abs(voltageOY - volt) > accurate && isExperimentRunning) {
+            if (voltageOY < volt) {
+                voltageTRN += 0.001
+                pr102.setTRN(voltageTRN)
+            } else {
+                voltageTRN -= 0.001
                 pr102.setTRN(voltageTRN)
             }
             if (System.currentTimeMillis() - timer > 90000) cause = "Превышено время регулирования"

@@ -370,8 +370,9 @@ class KZControllerSG : CustomController() {
     }
 
     private fun voltageRegulationTRN(amperage: Double, coarseSleep: Long, fineSleep: Long) {
-        val fast = 20.0
-        val accurate = 2.0
+        val fast = amperage / 100 * 20
+        val slow = amperage / 100 * 10
+        val accurate = amperage / 100 * 3
 
         var timer = System.currentTimeMillis()
         while (abs(amperageOY - amperage) > fast && isExperimentRunning) {
@@ -387,12 +388,25 @@ class KZControllerSG : CustomController() {
         }
 
         timer = System.currentTimeMillis()
-        while (abs(amperageOY - amperage) > accurate && isExperimentRunning) {
+        while (abs(amperageOY - amperage) > slow && isExperimentRunning) {
             if (amperageOY < amperage) {
                 voltageTRN += 0.003
                 pr102.setTRN(voltageTRN)
             } else {
                 voltageTRN -= 0.003
+                pr102.setTRN(voltageTRN)
+            }
+            if (System.currentTimeMillis() - timer > 90000) cause = "Превышено время регулирования"
+            sleep(fineSleep)
+        }
+
+        timer = System.currentTimeMillis()
+        while (abs(amperageOY - amperage) > accurate && isExperimentRunning) {
+            if (amperageOY < amperage) {
+                voltageTRN += 0.001
+                pr102.setTRN(voltageTRN)
+            } else {
+                voltageTRN -= 0.001
                 pr102.setTRN(voltageTRN)
             }
             if (System.currentTimeMillis() - timer > 90000) cause = "Превышено время регулирования"

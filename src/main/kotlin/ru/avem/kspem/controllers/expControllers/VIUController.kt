@@ -245,13 +245,13 @@ class VIUController : CustomController() {
     }
 
     private fun saveData() {
-        protocolModel.viuU      = "model.data.U.value"
-        protocolModel.viuI      = "model.data.I.value"
-        protocolModel.viuTime   = "objectModel!!.timeVIU"
+//        protocolModel.viuU      = "model.data.U.value"
+//        protocolModel.viuI      = "model.data.I.value"
+//        protocolModel.viuTime   = "objectModel!!.timeVIU"
 
-//        protocolModel.viuU = model.data.U.value
-//        protocolModel.viuI = model.data.I.value
-//        protocolModel.viuTime = objectModel!!.timeVIU
+        protocolModel.viuU = model.data.U.value
+        protocolModel.viuI = model.data.I.value
+        protocolModel.viuTime = objectModel!!.timeVIU
     }
 
     private fun restoreData() {

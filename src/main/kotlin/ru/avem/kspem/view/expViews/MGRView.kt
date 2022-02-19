@@ -21,21 +21,6 @@ class MGRView : View() {
         runLater {
             clearTables()
         }
-        showTwoWayDialog(
-            title = "Внимание!",
-            text = "Подключить ТОЛЬКО Высоковольтный провод с зажимом типа «крокодил» (XA1) к Испытуемой обмотке/выводу ОИ"+
-                    "\nПровод измерительный (ХА2) к корпусу и/или частям, относительно которых будет проходить проверка." +
-            "\nСиловые провода НЕ ДОЛЖНЫ быть подключены к ОИ",
-            way1Title = "Подтвердить",
-            way2Title = "Отменить",
-            way1 = {
-
-            },
-            way2 = {
-                find<ExpView>().replaceWith<MainView>()
-            },
-            currentWindow = primaryStage.scene.window
-        )
     }
 
     override val root = vbox(16.0,Pos.CENTER) {

@@ -53,7 +53,7 @@ class HHControllerMPT : CustomController() {
     @Volatile
     var voltageTRN = 0.0
 
-    private var setTime = objectModel!!.timeHH.toDouble()
+    private var setTime = 0.0
 
     override fun start() {
         model.clearTables()
@@ -373,26 +373,26 @@ class HHControllerMPT : CustomController() {
     }
 
     private fun saveData() {
-        protocolModel.dptHHN        = "model.data.n.value"
-        protocolModel.dptHHP1       = "model.data.p.value"
-        protocolModel.dptHHResult   = "model.data.result.value"
-        protocolModel.dptHHTOI      = "model.data.tempOI.value"
-        protocolModel.dptHHTAmb     = "model.data.tempAmb.value"
-        protocolModel.dptHHiOV      = "model.data.iOV.value"
-        protocolModel.dptHHuOV      = "model.data.uOV.value"
-        protocolModel.dptHHuN       = "model.data.uOY.value"
-        protocolModel.dptHHiN       = "model.data.iOY.value"
-        protocolModel.dptHHTime     = "setTime.autoformat()"
-//        protocolModel.dptHHN = model.data.n.value
-//        protocolModel.dptHHP1 = model.data.p.value
-//        protocolModel.dptHHResult = model.data.result.value
-//        protocolModel.dptHHTOI = model.data.tempOI.value
-//        protocolModel.dptHHTAmb = model.data.tempAmb.value
-//        protocolModel.dptHHiOV = model.data.iOV.value
-//        protocolModel.dptHHuOV = model.data.uOV.value
-//        protocolModel.dptHHuN = model.data.uOY.value
-//        protocolModel.dptHHiN = model.data.iOY.value
-//        protocolModel.dptHHTime = setTime.autoformat()
+//        protocolModel.dptHHN        = "model.data.n.value"
+//        protocolModel.dptHHP1       = "model.data.p.value"
+//        protocolModel.dptHHResult   = "model.data.result.value"
+//        protocolModel.dptHHTOI      = "model.data.tempOI.value"
+//        protocolModel.dptHHTAmb     = "model.data.tempAmb.value"
+//        protocolModel.dptHHiOV      = "model.data.iOV.value"
+//        protocolModel.dptHHuOV      = "model.data.uOV.value"
+//        protocolModel.dptHHuN       = "model.data.uOY.value"
+//        protocolModel.dptHHiN       = "model.data.iOY.value"
+//        protocolModel.dptHHTime     = "setTime.autoformat()"
+        protocolModel.dptHHN = model.data.n.value
+        protocolModel.dptHHP1 = model.data.p.value
+        protocolModel.dptHHResult = model.data.result.value
+        protocolModel.dptHHTOI = model.data.tempOI.value
+        protocolModel.dptHHTAmb = model.data.tempAmb.value
+        protocolModel.dptHHiOV = model.data.iOV.value
+        protocolModel.dptHHuOV = model.data.uOV.value
+        protocolModel.dptHHuN = model.data.uOY.value
+        protocolModel.dptHHiN = model.data.iOY.value
+        protocolModel.dptHHTime = setTime.autoformat()
     }
 
     private fun restoreData() {

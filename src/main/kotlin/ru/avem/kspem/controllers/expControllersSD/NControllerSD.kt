@@ -2,8 +2,8 @@ package ru.avem.kspem.controllers.expControllersSD
 
 import ru.avem.kspem.communication.model.CommunicationModel
 import ru.avem.kspem.communication.model.devices.avem.avem4.Avem4Model
+import ru.avem.kspem.communication.model.devices.avem.avem7.Avem7Model
 import ru.avem.kspem.communication.model.devices.delta.DeltaModel
-import ru.avem.kspem.communication.model.devices.pm130.PM130Model
 import ru.avem.kspem.communication.model.devices.th01.TH01Model
 import ru.avem.kspem.communication.model.devices.trm202.TRM202Model
 import ru.avem.kspem.controllers.CustomController
@@ -100,7 +100,7 @@ class NControllerSD : CustomController() {
 
         if (isExperimentRunning) {
             appendMessageToLog(LogTag.MESSAGE, "Инициализация АВЭМ4-01...")
-            cm.startPoll(CommunicationModel.DeviceID.PA13, Avem4Model.RMS) { value ->
+            cm.startPoll(CommunicationModel.DeviceID.PA13, Avem7Model.AMPERAGE) { value ->
                 amperageOV = value.toDouble()
                 model.data.iOV.value = amperageOV.autoformat()
                 if (!avemIov.isResponding && isExperimentRunning) cause = "АВЭМ4-01 не отвечает"
@@ -136,48 +136,6 @@ class NControllerSD : CustomController() {
         }
 
         if (isExperimentRunning) {
-            appendMessageToLog(LogTag.MESSAGE, "Инициализация PM135...")
-            pm135.checkResponsibility()
-            sleep(1000)
-
-            cm.startPoll(CommunicationModel.DeviceID.PAV41, PM130Model.U_AB_REGISTER) { value ->
-                if (fDelta > 10 && value.toDouble() > 700 && isExperimentRunning) cause = "проверьте подключение ОИ"
-                voltageAB = (value.toDouble() * ktrVoltage)
-                model.data.uAB.value = voltageAB.autoformat()
-                if (!pm135.isResponding && isExperimentRunning) cause = "PM135 не отвечает"
-            }
-            cm.startPoll(CommunicationModel.DeviceID.PAV41, PM130Model.U_BC_REGISTER) { value ->
-                if (fDelta > 10 && value.toDouble() > 700 && isExperimentRunning) cause = "проверьте подключение ОИ"
-                voltageBC = (value.toDouble() * ktrVoltage)
-                model.data.uBC.value = voltageBC.autoformat()
-            }
-            cm.startPoll(CommunicationModel.DeviceID.PAV41, PM130Model.U_CA_REGISTER) { value ->
-                if (fDelta > 10 && value.toDouble() > 700 && isExperimentRunning) cause = "проверьте подключение ОИ"
-                voltageCA = (value.toDouble() * ktrVoltage)
-                model.data.uCA.value = voltageCA.autoformat()
-                voltageOY = (voltageAB + voltageBC + voltageCA) / 3
-            }
-            cm.startPoll(CommunicationModel.DeviceID.PAV41, PM130Model.I_A_REGISTER) { value ->
-                model.data.iA.value = (value.toDouble() * ktrAmperage).autoformat()
-            }
-            cm.startPoll(CommunicationModel.DeviceID.PAV41, PM130Model.I_B_REGISTER) { value ->
-                model.data.iB.value = (value.toDouble() * ktrAmperage).autoformat()
-            }
-            cm.startPoll(CommunicationModel.DeviceID.PAV41, PM130Model.I_C_REGISTER) { value ->
-                model.data.iC.value = (value.toDouble() * ktrAmperage).autoformat()
-            }
-            cm.startPoll(CommunicationModel.DeviceID.PAV41, PM130Model.P_REGISTER) { value ->
-                model.data.p.value = abs(value.toDouble() * ktrVoltage * ktrAmperage).autoformat()
-            }
-            cm.startPoll(CommunicationModel.DeviceID.PAV41, PM130Model.COS_REGISTER) { value ->
-                model.data.cos.value = abs(value.toDouble()).autoformat()
-            }
-            cm.startPoll(CommunicationModel.DeviceID.PAV41, PM130Model.F_REGISTER) { value ->
-                model.data.f.value = value.autoformat()
-            }
-        }
-
-        if (isExperimentRunning) {
             initButtonPost()
         }
 
@@ -203,6 +161,15 @@ class NControllerSD : CustomController() {
             cm.startPoll(CommunicationModel.DeviceID.UZ91, DeltaModel.STATUS_REGISTER) { value ->
                 deltaStatus = value.toInt()
                 if (!delta.isResponding && isExperimentRunning) cause = "Delta не отвечает"
+            }
+
+            cm.startPoll(CommunicationModel.DeviceID.UZ91, DeltaModel.CURRENT_VOLT) { value ->
+                voltageAB = value.toInt() / 10.0
+                model.data.uAB.value = voltageAB.autoformat()
+            }
+
+            cm.startPoll(CommunicationModel.DeviceID.UZ91, DeltaModel.CURRENT_AMPER) { value ->
+                model.data.iA.value = (value.toInt() / 100.0).autoformat()
             }
         }
 
@@ -419,12 +386,11 @@ class NControllerSD : CustomController() {
     }
 
     private fun saveData() {
-        protocolModel.nUAB = model.data.uAB.value
         protocolModel.nUBC = model.data.uOV.value
-        protocolModel.nUCA = model.data.uCA.value
         protocolModel.nIA = model.data.iOV.value
+
+        protocolModel.nUAB = model.data.uAB.value
         protocolModel.nIB = model.data.iA.value
-        protocolModel.nIC = model.data.iC.value
         protocolModel.nSpeed = model.data.n.value
         protocolModel.nF = model.data.f.value
 //        protocolModel.nResult = model.data.result.value
@@ -433,10 +399,8 @@ class NControllerSD : CustomController() {
     private fun restoreData() {
         model.data.uAB.value = protocolModel.nUAB
         model.data.uOV.value = protocolModel.nUBC
-        model.data.uCA.value = protocolModel.nUCA
         model.data.iOV.value = protocolModel.nIA
         model.data.iA.value = protocolModel.nIB
-        model.data.iC.value = protocolModel.nIC
         model.data.n.value = protocolModel.nSpeed
         model.data.f.value = protocolModel.nF
     }

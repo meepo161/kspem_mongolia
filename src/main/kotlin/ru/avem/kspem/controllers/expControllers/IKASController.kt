@@ -62,7 +62,7 @@ class IKASController : CustomController() {
         }
 
         if (isExperimentRunning) {
-//            initButtonPost()
+            initButtonPost()
         }
 
         var isClicked = false
@@ -70,7 +70,7 @@ class IKASController : CustomController() {
         if (isExperimentRunning) {
             showTwoWayDialog(
                 title = "Внимание!",
-                text = "Подключите измерительные провода ИКАС к двигателю",
+                text = "Подключите измерительные провода ИКАС к машине",
                 way1Title = "Подтвердить",
                 way2Title = "Отменить",
                 way1 = {

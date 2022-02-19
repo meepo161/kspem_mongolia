@@ -30,6 +30,9 @@ class MGRControllerMPT : CustomController() {
 
         if (isExperimentRunning) {
             initButtonPost()
+        }
+
+        if (isExperimentRunning) {
             trm202.readRegister(trm202.getRegisterById(TRM202Model.T_1))
             model.data.tempAmb.value = trm202.getRegisterById(TRM202Model.T_1).value.autoformat()
             trm202.readRegister(trm202.getRegisterById(TRM202Model.T_2))
@@ -350,41 +353,41 @@ class MGRControllerMPT : CustomController() {
     }
 
     private fun saveData() {
-        protocolModel.mgrTemp       = "model.data.tempOI.value"
-        protocolModel.mgrU1         = "model.data.UOV.value"
-        protocolModel.mgrR151       = "model.data.R15OV.value"
-        protocolModel.mgrR601       = "model.data.R60OV.value"
-        protocolModel.mgrkABS1      = "model.data.K_ABSOV.value"
-        protocolModel.mgrResult1    = "model.data.resultOV.value"
-        protocolModel.mgrU2         = "model.data.UOY.value"
-        protocolModel.mgrR152       = "model.data.R15OY.value"
-        protocolModel.mgrR602       = "model.data.R60OY.value"
-        protocolModel.mgrkABS2      = "model.data.K_ABSOY.value"
-        protocolModel.mgrResult2    = "model.data.resultOY.value"
-        protocolModel.mgrU3         = "model.data.UOVOY.value"
-        protocolModel.mgrR153       = "model.data.R15OVOY.value"
-        protocolModel.mgrR603       = "model.data.R60OVOY.value"
-        protocolModel.mgrkABS3      = "model.data.K_ABSOVOY.value"
-        protocolModel.mgrResult3    = "model.data.resultOVOY.value"
+//        protocolModel.mgrTemp       = "model.data.tempOI.value"
+//        protocolModel.mgrU1         = "model.data.UOV.value"
+//        protocolModel.mgrR151       = "model.data.R15OV.value"
+//        protocolModel.mgrR601       = "model.data.R60OV.value"
+//        protocolModel.mgrkABS1      = "model.data.K_ABSOV.value"
+//        protocolModel.mgrResult1    = "model.data.resultOV.value"
+//        protocolModel.mgrU2         = "model.data.UOY.value"
+//        protocolModel.mgrR152       = "model.data.R15OY.value"
+//        protocolModel.mgrR602       = "model.data.R60OY.value"
+//        protocolModel.mgrkABS2      = "model.data.K_ABSOY.value"
+//        protocolModel.mgrResult2    = "model.data.resultOY.value"
+//        protocolModel.mgrU3         = "model.data.UOVOY.value"
+//        protocolModel.mgrR153       = "model.data.R15OVOY.value"
+//        protocolModel.mgrR603       = "model.data.R60OVOY.value"
+//        protocolModel.mgrkABS3      = "model.data.K_ABSOVOY.value"
+//        protocolModel.mgrResult3    = "model.data.resultOVOY.value"
 
-//        protocolModel.mgrTemp = model.data.tempOI.value
-//
-//        protocolModel.mgrU1 = model.data.UOV.value
-//        protocolModel.mgrR151 = model.data.R15OV.value
-//        protocolModel.mgrR601 = model.data.R60OV.value
-//        protocolModel.mgrkABS1 = model.data.K_ABSOV.value
-//        protocolModel.mgrResult1 = model.data.resultOV.value
-//
-//        protocolModel.mgrU2 = model.data.UOY.value
-//        protocolModel.mgrR152 = model.data.R15OY.value
-//        protocolModel.mgrR602 = model.data.R60OY.value
-//        protocolModel.mgrkABS2 = model.data.K_ABSOY.value
-//        protocolModel.mgrResult2 = model.data.resultOY.value
-//
-//        protocolModel.mgrU3 = model.data.UOVOY.value
-//        protocolModel.mgrR153 = model.data.R15OVOY.value
-//        protocolModel.mgrR603 = model.data.R60OVOY.value
-//        protocolModel.mgrkABS3 = model.data.K_ABSOVOY.value
-//        protocolModel.mgrResult3 = model.data.resultOVOY.value
+        protocolModel.mgrTemp = model.data.tempOI.value
+
+        protocolModel.mgrU1 = model.data.UOV.value
+        protocolModel.mgrR151 = model.data.R15OV.value
+        protocolModel.mgrR601 = model.data.R60OV.value
+        protocolModel.mgrkABS1 = model.data.K_ABSOV.value
+        protocolModel.mgrResult1 = model.data.resultOV.value
+
+        protocolModel.mgrU2 = model.data.UOY.value
+        protocolModel.mgrR152 = model.data.R15OY.value
+        protocolModel.mgrR602 = model.data.R60OY.value
+        protocolModel.mgrkABS2 = model.data.K_ABSOY.value
+        protocolModel.mgrResult2 = model.data.resultOY.value
+
+        protocolModel.mgrU3 = model.data.UOVOY.value
+        protocolModel.mgrR153 = model.data.R15OVOY.value
+        protocolModel.mgrR603 = model.data.R60OVOY.value
+        protocolModel.mgrkABS3 = model.data.K_ABSOVOY.value
+        protocolModel.mgrResult3 = model.data.resultOVOY.value
     }
 }

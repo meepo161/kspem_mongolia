@@ -328,7 +328,7 @@ class H_HHControllerSG : CustomController() {
 
         try {
             saveData()
-        } catch (e:Exception) {
+        } catch (e: Exception) {
             appendMessageToLog(LogTag.ERROR, "Ошибка сохранения протокола")
         }
 
@@ -359,8 +359,9 @@ class H_HHControllerSG : CustomController() {
     }
 
     private fun voltageRegulationTRN(volt: Double, coarseSleep: Long, fineSleep: Long) {
-        val fast = 20.0
-        val accurate = 2.0
+        val fast = volt / 100 * 20
+        val slow = volt / 100 * 10
+        val accurate = volt / 100 * 3
 
         var timer = System.currentTimeMillis()
         while (abs(voltageOY - volt) > fast && isExperimentRunning) {
@@ -376,12 +377,25 @@ class H_HHControllerSG : CustomController() {
         }
 
         timer = System.currentTimeMillis()
-        while (abs(voltageOY - volt) > accurate && isExperimentRunning) {
+        while (abs(voltageOY - volt) > slow && isExperimentRunning) {
             if (voltageOY < volt) {
                 voltageTRN += 0.003
                 pr102.setTRN(voltageTRN)
             } else {
                 voltageTRN -= 0.003
+                pr102.setTRN(voltageTRN)
+            }
+            if (System.currentTimeMillis() - timer > 90000) cause = "Превышено время регулирования"
+            sleep(fineSleep)
+        }
+
+        timer = System.currentTimeMillis()
+        while (abs(voltageOY - volt) > accurate && isExperimentRunning) {
+            if (voltageOY < volt) {
+                voltageTRN += 0.001
+                pr102.setTRN(voltageTRN)
+            } else {
+                voltageTRN -= 0.001
                 pr102.setTRN(voltageTRN)
             }
             if (System.currentTimeMillis() - timer > 90000) cause = "Превышено время регулирования"
@@ -476,65 +490,65 @@ class H_HHControllerSG : CustomController() {
         protocolModel.h_hhuAB1 = model.h_hhTablePoints[0].uAB.value
         protocolModel.h_hhuBC1 = model.h_hhTablePoints[0].uBC.value
         protocolModel.h_hhuCA1 = model.h_hhTablePoints[0].uCA.value
-        protocolModel.h_hhiA1  = model.h_hhTablePoints[0].iA.value
-        protocolModel.h_hhiB1  = model.h_hhTablePoints[0].iB.value
-        protocolModel.h_hhiC1  = model.h_hhTablePoints[0].iC.value
+        protocolModel.h_hhiA1 = model.h_hhTablePoints[0].iA.value
+        protocolModel.h_hhiB1 = model.h_hhTablePoints[0].iB.value
+        protocolModel.h_hhiC1 = model.h_hhTablePoints[0].iC.value
         protocolModel.h_hhuOV1 = model.h_hhTablePoints[0].uOV.value
         protocolModel.h_hhuAB2 = model.h_hhTablePoints[1].uAB.value
         protocolModel.h_hhuBC2 = model.h_hhTablePoints[1].uBC.value
         protocolModel.h_hhuCA2 = model.h_hhTablePoints[1].uCA.value
-        protocolModel.h_hhiA2  = model.h_hhTablePoints[1].iA.value
-        protocolModel.h_hhiB2  = model.h_hhTablePoints[1].iB.value
-        protocolModel.h_hhiC2  = model.h_hhTablePoints[1].iC.value
+        protocolModel.h_hhiA2 = model.h_hhTablePoints[1].iA.value
+        protocolModel.h_hhiB2 = model.h_hhTablePoints[1].iB.value
+        protocolModel.h_hhiC2 = model.h_hhTablePoints[1].iC.value
         protocolModel.h_hhuOV2 = model.h_hhTablePoints[1].uOV.value
         protocolModel.h_hhuAB3 = model.h_hhTablePoints[2].uAB.value
         protocolModel.h_hhuBC3 = model.h_hhTablePoints[2].uBC.value
         protocolModel.h_hhuCA3 = model.h_hhTablePoints[2].uCA.value
-        protocolModel.h_hhiA3  = model.h_hhTablePoints[2].iA.value
-        protocolModel.h_hhiB3  = model.h_hhTablePoints[2].iB.value
-        protocolModel.h_hhiC3  = model.h_hhTablePoints[2].iC.value
+        protocolModel.h_hhiA3 = model.h_hhTablePoints[2].iA.value
+        protocolModel.h_hhiB3 = model.h_hhTablePoints[2].iB.value
+        protocolModel.h_hhiC3 = model.h_hhTablePoints[2].iC.value
         protocolModel.h_hhuOV3 = model.h_hhTablePoints[2].uOV.value
         protocolModel.h_hhuAB4 = model.h_hhTablePoints[3].uAB.value
         protocolModel.h_hhuBC4 = model.h_hhTablePoints[3].uBC.value
         protocolModel.h_hhuCA4 = model.h_hhTablePoints[3].uCA.value
-        protocolModel.h_hhiA4  = model.h_hhTablePoints[3].iA.value
-        protocolModel.h_hhiB4  = model.h_hhTablePoints[3].iB.value
-        protocolModel.h_hhiC4  = model.h_hhTablePoints[3].iC.value
+        protocolModel.h_hhiA4 = model.h_hhTablePoints[3].iA.value
+        protocolModel.h_hhiB4 = model.h_hhTablePoints[3].iB.value
+        protocolModel.h_hhiC4 = model.h_hhTablePoints[3].iC.value
         protocolModel.h_hhuOV4 = model.h_hhTablePoints[3].uOV.value
         protocolModel.h_hhuAB5 = model.h_hhTablePoints[4].uAB.value
         protocolModel.h_hhuBC5 = model.h_hhTablePoints[4].uBC.value
         protocolModel.h_hhuCA5 = model.h_hhTablePoints[4].uCA.value
-        protocolModel.h_hhiA5  = model.h_hhTablePoints[4].iA.value
-        protocolModel.h_hhiB5  = model.h_hhTablePoints[4].iB.value
-        protocolModel.h_hhiC5  = model.h_hhTablePoints[4].iC.value
+        protocolModel.h_hhiA5 = model.h_hhTablePoints[4].iA.value
+        protocolModel.h_hhiB5 = model.h_hhTablePoints[4].iB.value
+        protocolModel.h_hhiC5 = model.h_hhTablePoints[4].iC.value
         protocolModel.h_hhuOV5 = model.h_hhTablePoints[4].uOV.value
         protocolModel.h_hhuAB6 = model.h_hhTablePoints[5].uAB.value
         protocolModel.h_hhuBC6 = model.h_hhTablePoints[5].uBC.value
         protocolModel.h_hhuCA6 = model.h_hhTablePoints[5].uCA.value
-        protocolModel.h_hhiA6  = model.h_hhTablePoints[5].iA.value
-        protocolModel.h_hhiB6  = model.h_hhTablePoints[5].iB.value
-        protocolModel.h_hhiC6  = model.h_hhTablePoints[5].iC.value
+        protocolModel.h_hhiA6 = model.h_hhTablePoints[5].iA.value
+        protocolModel.h_hhiB6 = model.h_hhTablePoints[5].iB.value
+        protocolModel.h_hhiC6 = model.h_hhTablePoints[5].iC.value
         protocolModel.h_hhuOV6 = model.h_hhTablePoints[5].uOV.value
         protocolModel.h_hhuAB7 = model.h_hhTablePoints[6].uAB.value
         protocolModel.h_hhuBC7 = model.h_hhTablePoints[6].uBC.value
         protocolModel.h_hhuCA7 = model.h_hhTablePoints[6].uCA.value
-        protocolModel.h_hhiA7  = model.h_hhTablePoints[6].iA.value
-        protocolModel.h_hhiB7  = model.h_hhTablePoints[6].iB.value
-        protocolModel.h_hhiC7  = model.h_hhTablePoints[6].iC.value
+        protocolModel.h_hhiA7 = model.h_hhTablePoints[6].iA.value
+        protocolModel.h_hhiB7 = model.h_hhTablePoints[6].iB.value
+        protocolModel.h_hhiC7 = model.h_hhTablePoints[6].iC.value
         protocolModel.h_hhuOV7 = model.h_hhTablePoints[6].uOV.value
         protocolModel.h_hhuAB8 = model.h_hhTablePoints[7].uAB.value
         protocolModel.h_hhuBC8 = model.h_hhTablePoints[7].uBC.value
         protocolModel.h_hhuCA8 = model.h_hhTablePoints[7].uCA.value
-        protocolModel.h_hhiA8  = model.h_hhTablePoints[7].iA.value
-        protocolModel.h_hhiB8  = model.h_hhTablePoints[7].iB.value
-        protocolModel.h_hhiC8  = model.h_hhTablePoints[7].iC.value
+        protocolModel.h_hhiA8 = model.h_hhTablePoints[7].iA.value
+        protocolModel.h_hhiB8 = model.h_hhTablePoints[7].iB.value
+        protocolModel.h_hhiC8 = model.h_hhTablePoints[7].iC.value
         protocolModel.h_hhuOV8 = model.h_hhTablePoints[7].uOV.value
         protocolModel.h_hhuAB9 = model.h_hhTablePoints[8].uAB.value
         protocolModel.h_hhuBC9 = model.h_hhTablePoints[8].uBC.value
         protocolModel.h_hhuCA9 = model.h_hhTablePoints[8].uCA.value
-        protocolModel.h_hhiA9  = model.h_hhTablePoints[8].iA.value
-        protocolModel.h_hhiB9  = model.h_hhTablePoints[8].iB.value
-        protocolModel.h_hhiC9  = model.h_hhTablePoints[8].iC.value
+        protocolModel.h_hhiA9 = model.h_hhTablePoints[8].iA.value
+        protocolModel.h_hhiB9 = model.h_hhTablePoints[8].iB.value
+        protocolModel.h_hhiC9 = model.h_hhTablePoints[8].iC.value
         protocolModel.h_hhuOV9 = model.h_hhTablePoints[8].uOV.value
 
 //        protocolModel.h_hhuAB1 = "model.h_hhTablePoints[0].uAB.value"
