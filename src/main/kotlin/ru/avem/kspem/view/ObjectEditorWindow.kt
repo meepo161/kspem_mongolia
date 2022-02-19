@@ -25,7 +25,7 @@ class ObjectEditorWindow : View("Редактор объектов испыта�
 //    var toInsert: VBox by singleAssign()
 
     var tfp2: TextField by singleAssign()
-    var tfuN: ComboBox<String> by singleAssign()
+    var tfuN: TextField by singleAssign()
     var tfiN: TextField by singleAssign()
     var tfnAsync: TextField by singleAssign()
     var tfkpd: TextField by singleAssign()
@@ -178,9 +178,14 @@ class ObjectEditorWindow : View("Редактор объектов испыта�
                         }
                         useMaxWidth = true
                     }
-                    tfuN = combobox() {
-                        minWidth = 266.0
-                        items = observableListOf("220", "380")
+                    tfuN = textfield {
+                        validator.addValidator(this) {
+                            if (it?.toDoubleOrNull() == null) {
+                                error("Обязательное поле")
+                            } else if ((it.toDouble()) < 0 || (it.toDouble()) > 440) {
+                                error("Значение не в диапазоне 0 — 440")
+                            } else null
+                        }
                     }
                 }
                 hbox(16.0, Pos.CENTER) {
@@ -419,7 +424,7 @@ class ObjectEditorWindow : View("Редактор объектов испыта�
         with(cbObjects.selectionModel.selectedItem) {
             runLater {
                 tfp2.text = p2
-                tfuN.selectionModel.select(uNom)
+                tfuN.text = uNom
                 tfiN.text = iN
                 tfnAsync.text = nAsync
                 tfkpd.text = kpd
@@ -455,7 +460,7 @@ class ObjectEditorWindow : View("Редактор объектов испыта�
                     name = tempName
                     type = cbObjectType.selectedItem.toString()
                     p2 = tfp2.text
-                    uNom = tfuN.selectionModel.selectedItem
+                    uNom = tfuN.text
                     iN = tfiN.text
                     nAsync = tfnAsync.text
                     kpd = tfkpd.text

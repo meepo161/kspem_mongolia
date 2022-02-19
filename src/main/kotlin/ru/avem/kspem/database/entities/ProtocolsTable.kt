@@ -73,6 +73,17 @@ object ProtocolsTable : IntIdTable() {
     var runningCos = varchar("runningCos", 64)
     var runningTime = varchar("runningTime", 64)
     var runningResult = varchar("runningResult", 64)
+
+    //LOAD//
+    var loadResult   = varchar("loadResult"             , 64)
+    var loadUOV      = varchar("loadUOV"                , 64)
+    var loadIOV      = varchar("loadIOV"                , 64)
+    var loadUOY      = varchar("loadUOY"                , 64)
+    var loadIOY      = varchar("loadIOY"                , 64)
+    var loadN        = varchar("loadN"                  , 64)
+    var loadP        = varchar("loadP"                  , 64)
+    var loadTempAmb  = varchar("loadTempAmb"            , 64)
+    var loadTempOI   = varchar("loadTempOI"             , 64)
     //H_HH//
 //    var h_hhUAB1 = varchar("h_hhUAB1", 64)
 //    var h_hhUBC1 = varchar("h_hhUBC1", 64)
@@ -250,6 +261,16 @@ class Protocol(id: EntityID<Int>) : IntEntity(id) {
     var runningP1 by ProtocolsTable.runningP1
     var runningCos by ProtocolsTable.runningCos
     var runningResult by ProtocolsTable.runningResult
+    //RUNNING//
+    var loadResult         by ProtocolsTable.loadResult
+    var loadUOV            by ProtocolsTable.loadUOV
+    var loadIOV            by ProtocolsTable.loadIOV
+    var loadUOY            by ProtocolsTable.loadUOY
+    var loadIOY            by ProtocolsTable.loadIOY
+    var loadN              by ProtocolsTable.loadN
+    var loadP              by ProtocolsTable.loadP
+    var loadTempAmb        by ProtocolsTable.loadTempAmb
+    var loadTempOI         by ProtocolsTable.loadTempOI
     //H_HH//
 //    var h_hhUAB1 by ProtocolsTable.h_hhUAB1
 //    var h_hhUBC1 by ProtocolsTable.h_hhUBC1

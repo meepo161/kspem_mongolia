@@ -3,7 +3,6 @@ package ru.avem.kspem.controllers.expControllersSG
 import ru.avem.kspem.communication.model.CommunicationModel
 import ru.avem.kspem.communication.model.devices.avem.avem4.Avem4Model
 import ru.avem.kspem.communication.model.devices.avem.avem7.Avem7Model
-import ru.avem.kspem.communication.model.devices.avem.latr.LatrModel
 import ru.avem.kspem.communication.model.devices.delta.DeltaModel
 import ru.avem.kspem.communication.model.devices.pm130.PM130Model
 import ru.avem.kspem.communication.model.devices.th01.TH01Model
@@ -15,6 +14,7 @@ import ru.avem.kspem.utils.LogTag
 import ru.avem.kspem.utils.sleep
 import ru.avem.kspem.view.expViews.expViewsSG.NViewSG
 import ru.avem.stand.utils.autoformat
+import kotlin.concurrent.thread
 import kotlin.math.abs
 
 class NControllerSG : CustomController() {
@@ -180,18 +180,7 @@ class NControllerSG : CustomController() {
         }
 
         if (isExperimentRunning) {
-            appendMessageToLog(LogTag.MESSAGE, "Инициализация АРН...")
-            latr.resetLATR()
-            cm.startPoll(CommunicationModel.DeviceID.GV240, LatrModel.U_RMS_REGISTER) { value ->
-                voltageLatr = value.toDouble()
-                if (!latr.isResponding && isExperimentRunning) cause = "АРН не отвечает"
-            }
-            cm.startPoll(CommunicationModel.DeviceID.GV240, LatrModel.ENDS_STATUS_REGISTER) { value ->
-            }
-        }
-
-        if (isExperimentRunning) {
-//            initButtonPost()
+            initButtonPost()
         }
 
         if (isExperimentRunning) {
@@ -223,18 +212,32 @@ class NControllerSG : CustomController() {
         }
 
         if (isExperimentRunning) {
-            if (voltageLatr < 5) {
-                pr102.arn(true)
-                pr102.ov_oi(true)
-            } else {
-                cause = "АРН не вышел в нулевое положение"
-            }
+            pr102.arn(true)
+            pr102.ov_oi(true)
         }
 
         if (isExperimentRunning) {
             appendMessageToLog(LogTag.DEBUG, "Регулировка до номинальной частоты вращения")
             delta.setObjectParamsRun(2, 20, 2)
             delta.startObject()
+        }
+
+        thread(isDaemon = true) {
+            if (isExperimentRunning) {
+                var timer = 10.0
+                if (isExperimentRunning) {
+                    while (isExperimentRunning && timer > 0) {
+                        timer -= 0.1
+                        sleep(100)
+                    }
+                }
+            }
+            while (isExperimentRunning) {
+                if (rotateSpeed < 100 || rotateSpeed > rotateSpeedSet * 2) {
+                    cause = "Проверьте датчик оборотов"
+                }
+                sleep(1000)
+            }
         }
 
         if (isExperimentRunning) {
@@ -255,20 +258,17 @@ class NControllerSG : CustomController() {
         }
 
         if (isExperimentRunning) {
-            if (objectModel!!.uVIU.toDoubleOrNull() != null) {
-                appendMessageToLog(LogTag.DEBUG, "Подъем напряжения обмотки возбуждения")
-                for (i in 1..3) {
-//                    voltageRegulation(voltageOYSet, 100, 50, 10)
-                    voltageRegulationTRN(voltageOYSet,300,600)
-                    var timer = 2.0
-                    if (isExperimentRunning) {
-                        while (isExperimentRunning && timer > 0) {
-                            timer -= 0.1
-                            sleep(100)
-                        }
+            appendMessageToLog(LogTag.DEBUG, "Подъем напряжения обмотки возбуждения")
+            for (i in 1..3) {
+                voltageRegulationTRN(voltageOYSet, 1000, 1500)
+                var timer = 2.0
+                if (isExperimentRunning) {
+                    while (isExperimentRunning && timer > 0) {
+                        timer -= 0.1
+                        sleep(100)
                     }
                 }
-            } else cause = "ошибка задания напряжения"
+            }
         }
 
         if (isExperimentRunning) {
@@ -379,26 +379,12 @@ class NControllerSG : CustomController() {
     }
 
     private fun voltageRegulationTRN(volt: Double, coarseSleep: Long, fineSleep: Long) {
-        val slow = 100.0
         val fast = 20.0
         val accurate = 2.0
 
         var timer = System.currentTimeMillis()
-        while (abs(voltageOV - volt) > slow && isExperimentRunning) {
-            if (voltageOV < volt) {
-                voltageTRN += 0.01
-                pr102.setTRN(voltageTRN)
-            } else {
-                voltageTRN -= 0.01
-                pr102.setTRN(voltageTRN)
-            }
-            if (System.currentTimeMillis() - timer > 90000) cause = "Превышено время регулирования"
-            sleep(coarseSleep)
-        }
-
-        timer = System.currentTimeMillis()
-        while (abs(voltageOV - volt) > fast && isExperimentRunning) {
-            if (voltageOV < volt) {
+        while (abs(voltageOY - volt) > fast && isExperimentRunning) {
+            if (voltageOY < volt) {
                 voltageTRN += 0.005
                 pr102.setTRN(voltageTRN)
             } else {
@@ -406,12 +392,12 @@ class NControllerSG : CustomController() {
                 pr102.setTRN(voltageTRN)
             }
             if (System.currentTimeMillis() - timer > 90000) cause = "Превышено время регулирования"
-            sleep(fineSleep)
+            sleep(coarseSleep)
         }
 
         timer = System.currentTimeMillis()
-        while (abs(voltageOV - volt) > accurate && isExperimentRunning) {
-            if (voltageOV < volt) {
+        while (abs(voltageOY - volt) > accurate && isExperimentRunning) {
+            if (voltageOY < volt) {
                 voltageTRN += 0.003
                 pr102.setTRN(voltageTRN)
             } else {
@@ -421,82 +407,6 @@ class NControllerSG : CustomController() {
             if (System.currentTimeMillis() - timer > 90000) cause = "Превышено время регулирования"
             sleep(fineSleep)
         }
-    }
-
-    private fun voltageRegulation(volt: Double, coarse: Int = 10, fine: Int = 5, accurate: Int = 2) {
-        var timer = 0L
-        var speedPerc = 35f
-        var timePulsePerc = 20f
-        val up = 220f
-        val down = 1f
-        var direction: Float
-//        timer = System.currentTimeMillis()
-//        appendMessageToLog(LogTag.DEBUG, "Быстрая регулировка")
-//        while (abs(voltageOY - volt) > fine && isExperimentRunning) {
-//            if (voltageOY < volt) {
-//                direction = up
-//                speedPerc = 100f
-//            } else {
-//                direction = down
-//                speedPerc = 100f
-//            }
-//            if (System.currentTimeMillis() - timer > 90000) cause = "Превышено время регулирования"
-//            latr.startUpLATRUp(direction, false, speedPerc)
-//        }
-//        latr.stopLATR()
-//        timer = System.currentTimeMillis()
-//        if (isExperimentRunning) {
-//            appendMessageToLog(LogTag.DEBUG, "Грубая регулировка")
-//        }
-//        while (abs(voltageOY - volt) > coarse && isExperimentRunning) {
-//            if (voltageOY < volt) {
-//                direction = up
-//                timePulsePerc = 85f
-//            } else {
-//                direction = down
-//                timePulsePerc = 100f
-//            }
-//            if (System.currentTimeMillis() - timer > 60000) cause = "Превышено время регулирования"
-//            latr.startUpLATRPulse(direction, false, timePulsePerc)
-//        }
-//        latr.stopLATR()
-        timer = System.currentTimeMillis()
-//        if (isExperimentRunning) {
-//            appendMessageToLog(LogTag.DEBUG, "Быстрая регулировка")
-//        }
-        while (abs(voltageOY - volt) > fine && isExperimentRunning) {
-            if (voltageOY < volt) {
-                direction = up
-                timePulsePerc = 70f
-            } else {
-                direction = down
-                timePulsePerc = 100f
-            }
-            if (System.currentTimeMillis() - timer > 60000) cause = "Превышено время регулирования"
-            latr.startUpLATRPulse(direction, false, timePulsePerc)
-            sleep(1000)
-            latr.stopLATR()
-            sleep(1000)
-        }
-        timer = System.currentTimeMillis()
-//        if (isExperimentRunning) {
-//            appendMessageToLog(LogTag.DEBUG, "Точная регулировка")
-//        }
-        while (abs(voltageOY - volt) > accurate && isExperimentRunning) {
-            if (voltageOY < volt) {
-                direction = up
-                timePulsePerc = 70f
-            } else {
-                direction = down
-                timePulsePerc = 100f
-            }
-            if (System.currentTimeMillis() - timer > 60000) cause = "Превышено время регулирования"
-            latr.startUpLATRPulse(direction, false, timePulsePerc)
-            sleep(750)
-            latr.stopLATR()
-            sleep(3000)
-        }
-        latr.stopLATR()
     }
 
     private fun regulation(

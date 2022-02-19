@@ -151,6 +151,16 @@ fun validateDB() {
                 runningP1 = "1"
                 runningCos = "0.16"
                 runningResult = "Успешно"
+                //LOAD//
+                loadUOV     = "361"
+                loadIOV     = "362"
+                loadUOY     = "363"
+                loadIOY     = "364"
+                loadN       = "365"
+                loadP       = "366"
+                loadTempAmb = "367"
+                loadTempOI  = "368"
+                loadResult  = "Успешно"
                 //H_HH//
 //                h_hhUAB1 = "494"
 //                h_hhUBC1 = "494"

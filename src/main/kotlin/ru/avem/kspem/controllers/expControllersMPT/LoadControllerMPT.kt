@@ -1,6 +1,5 @@
 package ru.avem.kspem.controllers.expControllersMPT
 
-import javafx.stage.Modality
 import ru.avem.kspem.communication.model.CommunicationModel
 import ru.avem.kspem.communication.model.devices.avem.avem4.Avem4Model
 import ru.avem.kspem.communication.model.devices.avem.avem7.Avem7Model
@@ -14,12 +13,15 @@ import ru.avem.kspem.data.objectModel
 import ru.avem.kspem.data.protocolModel
 import ru.avem.kspem.utils.LogTag
 import ru.avem.kspem.utils.Singleton
+import ru.avem.kspem.utils.Singleton.sparking1
+import ru.avem.kspem.utils.Singleton.sparking2
+import ru.avem.kspem.utils.Singleton.sparking3
+import ru.avem.kspem.utils.Singleton.sparking4
+import ru.avem.kspem.utils.Singleton.sparkingTime
 import ru.avem.kspem.utils.showTwoWayDialog
 import ru.avem.kspem.utils.sleep
-import ru.avem.kspem.view.AlertView
 import ru.avem.kspem.view.expViews.expViewsMPT.LoadViewMPT
 import ru.avem.stand.utils.autoformat
-import tornadofx.runLater
 import kotlin.concurrent.thread
 import kotlin.math.abs
 
@@ -95,6 +97,9 @@ class LoadControllerMPT : CustomController() {
     @Volatile
     var regulate12Started = false
 
+    @Volatile
+    var unmStarted = false
+
     var timerMy = 20.0
 
     var timerMyStart = 20.0
@@ -115,6 +120,11 @@ class LoadControllerMPT : CustomController() {
         voltageOVSet = objectModel!!.uOV.toDouble()
         amperageSet = objectModel!!.iN.toDouble()
         setTime = objectModel!!.timeHH.toDouble()
+        sparkingTime.clear()
+        sparking1.clear()
+        sparking2.clear()
+        sparking3.clear()
+        sparking4.clear()
 
 
         if (isExperimentRunning) {
@@ -162,7 +172,7 @@ class LoadControllerMPT : CustomController() {
                 voltageOY = abs(value.toDouble())
                 if (voltageOY > 80 && rotateSpeed < 100) cause = "Проверьте датчик скорости"
 
-                if (regulateStarted && voltageOV > 50 && voltageOV < 500 && amperageOY < 0.1) {
+                if (regulateStarted && voltageOV > 50 && voltageOV < 500 && amperageOY < 0.05) {
                     cause = "Нет тока на ОЯ"
                 }
 
@@ -201,7 +211,7 @@ class LoadControllerMPT : CustomController() {
         }
 
         if (isExperimentRunning) {
-//            initButtonPost()
+            initButtonPost()
         }
 
         if (isExperimentRunning) {
@@ -241,6 +251,9 @@ class LoadControllerMPT : CustomController() {
                 pr102.setTRN(voltageTRN)
                 pr102.setTVN(voltageTVN)
                 sleep(1000)
+                if (voltageTVN > 0.5) {
+                    cause = "Проверьте датчик оборотов"
+                }
             }
             voltageTRN = 0.0
             voltageTVN = 0.0
@@ -288,6 +301,9 @@ class LoadControllerMPT : CustomController() {
                 pr102.setTRN(voltageTRN)
                 pr102.setTVN(voltageTVN)
                 sleep(1000)
+                if (voltageTVN > 0.5) {
+                    cause = "Проверьте датчик оборотов"
+                }
             }
             voltageTRN = 0.0
             voltageTVN = 0.0
@@ -304,8 +320,13 @@ class LoadControllerMPT : CustomController() {
                 sleep(100)
             }
             delta.stopObject()
+            var i = 0
             while (isExperimentRunning && rotateSpeed > 100) {
-                sleep(100)
+                sleep(1000)
+                i += 1
+                if (i > 30) {
+                    cause = "НМ не остановилась"
+                }
             }
         }
 
@@ -374,8 +395,30 @@ class LoadControllerMPT : CustomController() {
         regulateStarted = true
 
         if (isExperimentRunning) {
-            appendMessageToLog(LogTag.DEBUG, "Подъем напряжения обмотки возбуждения и обмотки якоря.")
+            appendMessageToLog(LogTag.DEBUG, "Подъем напряжения обмотки возбуждения.")
             voltageRegulationTRN(voltageOVSet, 300, 600)
+        }
+
+        thread(isDaemon = true) {
+            if (isExperimentRunning) {
+                var timer = 10.0
+                if (isExperimentRunning) {
+                    while (isExperimentRunning && timer > 0) {
+                        timer -= 0.1
+                        sleep(100)
+                    }
+                }
+            }
+            while (isExperimentRunning) {
+                if (rotateSpeed < 100 && !unmStarted) {
+                    cause = "Проверьте датчик оборотов"
+                }
+                sleep(1000)
+            }
+        }
+
+        if (isExperimentRunning) {
+            appendMessageToLog(LogTag.DEBUG, "Подъем напряжения обмотки якоря.")
             voltageRegulationTVN(voltageOYSet, 300, 600)
         }
 
@@ -435,6 +478,7 @@ class LoadControllerMPT : CustomController() {
 
             appendMessageToLog(LogTag.MESSAGE, "Регулировка до номинальной нагрузки завершена")
         }
+
         regulateStarted = false
 
         if (isExperimentRunning) {
@@ -450,6 +494,7 @@ class LoadControllerMPT : CustomController() {
         }
 
         regulate12Started = true
+
         if (isExperimentRunning) {
             appendMessageToLog(LogTag.MESSAGE, "Регулировка до номинальной нагрузки * 1.2")
             thread(isDaemon = true) {
@@ -465,7 +510,10 @@ class LoadControllerMPT : CustomController() {
             regulationTo(amperageSet * 1.2)
             appendMessageToLog(LogTag.MESSAGE, "Регулировка до номинальной нагрузки * 1.2 завершена")
         }
+
         regulate12Started = false
+
+        unmStarted = true
 
         if (isExperimentRunning) {
             appendMessageToLog(LogTag.MESSAGE, "Выдержка 20 секунд")
@@ -479,6 +527,8 @@ class LoadControllerMPT : CustomController() {
             }
             model.data.timeExp.value = "0.0"
         }
+
+        unmStarted = false
 
         if (Singleton.sparking1.isNotEmpty()) {
             for (i in 0 until Singleton.sparking1.size) {
@@ -518,6 +568,7 @@ class LoadControllerMPT : CustomController() {
 
         isExperimentRunning = false
         finalizeExperiment()
+        restoreData()
 
         when (cause) {
             "" -> {
@@ -752,11 +803,28 @@ class LoadControllerMPT : CustomController() {
     }
 
     private fun saveData() {
-        protocolModel.nSpeed = model.data.n.value
-        protocolModel.nResult = model.data.result.value
+        protocolModel.loadResult = model.data.uOV.value
+        protocolModel.loadUOV = model.data.uOV.value
+        protocolModel.loadIOV = model.data.iOV.value
+        protocolModel.loadUOY = model.data.uOY.value
+        protocolModel.loadIOY = model.data.iOY.value
+        protocolModel.loadN = model.data.n.value
+        protocolModel.loadP = model.data.p.value
+        protocolModel.loadTempAmb = model.data.tempAmb.value
+        protocolModel.loadTempOI = model.data.tempOI.value
+        protocolModel.loadResult = model.data.timeExp.value
     }
 
     private fun restoreData() {
-        model.data.n.value = protocolModel.nSpeed
+        model.data.uOV.value = protocolModel.loadResult
+        model.data.uOV.value = protocolModel.loadUOV
+        model.data.iOV.value = protocolModel.loadIOV
+        model.data.uOY.value = protocolModel.loadUOY
+        model.data.iOY.value = protocolModel.loadIOY
+        model.data.n.value = protocolModel.loadN
+        model.data.p.value = protocolModel.loadP
+        model.data.tempAmb.value = protocolModel.loadTempAmb
+        model.data.tempOI.value = protocolModel.loadTempOI
+        model.data.timeExp.value = protocolModel.loadResult
     }
 }

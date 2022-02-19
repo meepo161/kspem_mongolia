@@ -78,7 +78,6 @@ class HHViewMPT : View() {
 
     fun clearTables() {
         data.result.value = ""
-        data.cos.value = ""
         data.uOV.value = ""
         data.iOV.value = ""
         data.uOY.value = ""
@@ -87,7 +86,6 @@ class HHViewMPT : View() {
         data.p.value = ""
         data.tempAmb.value = ""
         data.tempOI.value = ""
-        data.f.value = ""
         data.timeExp.value = ""
     }
 
@@ -101,9 +99,7 @@ data class HHDataMPT(
     val iOV: StringProperty = SimpleStringProperty(""),
     val uOY: StringProperty = SimpleStringProperty(""),
     val iOY: StringProperty = SimpleStringProperty(""),
-    val f: StringProperty = SimpleStringProperty(""),
     val timeExp: StringProperty = SimpleStringProperty(""),
     val result: StringProperty = SimpleStringProperty(""),
-    val p: StringProperty = SimpleStringProperty(""),
-    val cos: StringProperty = SimpleStringProperty("")
+    val p: StringProperty = SimpleStringProperty("")
 )

@@ -12,6 +12,7 @@ import ru.avem.kspem.utils.LogTag
 import ru.avem.kspem.utils.sleep
 import ru.avem.kspem.view.expViews.expViewsMPT.NViewMPT
 import ru.avem.stand.utils.autoformat
+import kotlin.concurrent.thread
 import kotlin.math.abs
 
 class NControllerMPT : CustomController() {
@@ -131,7 +132,7 @@ class NControllerMPT : CustomController() {
         }
 
         if (isExperimentRunning) {
-//            initButtonPost()
+            initButtonPost()
         }
 
         if (isExperimentRunning) {
@@ -149,9 +150,32 @@ class NControllerMPT : CustomController() {
         if (isExperimentRunning) {
             appendMessageToLog(LogTag.DEBUG, "Регулировка до номинальной частоты вращения")
         }
+
         if (isExperimentRunning) {
-            appendMessageToLog(LogTag.DEBUG, "Подъем напряжения обмотки возбуждения и обмотки якоря.")
+            appendMessageToLog(LogTag.DEBUG, "Подъем напряжения обмотки возбуждения.")
             voltageRegulationTRN(voltageOVSet, 300, 600)
+        }
+
+        thread(isDaemon = true) {
+            if (isExperimentRunning) {
+                var timer = 10.0
+                if (isExperimentRunning) {
+                    while (isExperimentRunning && timer > 0) {
+                        timer -= 0.1
+                        sleep(100)
+                    }
+                }
+            }
+            while (isExperimentRunning) {
+                if (rotateSpeed < 100) {
+                    cause = "Проверьте датчик оборотов"
+                }
+                sleep(1000)
+            }
+        }
+
+        if (isExperimentRunning) {
+            appendMessageToLog(LogTag.DEBUG, "Подъем напряжения обмотки якоря.")
             voltageRegulationTVN(voltageOYSet, 300, 600)
         }
 
