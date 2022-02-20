@@ -219,17 +219,78 @@ object ProtocolsTable : IntIdTable() {
     var h_hhResult = varchar("h_hhResult", 128)
 
     //KZ//,`
-    var kzN = varchar("kzN", 128)
-    var kzCos = varchar("kzCos", 128)
-    var kzUOV = varchar("kzUOV", 128)
-    var kzIOV = varchar("kzIOV", 128)
-    var kzUAB = varchar("kzUAB", 128)
-    var kzUBC = varchar("kzUBC", 128)
-    var kzUCA = varchar("kzUCA", 128)
-    var kzIA = varchar("kzIA", 128)
-    var kzIB = varchar("kzIB", 128)
-    var kzIC = varchar("kzIC", 128)
+    var kzN1 = varchar("kzN1", 128)
+    var kzCos1 = varchar("kzCos1", 128)
+    var kzUOV1 = varchar("kzUOV1", 128)
+    var kzIOV1 = varchar("kzIOV1", 128)
+    var kzUAB1 = varchar("kzUAB1", 128)
+    var kzUBC1 = varchar("kzUBC1", 128)
+    var kzUCA1 = varchar("kzUCA1", 128)
+    var kzIA1 = varchar("kzIA1", 128)
+    var kzIB1 = varchar("kzIB1", 128)
+    var kzIC1 = varchar("kzIC1", 128)
     var kzP1 = varchar("kzP1", 128)
+    var kzF1 = varchar("kzF1", 128)
+    var kzN2 = varchar("kzN2", 128)
+    var kzCos2 = varchar("kzCos2", 128)
+    var kzUOV2 = varchar("kzUOV2", 128)
+    var kzIOV2 = varchar("kzIOV2", 128)
+    var kzUAB2 = varchar("kzUAB2", 128)
+    var kzUBC2 = varchar("kzUBC2", 128)
+    var kzUCA2 = varchar("kzUCA2", 128)
+    var kzIA2 = varchar("kzIA2", 128)
+    var kzIB2 = varchar("kzIB2", 128)
+    var kzIC2 = varchar("kzIC2", 128)
+    var kzP2 = varchar("kzP2", 128)
+    var kzF2 = varchar("kzF2", 128)
+    var kzN3 = varchar("kzN3", 128)
+    var kzCos3 = varchar("kzCos3", 128)
+    var kzUOV3 = varchar("kzUOV3", 128)
+    var kzIOV3 = varchar("kzIOV3", 128)
+    var kzUAB3 = varchar("kzUAB3", 128)
+    var kzUBC3 = varchar("kzUBC3", 128)
+    var kzUCA3 = varchar("kzUCA3", 128)
+    var kzIA3 = varchar("kzIA3", 128)
+    var kzIB3 = varchar("kzIB3", 128)
+    var kzIC3 = varchar("kzIC3", 128)
+    var kzP3 = varchar("kzP3", 128)
+    var kzF3 = varchar("kzF3", 128)
+    var kzN4 = varchar("kzN4", 128)
+    var kzCos4 = varchar("kzCos4", 128)
+    var kzUOV4 = varchar("kzUOV4", 128)
+    var kzIOV4 = varchar("kzIOV4", 128)
+    var kzUAB4 = varchar("kzUAB4", 128)
+    var kzUBC4 = varchar("kzUBC4", 128)
+    var kzUCA4 = varchar("kzUCA4", 128)
+    var kzIA4 = varchar("kzIA4", 128)
+    var kzIB4 = varchar("kzIB4", 128)
+    var kzIC4 = varchar("kzIC4", 128)
+    var kzP4 = varchar("kzP4", 128)
+    var kzF4 = varchar("kzF4", 128)
+    var kzN5 = varchar("kzN5", 128)
+    var kzCos5 = varchar("kzCos5", 128)
+    var kzUOV5 = varchar("kzUOV5", 128)
+    var kzIOV5 = varchar("kzIOV5", 128)
+    var kzUAB5 = varchar("kzUAB5", 128)
+    var kzUBC5 = varchar("kzUBC5", 128)
+    var kzUCA5 = varchar("kzUCA5", 128)
+    var kzIA5 = varchar("kzIA5", 128)
+    var kzIB5 = varchar("kzIB5", 128)
+    var kzIC5 = varchar("kzIC5", 128)
+    var kzP5 = varchar("kzP5", 128)
+    var kzF5 = varchar("kzF5", 128)
+    var kzN6 = varchar("kzN6", 128)
+    var kzCos6 = varchar("kzCos6", 128)
+    var kzUOV6 = varchar("kzUOV6", 128)
+    var kzIOV6 = varchar("kzIOV6", 128)
+    var kzUAB6 = varchar("kzUAB6", 128)
+    var kzUBC6 = varchar("kzUBC6", 128)
+    var kzUCA6 = varchar("kzUCA6", 128)
+    var kzIA6 = varchar("kzIA6", 128)
+    var kzIB6 = varchar("kzIB6", 128)
+    var kzIC6 = varchar("kzIC6", 128)
+    var kzP6 = varchar("kzP6", 128)
+    var kzF6 = varchar("kzF6", 128)
     var kzResult = varchar("kzResult", 128)
 }
 
@@ -438,19 +499,81 @@ class Protocol(id: EntityID<Int>) : IntEntity(id) {
     var h_hhiOV9 by ProtocolsTable.h_hhiOV9
     var h_hhResult by ProtocolsTable.h_hhResult
 
-    //,var  by ProtocolsTable.//
-    var kzN by ProtocolsTable.kzN
-    var kzCos by ProtocolsTable.kzCos
-    var kzUOV by ProtocolsTable.kzUOV
-    var kzIOV by ProtocolsTable.kzIOV
-    var kzUAB by ProtocolsTable.kzUAB
-    var kzUBC by ProtocolsTable.kzUBC
-    var kzUCA by ProtocolsTable.kzUCA
-    var kzIA by ProtocolsTable.kzIA
-    var kzIB by ProtocolsTable.kzIB
-    var kzIC by ProtocolsTable.kzIC
+    //KZ//
+    var kzN1 by ProtocolsTable.kzN1
+    var kzCos1 by ProtocolsTable.kzCos1
+    var kzUOV1 by ProtocolsTable.kzUOV1
+    var kzIOV1 by ProtocolsTable.kzIOV1
+    var kzUAB1 by ProtocolsTable.kzUAB1
+    var kzUBC1 by ProtocolsTable.kzUBC1
+    var kzUCA1 by ProtocolsTable.kzUCA1
+    var kzIA1 by ProtocolsTable.kzIA1
+    var kzIB1 by ProtocolsTable.kzIB1
+    var kzIC1 by ProtocolsTable.kzIC1
     var kzP1 by ProtocolsTable.kzP1
+    var kzF1 by ProtocolsTable.kzF1
+    var kzN2 by ProtocolsTable.kzN2
+    var kzCos2 by ProtocolsTable.kzCos2
+    var kzUOV2 by ProtocolsTable.kzUOV2
+    var kzIOV2 by ProtocolsTable.kzIOV2
+    var kzUAB2 by ProtocolsTable.kzUAB2
+    var kzUBC2 by ProtocolsTable.kzUBC2
+    var kzUCA2 by ProtocolsTable.kzUCA2
+    var kzIA2 by ProtocolsTable.kzIA2
+    var kzIB2 by ProtocolsTable.kzIB2
+    var kzIC2 by ProtocolsTable.kzIC2
+    var kzP2 by ProtocolsTable.kzP2
+    var kzF2 by ProtocolsTable.kzF2
+    var kzN3 by ProtocolsTable.kzN3
+    var kzCos3 by ProtocolsTable.kzCos3
+    var kzUOV3 by ProtocolsTable.kzUOV3
+    var kzIOV3 by ProtocolsTable.kzIOV3
+    var kzUAB3 by ProtocolsTable.kzUAB3
+    var kzUBC3 by ProtocolsTable.kzUBC3
+    var kzUCA3 by ProtocolsTable.kzUCA3
+    var kzIA3 by ProtocolsTable.kzIA3
+    var kzIB3 by ProtocolsTable.kzIB3
+    var kzIC3 by ProtocolsTable.kzIC3
+    var kzP3 by ProtocolsTable.kzP3
+    var kzF3 by ProtocolsTable.kzF3
+    var kzN4 by ProtocolsTable.kzN4
+    var kzCos4 by ProtocolsTable.kzCos4
+    var kzUOV4 by ProtocolsTable.kzUOV4
+    var kzIOV4 by ProtocolsTable.kzIOV4
+    var kzUAB4 by ProtocolsTable.kzUAB4
+    var kzUBC4 by ProtocolsTable.kzUBC4
+    var kzUCA4 by ProtocolsTable.kzUCA4
+    var kzIA4 by ProtocolsTable.kzIA4
+    var kzIB4 by ProtocolsTable.kzIB4
+    var kzIC4 by ProtocolsTable.kzIC4
+    var kzP4 by ProtocolsTable.kzP4
+    var kzF4 by ProtocolsTable.kzF4
+    var kzN5 by ProtocolsTable.kzN5
+    var kzCos5 by ProtocolsTable.kzCos5
+    var kzUOV5 by ProtocolsTable.kzUOV5
+    var kzIOV5 by ProtocolsTable.kzIOV5
+    var kzUAB5 by ProtocolsTable.kzUAB5
+    var kzUBC5 by ProtocolsTable.kzUBC5
+    var kzUCA5 by ProtocolsTable.kzUCA5
+    var kzIA5 by ProtocolsTable.kzIA5
+    var kzIB5 by ProtocolsTable.kzIB5
+    var kzIC5 by ProtocolsTable.kzIC5
+    var kzP5 by ProtocolsTable.kzP5
+    var kzF5 by ProtocolsTable.kzF5
+    var kzN6 by ProtocolsTable.kzN6
+    var kzCos6 by ProtocolsTable.kzCos6
+    var kzUOV6 by ProtocolsTable.kzUOV6
+    var kzIOV6 by ProtocolsTable.kzIOV6
+    var kzUAB6 by ProtocolsTable.kzUAB6
+    var kzUBC6 by ProtocolsTable.kzUBC6
+    var kzUCA6 by ProtocolsTable.kzUCA6
+    var kzIA6 by ProtocolsTable.kzIA6
+    var kzIB6 by ProtocolsTable.kzIB6
+    var kzIC6 by ProtocolsTable.kzIC6
+    var kzP6 by ProtocolsTable.kzP6
+    var kzF6 by ProtocolsTable.kzF6
     var kzResult by ProtocolsTable.kzResult
+
 
     override fun toString(): String {
         return "$id"
