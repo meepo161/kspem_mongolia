@@ -18,10 +18,7 @@ import ru.avem.kspem.data.motorType
 import ru.avem.kspem.data.objectModel
 import ru.avem.kspem.data.protocolModel
 import ru.avem.kspem.database.entities.TestObjects
-import ru.avem.kspem.utils.Singleton
-import ru.avem.kspem.utils.State
-import ru.avem.kspem.utils.Toast
-import ru.avem.kspem.utils.getFullType
+import ru.avem.kspem.utils.*
 import ru.avem.kspem.view.Styles.Companion.mainTheme
 import tornadofx.*
 import tornadofx.controlsfx.errorNotification
@@ -265,7 +262,7 @@ class MainView : View("КСПЭМ") {
                     topAnchor = 32.0
                 }
                 hbox(16.0, Pos.CENTER_LEFT) {
-                    label("Шифр двигателя:")
+                    label("Шифр машины:")
                     cbObjects = combobox {
                         hboxConstraints {
                             hGrow = Priority.ALWAYS
@@ -280,7 +277,7 @@ class MainView : View("КСПЭМ") {
                     }
                 }
                 hbox(16.0, Pos.CENTER) {
-                    label("Тип двигателя: ")
+                    label("Тип машины: ")
                     labelType = label() {
                         hboxConstraints {
                             hGrow = Priority.ALWAYS

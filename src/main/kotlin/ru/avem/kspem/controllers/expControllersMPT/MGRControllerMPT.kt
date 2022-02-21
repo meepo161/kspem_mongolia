@@ -39,31 +39,6 @@ class MGRControllerMPT : CustomController() {
             model.data.tempOI.value = trm202.getRegisterById(TRM202Model.T_2).value.autoformat()
         }
 
-        var isClicked = false
-
-        if (isExperimentRunning) {
-            showTwoWayDialog(
-                title = "Внимание!",
-                text = "Подключить ТОЛЬКО Высоковольтный провод с зажимом типа «крокодил» (XA1) к обмотке возбуждения ОИ" +
-                        "\nПровод измерительный (ХА2) к корпусу и/или частям, относительно которых будет проходить проверка." +
-                        "\nСиловые провода НЕ ДОЛЖНЫ быть подключены к ОИ",
-                way1Title = "Подтвердить",
-                way2Title = "Отменить",
-                way1 = {
-                    isClicked = true
-                },
-                way2 = {
-                    isClicked = true
-                    cause = "Отменено оператором"
-                },
-                currentWindow = primaryStage.scene.window
-            )
-        }
-
-        while (isExperimentRunning && !isClicked) {
-            sleep(100)
-        }
-
         if (isExperimentRunning) {
             pr102.shunt(true)
             pr102.ground(true)
@@ -139,7 +114,7 @@ class MGRControllerMPT : CustomController() {
             }
         }
 
-        isClicked = false
+        var isClicked = false
 
         if (isExperimentRunning) {
             showTwoWayDialog(

@@ -15,9 +15,12 @@ import ru.avem.kspem.data.schemeType
 import ru.avem.kspem.database.entities.Objects
 import ru.avem.kspem.database.entities.TestObjects
 import ru.avem.kspem.utils.Singleton
+import ru.avem.kspem.utils.createScreenShot
+import ru.avem.kspem.utils.sleep
 import tornadofx.*
 import tornadofx.controlsfx.errorNotification
 import tornadofx.controlsfx.infoNotification
+import kotlin.concurrent.thread
 
 class ObjectEditorWindow : View("Редактор объектов испытания") {
 

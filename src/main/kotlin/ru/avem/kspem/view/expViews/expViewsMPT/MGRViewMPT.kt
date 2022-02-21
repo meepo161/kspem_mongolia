@@ -6,6 +6,7 @@ import javafx.geometry.Pos
 import javafx.scene.control.TableView
 import javafx.scene.layout.Priority
 import javafx.scene.text.TextAlignment
+import ru.avem.kspem.utils.createScreenShot
 import ru.avem.kspem.utils.showTwoWayDialog
 import ru.avem.kspem.view.ExpView
 import ru.avem.kspem.view.MainView

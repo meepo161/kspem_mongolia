@@ -6,13 +6,19 @@ import javafx.scene.control.ButtonType
 import javafx.scene.control.TextField
 import javafx.stage.Window
 import ru.avem.kspem.data.motorType
-import ru.avem.kspem.view.Styles
-import tornadofx.*
+import tornadofx.runLater
+import tornadofx.warning
 import java.awt.Desktop
+import java.awt.Rectangle
+import java.awt.Robot
+import java.awt.Toolkit
+import java.awt.image.BufferedImage
 import java.io.*
 import java.nio.file.Paths
 import java.util.*
+import javax.imageio.ImageIO
 import kotlin.math.abs
+
 
 fun sleep(mills: Long) {
     Thread.sleep(mills)
@@ -98,5 +104,15 @@ fun getFullType(type: String): String {
         motorType.dpt -> "Двигатель постоянного тока"
         motorType.gpt -> "Генератор постоянного тока"
         else -> "ошибка"
+    }
+}
+
+fun createScreenShot(name: String) {
+    val screenRect = Rectangle(Toolkit.getDefaultToolkit().screenSize)
+    val capture: BufferedImage = Robot().createScreenCapture(screenRect)
+    val imageFile = File("screen - $name.bmp")
+    try {
+        ImageIO.write(capture, "bmp", imageFile)
+    } catch (e: Exception) {
     }
 }

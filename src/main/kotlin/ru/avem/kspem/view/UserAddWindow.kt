@@ -7,6 +7,7 @@ import org.jetbrains.exposed.sql.transactions.transaction
 import ru.avem.kspem.database.entities.User
 import ru.avem.kspem.utils.Singleton
 import ru.avem.kspem.utils.callKeyBoard
+import ru.avem.kspem.utils.createScreenShot
 import tornadofx.*
 import tornadofx.controlsfx.warningNotification
 
@@ -27,6 +28,7 @@ class UserAddWindow : View("Добавить пользователя") {
         root.style {
             baseColor = Color.hsb(Singleton.color1, Singleton.color2, Singleton.color3)
         }
+
         super.onDock()
     }
 

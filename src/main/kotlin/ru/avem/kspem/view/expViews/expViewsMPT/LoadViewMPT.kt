@@ -10,6 +10,7 @@ import ru.avem.kspem.communication.utils.toHHmmss
 import ru.avem.kspem.data.loadMPT
 import ru.avem.kspem.utils.Singleton
 import ru.avem.kspem.utils.Toast
+import ru.avem.kspem.utils.createScreenShot
 import tornadofx.*
 import kotlin.time.ExperimentalTime
 

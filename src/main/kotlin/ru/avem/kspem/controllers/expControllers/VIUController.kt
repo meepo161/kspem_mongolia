@@ -8,7 +8,10 @@ import ru.avem.kspem.controllers.CustomController
 import ru.avem.kspem.data.objectModel
 import ru.avem.kspem.data.protocolModel
 import ru.avem.kspem.utils.LogTag
+import ru.avem.kspem.utils.showTwoWayDialog
 import ru.avem.kspem.utils.sleep
+import ru.avem.kspem.view.ExpView
+import ru.avem.kspem.view.MainView
 import ru.avem.kspem.view.expViews.VIUView
 import ru.avem.stand.utils.autoformat
 import kotlin.math.abs
@@ -65,7 +68,7 @@ class VIUController : CustomController() {
         }
 
         if (isExperimentRunning) {
-            appendMessageToLog(LogTag.MESSAGE, "Инициализация АВЭМ3...")
+            appendMessageToLog(LogTag.MESSAGE, "Инициализация АВЭМ3-04...")
             cm.startPoll(CommunicationModel.DeviceID.PV24, Avem4Model.RMS) { value ->
                 voltage = value.toDouble()
                 model.data.U.value = voltage.autoformat()
@@ -74,7 +77,32 @@ class VIUController : CustomController() {
         }
 
         if (isExperimentRunning) {
-//            initButtonPost()
+            initButtonPost()
+        }
+
+        var isClicked = false
+
+        if (isExperimentRunning) {
+            showTwoWayDialog(
+                title = "Внимание!",
+                text = "Подключить ТОЛЬКО Высоковольтный провод с зажимом типа «крокодил» (XA1) к обмотке возбуждения ОИ" +
+                        "\nПровод измерительный (ХА2) к корпусу и/или частям, относительно которых будет проходить проверка." +
+                        "\nСиловые провода НЕ ДОЛЖНЫ быть подключены к ОИ",
+                way1Title = "Подтвердить",
+                way2Title = "Отменить",
+                way1 = {
+                    isClicked = true
+                },
+                way2 = {
+                    isClicked = true
+                    cause = "Отменено оператором"
+                },
+                currentWindow = primaryStage.scene.window
+            )
+        }
+
+        while (isExperimentRunning && !isClicked) {
+            sleep(100)
         }
 
         if (isExperimentRunning) {

@@ -117,16 +117,6 @@ fun smartSleep(
     }
 }
 
-fun createScreenShot(name: String) {
-    val screenRect = Rectangle(Toolkit.getDefaultToolkit().screenSize)
-    val capture: BufferedImage = Robot().createScreenCapture(screenRect)
-    val imageFile = File("screen - $name.bmp")
-    try {
-        ImageIO.write(capture, "bmp", imageFile)
-    } catch (e: Exception) {
-    }
-}
-
 fun View.schemeMessage(scheme: Int) {
     showTwoWayDialog(
         title = "Внимание!",

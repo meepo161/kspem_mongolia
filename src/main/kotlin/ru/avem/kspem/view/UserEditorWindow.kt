@@ -15,8 +15,11 @@ import ru.avem.kspem.database.entities.User
 import ru.avem.kspem.database.entities.Users
 import ru.avem.kspem.database.entities.Users.login
 import ru.avem.kspem.utils.Singleton
+import ru.avem.kspem.utils.createScreenShot
+import ru.avem.kspem.utils.sleep
 import tornadofx.*
 import tornadofx.controlsfx.warningNotification
+import kotlin.concurrent.thread
 
 class UserEditorWindow : View("Редактор пользователей") {
     private var tableViewUsers: TableView<User> by singleAssign()

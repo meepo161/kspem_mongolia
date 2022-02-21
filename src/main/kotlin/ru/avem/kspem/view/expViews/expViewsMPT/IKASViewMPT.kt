@@ -5,6 +5,7 @@ import javafx.beans.property.StringProperty
 import javafx.geometry.Pos
 import javafx.scene.control.TableView
 import javafx.scene.layout.Priority
+import ru.avem.kspem.utils.createScreenShot
 import ru.avem.kspem.utils.showTwoWayDialog
 import ru.avem.kspem.view.ExpView
 import ru.avem.kspem.view.MainView
@@ -39,7 +40,7 @@ class IKASViewMPT : View() {
                 isMouseTransparent = true
                 column("R ОВ, Ом", IKASDataMPT::R1.getter).isEditable = false
                 column("R ОЯ, Ом", IKASDataMPT::R2.getter).isEditable = false
-                column("t Возд, °C", IKASDataMPT::tempAmb.getter).isEditable = false
+                column("t воздуха, °C", IKASDataMPT::tempAmb.getter).isEditable = false
                 column("t ОИ, °C", IKASDataMPT::tempOI.getter).isEditable = false
                 columnResizePolicy = TableView.CONSTRAINED_RESIZE_POLICY
             }/*

@@ -131,6 +131,7 @@ class MGRController : CustomController() {
                                 model.data.time.value = "%.1f".format(Locale.ENGLISH, timer)
                                 timer -= 0.1
                             }
+                            model.data.time.value = "0.0"
                         }
                     }
 
@@ -181,13 +182,6 @@ class MGRController : CustomController() {
         }
         finalizeExperiment()
 
-
-        model.data.U.value = "1"
-        model.data.R15.value = "2"
-        model.data.R60.value = "3"
-        model.data.K_ABS.value = "4"
-        model.data.tempAmb.value = "5"
-        model.data.result.value = "6"
         saveData()
     }
 

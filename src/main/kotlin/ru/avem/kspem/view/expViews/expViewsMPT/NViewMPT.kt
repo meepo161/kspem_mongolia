@@ -5,6 +5,7 @@ import javafx.beans.property.StringProperty
 import javafx.geometry.Pos
 import javafx.scene.control.TableView
 import javafx.scene.layout.Priority
+import ru.avem.kspem.utils.createScreenShot
 import tornadofx.*
 
 

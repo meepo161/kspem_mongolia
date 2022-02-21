@@ -8,6 +8,7 @@ import javafx.scene.chart.NumberAxis
 import javafx.scene.chart.XYChart
 import javafx.scene.control.TableView
 import javafx.scene.layout.Priority
+import ru.avem.kspem.utils.createScreenShot
 import tornadofx.*
 
 
@@ -185,6 +186,8 @@ class KZViewSG : View() {
                 columnResizePolicy = TableView.CONSTRAINED_RESIZE_POLICY
             }
             lineChart = linechart("", NumberAxis(), NumberAxis()) {
+                xAxis.label = "Ток ОВ, А"
+                yAxis.label = "Ток ОЯ, А"
                 prefHeight = 460.0
                 prefWidth = 1860.0
                 data.add(series)

@@ -14,10 +14,13 @@ import ru.avem.kspem.database.entities.Protocol
 import ru.avem.kspem.database.entities.ProtocolsTable
 import ru.avem.kspem.protocol.saveProtocolAsWorkbook
 import ru.avem.kspem.utils.Singleton
+import ru.avem.kspem.utils.createScreenShot
 import ru.avem.kspem.utils.openFile
+import ru.avem.kspem.utils.sleep
 import tornadofx.*
 import tornadofx.controlsfx.confirmNotification
 import java.io.File
+import kotlin.concurrent.thread
 
 class ProtocolListWindow : View("Список протоколов испытаний") {
     private var tableViewProtocols: TableView<Protocol> by singleAssign()
@@ -31,6 +34,8 @@ class ProtocolListWindow : View("Список протоколов испыта�
         }
         tableViewProtocols.items = protocols
         filter.text = ""
+
+        super.onDock()
     }
 
     var filter: TextField by singleAssign()
@@ -78,8 +83,8 @@ class ProtocolListWindow : View("Список протоколов испыта�
                 prefHeight = 900.0
                 minWidth = 1600.0
                 columnResizePolicyProperty().set(TableView.CONSTRAINED_RESIZE_POLICY)
-                column("Шифр двигателя", Protocol::objectName)
-                column("Тип двигателя", Protocol::type)
+                column("Шифр машины", Protocol::objectName)
+                column("Тип машины", Protocol::type)
                 column("Серийный номер", Protocol::serial)
                 column("Оператор", Protocol::operator)
                 column("Дата", Protocol::date)

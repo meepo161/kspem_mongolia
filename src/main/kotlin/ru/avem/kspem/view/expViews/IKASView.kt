@@ -40,7 +40,7 @@ class IKASView : View() {
                 column("R AB, Ом", IKASData::R1.getter).isEditable = false
                 column("R BC, Ом", IKASData::R2.getter).isEditable = false
                 column("R CA, Ом", IKASData::R3.getter).isEditable = false
-                column("t Возд, °C", IKASData::tempAmb.getter).isEditable = false
+                column("t воздуха, °C", IKASData::tempAmb.getter).isEditable = false
                 column("t ОИ, °C", IKASData::tempOI.getter).isEditable = false
                 columnResizePolicy = TableView.CONSTRAINED_RESIZE_POLICY
             }

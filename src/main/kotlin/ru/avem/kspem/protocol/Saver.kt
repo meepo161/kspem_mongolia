@@ -300,8 +300,8 @@ fun saveProtocolAsWorkbook(protocol: Protocol, path: String = "cfg/lastOpened.xl
             fillDotsInProtocol(
                 wb,
                 protocol.dptLOADDots,
-                0,
-                75
+                1,
+                78
             )
 
             val outStream = ByteArrayOutputStream()

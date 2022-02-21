@@ -7,6 +7,7 @@ import javafx.scene.control.TableView
 import javafx.scene.layout.Priority
 import javafx.scene.text.TextAlignment
 import ru.avem.kspem.data.objectModel
+import ru.avem.kspem.utils.createScreenShot
 import ru.avem.kspem.utils.showTwoWayDialog
 import ru.avem.kspem.view.ExpView
 import ru.avem.kspem.view.MainView
@@ -22,19 +23,6 @@ class VIUView : View() {
         runLater {
             clearTables()
         }
-        showTwoWayDialog(
-            title = "Внимание!",
-            text = "подключите измерительные провода TV35",
-            way1Title = "Подтвердить",
-            way2Title = "Отменить",
-            way1 = {
-
-            },
-            way2 = {
-                find<ExpView>().replaceWith<MainView>()
-            },
-            currentWindow = primaryStage.scene.window
-        )
     }
 
     override val root = vbox(spacing = 16) {

@@ -76,7 +76,7 @@ class ExpView : View("Окно испытания") {
                         }.addClass(Styles.maxTemp)
                         vvalueProperty().bind(vBoxLog.heightProperty())
                     }
-                    vbox(8.0, Pos.CENTER_RIGHT) {
+                    vbox(8.0, Pos.BOTTOM_RIGHT) {
                         minWidth = 167.0
                         btnHideFirst = button("") {
                             graphic = MaterialDesignIconView(MaterialDesignIcon.ARROW_DOWN).apply {

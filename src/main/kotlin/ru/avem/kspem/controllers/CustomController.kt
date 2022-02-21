@@ -167,14 +167,14 @@ abstract class CustomController() : Component(), ScopedInstance {
             sleep(1000)
             thread(isDaemon = true) {
                 while (isExperimentRunning) {
-//                    if (doorZone) cause = "Открыты двери зоны"
-                    if (doorSCO) cause = "Открыты двери ШСО"
-                    if (ikzOI) cause = "сработала токовая защита ОИ"
-                    if (isStopPressed) cause = "отменено оператором"
-                    if (iViu) cause = "сработала токовая защита ВИУ"
-                    if (tempUNM) cause = "сработал температурный датчик УНМ"
-                    if (!pr102.isResponding) cause = "потеряна связь с ПР102"
-                    if (isStopPressed) cause = "нажата кнопка <СТОП>"
+                    if (doorZone) cause = "Открыты двери зоны"
+                    if (doorSCO) cause = "Открылась дверь ШСО"
+                    if (ikzOI) cause = "Сработала токовая защита ОИ"
+                    if (isStopPressed) cause = "Отменено оператором"
+                    if (iViu) cause = "Сработала токовая защита ВИУ"
+                    if (tempUNM) cause = "Сработал температурный датчик УНМ"
+                    if (!pr102.isResponding) cause = "Потеряна связь с ПР102"
+                    if (isStopPressed) cause = "Нажата кнопка <СТОП>"
                     sleep(100)
                 }
             }

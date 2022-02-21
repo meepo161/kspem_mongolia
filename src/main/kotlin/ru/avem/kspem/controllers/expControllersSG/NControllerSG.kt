@@ -312,7 +312,7 @@ class NControllerSG : CustomController() {
 
         try {
             saveData()
-        } catch (e:Exception) {
+        } catch (e: Exception) {
             appendMessageToLog(LogTag.ERROR, "Ошибка сохранения протокола")
         }
 //        protocolModel.nUAB = model.data.uAB.value
@@ -359,6 +359,16 @@ class NControllerSG : CustomController() {
         fineSleep: Long
     ) {
         while (isExperimentRunning && (rotateSpeed > speed + coarseLimit || rotateSpeed < speed)) {
+            if (fDelta > 9.9 && fDelta < 12.0) {
+                val kShkiv = rotateSpeed / (3000 / 50 * fDelta)
+                if (rotateSpeedSet >= 1450 && kShkiv < 0.75) {
+                    cause = "Проверьте датчик скорости и установите шкив 250"
+                    break
+                } else if (rotateSpeedSet < 1450 && kShkiv > 0.75) {
+                    cause = "Проверьте датчик скорости и установите шкив 500"
+                    break
+                }
+            }
             if (rotateSpeed < speed + coarseLimit) {
                 fDelta += 0.1
                 delta.setObjectF(fDelta)
@@ -371,6 +381,16 @@ class NControllerSG : CustomController() {
         }
 
         while (isExperimentRunning && (rotateSpeed > speed + fineLimit || rotateSpeed < speed)) {
+            if (fDelta > 9.9 && fDelta < 12.0) {
+                val kShkiv = rotateSpeed / (3000 / 50 * fDelta)
+                if (rotateSpeedSet >= 1450 && kShkiv < 0.75) {
+                    cause = "Проверьте датчик скорости и установите шкив 250"
+                    break
+                } else if (rotateSpeedSet < 1450 && kShkiv > 0.75) {
+                    cause = "Проверьте датчик скорости и установите шкив 500"
+                    break
+                }
+            }
             if (rotateSpeed < speed + fineLimit) {
                 fDelta += 0.05
                 delta.setObjectF(fDelta)

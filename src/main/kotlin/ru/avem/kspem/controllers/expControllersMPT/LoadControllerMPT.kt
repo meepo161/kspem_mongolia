@@ -314,12 +314,18 @@ class LoadControllerMPT : CustomController() {
             while (isExperimentRunning && rotateSpeed > 100) {
                 sleep(100)
             }
-            delta.setObjectParamsRun(2, 20, 2)
+            delta.setObjectParamsRun(4, 20, 4)
             delta.startObject()
             var timer = 5.0
             while (isExperimentRunning && timer > 0) {
                 timer -= 0.1
                 sleep(100)
+            }
+            val kShkiv = rotateSpeed / (3000 / 50 * 4)
+            if (rotateSpeedSet >= 1450 && kShkiv < 0.75) {
+                cause = "Проверьте датчик скорости и установите шкив 250"
+            } else if (rotateSpeedSet < 1450 && kShkiv > 0.75) {
+                cause = "Проверьте датчик скорости и установите шкив 500"
             }
             delta.stopObject()
             var i = 0
@@ -431,11 +437,8 @@ class LoadControllerMPT : CustomController() {
         if (isExperimentRunning) {
             appendMessageToLog(LogTag.DEBUG, "Разгон НМ...")
 
-            fDelta = if ((rotateSpeed / (1500 / 50)) / 2 < 50) {
-                (rotateSpeed / (1500 / 50)) / 2 //TODO проверка шкивов
-            } else {
-                50.0
-            }
+            fDelta = rotateSpeed / (3000 / 50)
+            if (rotateSpeedSet < 1450) fDelta * 2
 
             var u = 3
             val maxU = 380 / 50 * fDelta
@@ -594,6 +597,9 @@ class LoadControllerMPT : CustomController() {
         fineSleep: Long = 750
     ) {
         while (abs(amperageOY - amperageSet) > coarseLimit && isExperimentRunning) {
+            if (model.data.p.value.toDouble() > 100) {
+                break
+            }
             if (amperageOY < amperageSet) {
                 fDelta -= 0.1
                 currentFreqLast = currentFreq
@@ -608,6 +614,10 @@ class LoadControllerMPT : CustomController() {
             delta.setObjectF(fDelta)
         }
         while (abs(amperageOY - amperageSet) > fineLimit && isExperimentRunning) {
+            if (model.data.p.value.toDouble() > 100) {
+                appendMessageToLog(LogTag.MESSAGE, "Достигнут предел мощности")
+                break
+            }
             if (amperageOY < amperageSet) {
                 fDelta -= 0.05
                 currentFreqLast = currentFreq
@@ -805,58 +815,14 @@ class LoadControllerMPT : CustomController() {
     }
 
     private fun saveData() {
-//        protocolModel.dptLOADN = model.data.n.value
-//        protocolModel.dptLOADP1 = model.data.p.value
-//        protocolModel.dptLOADTOI = model.data.tempOI.value
-//        protocolModel.dptLOADTAmb = model.data.tempAmb.value
-//        protocolModel.dptLOADiOV = model.data.iOV.value
-//        protocolModel.dptLOADuOV = model.data.uOV.value
-//        protocolModel.dptLOADuN = model.data.uOY.value
-//        val listDots = mutableListOf<String>()
-//        if (sparkingTime.isNotEmpty()) {
-//            for (i in 0 until sparkingTime.size) {
-//                listDots.add(sparkingTime[i])
-//            }
-//            for (i in 0 until sparkingTime.size) {
-//                listDots.add(sparking1[i])
-//            }
-//            for (i in 0 until sparkingTime.size) {
-//                listDots.add(sparking2[i])
-//            }
-//            for (i in 0 until sparkingTime.size) {
-//                listDots.add(sparking3[i])
-//            }
-//            for (i in 0 until sparkingTime.size) {
-//                listDots.add(sparking4[i])
-//            }
-//        }
-//        protocolModel.dptLOADDots = listDots.toString()
-//        protocolModel.dptLOADiN = model.data.iOY.value
-
-
-        protocolModel.dptLOADN = "model.data.n.value"
-        protocolModel.dptLOADP1 = "model.data.p.value"
-        protocolModel.dptLOADTOI = "model.data.tempOI.value"
-        protocolModel.dptLOADTAmb = "model.data.tempAmb.value"
-        protocolModel.dptLOADiOV = "model.data.iOV.value"
-        protocolModel.dptLOADuOV = "model.data.uOV.value"
-        protocolModel.dptLOADuN = "model.data.uOY.value"
+        protocolModel.dptLOADN = model.data.n.value
+        protocolModel.dptLOADP1 = model.data.p.value
+        protocolModel.dptLOADTOI = model.data.tempOI.value
+        protocolModel.dptLOADTAmb = model.data.tempAmb.value
+        protocolModel.dptLOADiOV = model.data.iOV.value
+        protocolModel.dptLOADuOV = model.data.uOV.value
+        protocolModel.dptLOADuN = model.data.uOY.value
         val listDots = mutableListOf<String>()
-        for (i in 0..9) {
-            listDots.add("00:00:0${i}")
-        }
-        for (i in 0..9) {
-            listDots.add("${i + 0}")
-        }
-        for (i in 0..9) {
-            listDots.add("${i + 1}")
-        }
-        for (i in 0..9) {
-            listDots.add("${i + 2}")
-        }
-        for (i in 0..9) {
-            listDots.add("${i + 3}")
-        }
         if (sparkingTime.isNotEmpty()) {
             for (i in 0 until sparkingTime.size) {
                 listDots.add(sparkingTime[i])
@@ -875,7 +841,51 @@ class LoadControllerMPT : CustomController() {
             }
         }
         protocolModel.dptLOADDots = listDots.toString()
-        protocolModel.dptLOADiN = "model.data.iOY.value"
+        protocolModel.dptLOADiN = model.data.iOY.value
+
+
+//        protocolModel.dptLOADN = "model.data.n.value"
+//        protocolModel.dptLOADP1 = "model.data.p.value"
+//        protocolModel.dptLOADTOI = "model.data.tempOI.value"
+//        protocolModel.dptLOADTAmb = "model.data.tempAmb.value"
+//        protocolModel.dptLOADiOV = "model.data.iOV.value"
+//        protocolModel.dptLOADuOV = "model.data.uOV.value"
+//        protocolModel.dptLOADuN = "model.data.uOY.value"
+//        val listDots = mutableListOf<String>()
+//        for (i in 0..9) {
+//            listDots.add("00:00:0${i}")
+//        }
+//        for (i in 0..9) {
+//            listDots.add("${i + 0}")
+//        }
+//        for (i in 0..9) {
+//            listDots.add("${i + 1}")
+//        }
+//        for (i in 0..9) {
+//            listDots.add("${i + 2}")
+//        }
+//        for (i in 0..9) {
+//            listDots.add("${i + 3}")
+//        }
+//        if (sparkingTime.isNotEmpty()) {
+//            for (i in 0 until sparkingTime.size) {
+//                listDots.add(sparkingTime[i])
+//            }
+//            for (i in 0 until sparkingTime.size) {
+//                listDots.add(sparking1[i])
+//            }
+//            for (i in 0 until sparkingTime.size) {
+//                listDots.add(sparking2[i])
+//            }
+//            for (i in 0 until sparkingTime.size) {
+//                listDots.add(sparking3[i])
+//            }
+//            for (i in 0 until sparkingTime.size) {
+//                listDots.add(sparking4[i])
+//            }
+//        }
+//        protocolModel.dptLOADDots = listDots.toString()
+//        protocolModel.dptLOADiN = "model.data.iOY.value"
     }
 
     private fun restoreData() {
