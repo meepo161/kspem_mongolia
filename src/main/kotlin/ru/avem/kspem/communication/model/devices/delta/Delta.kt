@@ -173,9 +173,9 @@ class Delta(
 
     fun setObjectParamsRun(fOut: Number = 50, voltageP1: Number = 10, fP1: Number = 50) {
         try {
-            writeRegister(getRegisterById(MAX_VOLTAGE_REGISTER), (494.v() + 1).toShort())
-            writeRegister(getRegisterById(MAX_FREQUENCY_REGISTER), (65.hz() + 1).toShort())
-            writeRegister(getRegisterById(NOM_FREQUENCY_REGISTER), (65.hz() + 1).toShort())
+            writeRegister(getRegisterById(MAX_VOLTAGE_REGISTER), (760.v() + 1).toShort())
+            writeRegister(getRegisterById(MAX_FREQUENCY_REGISTER), (100.hz() + 1).toShort())
+            writeRegister(getRegisterById(NOM_FREQUENCY_REGISTER), (100.hz() + 1).toShort())
 
             writeRegister(getRegisterById(POINT_1_VOLTAGE_REGISTER), voltageP1.v())
             writeRegister(getRegisterById(POINT_1_FREQUENCY_REGISTER), fP1.hz())

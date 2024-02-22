@@ -3,26 +3,29 @@ package ru.avem.kspem.view.expViews.expViewsMPT
 import javafx.beans.property.SimpleStringProperty
 import javafx.beans.property.StringProperty
 import javafx.geometry.Pos
+import javafx.scene.control.Button
 import javafx.scene.control.TableView
 import javafx.scene.control.TextField
 import javafx.scene.layout.Priority
 import ru.avem.kspem.communication.utils.toHHmmss
 import ru.avem.kspem.data.loadMPT
 import ru.avem.kspem.utils.Singleton
+import ru.avem.kspem.utils.Singleton.timerLoad
+import ru.avem.kspem.utils.Singleton.timerLoadNom
 import ru.avem.kspem.utils.Toast
-import ru.avem.kspem.utils.createScreenShot
 import tornadofx.*
 import kotlin.time.ExperimentalTime
 
 
 class LoadViewMPT : View() {
-    val name = "Проверка коммутации при номинальной нагрузке и кратковременной перегрузки по току"
+    val name = "Проверка коммутации при номинальной нагрузке и кратковременной перегрузке по току"
     val data = LoadDataMPT()
 
     var tfSparking1: TextField by singleAssign()
     var tfSparking2: TextField by singleAssign()
     var tfSparking3: TextField by singleAssign()
     var tfSparking4: TextField by singleAssign()
+    var btnSaveDot: Button by singleAssign()
 
     override fun onDock() {
         super.onDock()
@@ -105,13 +108,14 @@ class LoadViewMPT : View() {
             }
             vbox(4.0, Pos.CENTER) {
                 label("")
-                button("Сохранить") {
+                btnSaveDot = button("Сохранить") {
+                    isDisable = true
                     action {
                         try {
                             if (loadMPT.loadNomStarted) {
-                                Singleton.sparkingTime.add(toHHmmss(((loadMPT.timerLoadNom * 1000) - (data.timeExp.value.toDouble() * 1000)).toLong()))
+                                Singleton.sparkingTime.add(toHHmmss(((timerLoadNom * 1000) - (data.timeExp.value.toDouble() * 1000)).toLong()))
                             } else {
-                                Singleton.sparkingTime.add(toHHmmss(((loadMPT.timerLoad * 1000) - (data.timeExp.value.toDouble() * 1000)).toLong()))
+                                Singleton.sparkingTime.add(toHHmmss(((timerLoad * 1000) - (data.timeExp.value.toDouble() * 1000)).toLong()))
                             }
                             Singleton.sparking1.add(tfSparking1.text.replace(",", "."))
                             Singleton.sparking2.add(tfSparking2.text.replace(",", "."))

@@ -15,4 +15,6 @@ object Singleton {
     var sparking3 = mutableListOf<String>()
     var sparking4 = mutableListOf<String>()
     var sparkingTime = mutableListOf<String>()
+    var timerLoad = 0.0
+    var timerLoadNom = 0.0
 }

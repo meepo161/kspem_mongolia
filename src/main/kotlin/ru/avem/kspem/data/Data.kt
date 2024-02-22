@@ -4,6 +4,7 @@ import javafx.beans.property.SimpleStringProperty
 import javafx.beans.property.StringProperty
 import ru.avem.kspem.controllers.CustomController
 import ru.avem.kspem.controllers.expControllers.*
+import ru.avem.kspem.controllers.expControllersGPT.IKASControllerGPT
 import ru.avem.kspem.controllers.expControllersGPT.NControllerGPT
 import ru.avem.kspem.controllers.expControllersMPT.*
 import ru.avem.kspem.controllers.expControllersSD.NControllerSD
@@ -39,10 +40,12 @@ data class SchemeType(
 
 val mgr = MGRController()
 val mgrMPT = MGRControllerMPT()
+val mgrGPT = MGRControllerMPT()
 val viu = VIUController()
 val ikas = IKASController()
 
 val ikasMPT = IKASControllerMPT()
+val ikasGPT = IKASControllerGPT()
 
 val nSD = NControllerSD()
 val nSG = NControllerSG()
@@ -122,16 +125,16 @@ data class ProtocolModel(
     var dptNN:String = "",
     var dptNResult:String = "",
 //HH_DPT//,
-    var dptHHuOV:String = "",
-    var dptHHiOV:String = "",
-    var dptHHuN:String = "",
-    var dptHHiN:String = "",
-    var dptHHP1:String = "",
-    var dptHHTOI:String = "",
-    var dptHHTAmb:String = "",
-    var dptHHN:String = "",
-    var dptHHResult:String = "",
-    var dptHHTime:String = "",
+    var dptHHuOV    :String = "",
+    var dptHHiOV    :String = "",
+    var dptHHuN     :String = "",
+    var dptHHiN     :String = "",
+    var dptHHP1     :String = "",
+    var dptHHTOI    :String = "",
+    var dptHHTAmb   :String = "",
+    var dptHHN      :String = "",
+    var dptHHResult :String = "",
+    var dptHHTime   :String = "",
 //LOAD_DPT//,
     var dptLOADuOV:String = "",
     var dptLOADiOV:String = "",

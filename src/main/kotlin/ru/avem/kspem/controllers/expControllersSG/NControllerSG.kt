@@ -242,7 +242,7 @@ class NControllerSG : CustomController() {
 
         if (isExperimentRunning) {
             for (i in 1..3) {
-                regulateToRPM(rotateSpeedSet, 50, 25, 100L, 200L)
+                regulateToRPM(rotateSpeedSet, 200, 75, 100L, 200L)
                 var timer = 2.0
                 if (isExperimentRunning) {
                     while (isExperimentRunning && timer > 0) {
@@ -286,7 +286,7 @@ class NControllerSG : CustomController() {
         if (isExperimentRunning) {
             appendMessageToLog(LogTag.DEBUG, "Регулировка до номинальной частоты вращения * 1.2")
             for (i in 1..3) {
-                regulateToRPM(rotateSpeedSet * 1.2, 50, 25, 100L, 200L)
+                regulateToRPM(rotateSpeedSet * 1.2, 200, 75, 100L, 200L)
                 timer = 2.0
                 if (isExperimentRunning) {
                     while (isExperimentRunning && timer > 0) {
@@ -361,10 +361,10 @@ class NControllerSG : CustomController() {
         while (isExperimentRunning && (rotateSpeed > speed + coarseLimit || rotateSpeed < speed)) {
             if (fDelta > 9.9 && fDelta < 12.0) {
                 val kShkiv = rotateSpeed / (3000 / 50 * fDelta)
-                if (rotateSpeedSet >= 1450 && kShkiv < 0.75) {
+                if (rotateSpeedSet > 1500 && kShkiv < 0.75) {
                     cause = "Проверьте датчик скорости и установите шкив 250"
                     break
-                } else if (rotateSpeedSet < 1450 && kShkiv > 0.75) {
+                } else if (rotateSpeedSet <= 1500 && kShkiv > 0.75) {
                     cause = "Проверьте датчик скорости и установите шкив 500"
                     break
                 }
@@ -383,10 +383,10 @@ class NControllerSG : CustomController() {
         while (isExperimentRunning && (rotateSpeed > speed + fineLimit || rotateSpeed < speed)) {
             if (fDelta > 9.9 && fDelta < 12.0) {
                 val kShkiv = rotateSpeed / (3000 / 50 * fDelta)
-                if (rotateSpeedSet >= 1450 && kShkiv < 0.75) {
+                if (rotateSpeedSet > 1500 && kShkiv < 0.75) {
                     cause = "Проверьте датчик скорости и установите шкив 250"
                     break
-                } else if (rotateSpeedSet < 1450 && kShkiv > 0.75) {
+                } else if (rotateSpeedSet <= 1500 && kShkiv > 0.75) {
                     cause = "Проверьте датчик скорости и установите шкив 500"
                     break
                 }

@@ -39,10 +39,10 @@ class MainViewController : Controller() {
 
 
     lateinit var currentExp: CustomController
-    var listDPT = mutableListOf<CustomController>(mgrMPT, viu, ikasMPT, nMPT, hhMPT, loadMPT)
+    var listDPT = mutableListOf<CustomController>(mgrMPT, viu, ikasMPT, hhMPT, nMPT, loadMPT)
     var listGPT = mutableListOf<CustomController>(mgrMPT, viu, ikasMPT, nGPT)
     var listSD = mutableListOf<CustomController>(mgr, viu, ikas, nSD)
-    var listSG = mutableListOf<CustomController>(mgr, viu, ikas, nSG, h_hhSG, kzSG)
+    var listSG = mutableListOf<CustomController>(mgr, viu, ikas, h_hhSG, nSG, kzSG)
 
     @Volatile
     var isExperimentRunning: Boolean = false

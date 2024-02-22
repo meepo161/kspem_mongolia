@@ -161,7 +161,7 @@ class NControllerGPT : CustomController() {
         }
 
         if (isExperimentRunning) {
-//            initButtonPost()
+            initButtonPost()
         }
 
         if (isExperimentRunning) {
@@ -202,7 +202,7 @@ class NControllerGPT : CustomController() {
         }
 
         if (isExperimentRunning) {
-            regulateToRPM(rotateSpeedSet * 0.5, 100, 50, 100L, 200L)
+            regulateToRPM(rotateSpeedSet, 100, 50, 100L, 200L)
         }
 
         var isNeedBreak = false
@@ -248,10 +248,6 @@ class NControllerGPT : CustomController() {
                     }
                 }
             }
-        }
-
-        if (isExperimentRunning) {
-            appendMessageToLog(LogTag.DEBUG, "Регулировка до номинальной частоты вращения")
         }
 
         if (isExperimentRunning) {

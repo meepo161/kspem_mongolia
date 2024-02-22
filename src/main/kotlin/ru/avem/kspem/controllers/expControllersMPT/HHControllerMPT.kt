@@ -213,7 +213,6 @@ class HHControllerMPT : CustomController() {
                 appendMessageToLog(LogTag.ERROR, "Испытание прервано по причине: $cause")
             }
         }
-        saveData()
         restoreData()
     }
 
@@ -396,5 +395,14 @@ class HHControllerMPT : CustomController() {
     }
 
     private fun restoreData() {
+        model.data.n.value = protocolModel.dptHHN
+        model.data.p.value = protocolModel.dptHHP1
+        model.data.result.value = protocolModel.dptHHResult
+        model.data.tempOI.value = protocolModel.dptHHTOI
+        model.data.tempAmb.value = protocolModel.dptHHTAmb
+        model.data.iOV.value = protocolModel.dptHHiOV
+        model.data.uOV.value = protocolModel.dptHHuOV
+        model.data.uOY.value = protocolModel.dptHHuN
+        model.data.iOY.value = protocolModel.dptHHiN
     }
 }

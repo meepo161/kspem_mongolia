@@ -62,7 +62,6 @@ dependencies {
     implementation("de.jensd:fontawesomefx-icons525:2.0-2")
     implementation("org.apache.poi:poi:4.1.0")
     implementation("org.apache.poi:poi-ooxml:4.1.0")
-    implementation("com.fazecast:jSerialComm:[2.0.0,3.0.0)")
     implementation("io.github.microutils:kotlin-logging:1.8.3")
     implementation("org.slf4j:slf4j-api:1.7.25")
     implementation("ch.qos.logback:logback-classic:1.2.3")

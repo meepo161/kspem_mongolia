@@ -18,10 +18,13 @@ import ru.avem.kspem.utils.Singleton.sparking2
 import ru.avem.kspem.utils.Singleton.sparking3
 import ru.avem.kspem.utils.Singleton.sparking4
 import ru.avem.kspem.utils.Singleton.sparkingTime
+import ru.avem.kspem.utils.Singleton.timerLoad
+import ru.avem.kspem.utils.Singleton.timerLoadNom
 import ru.avem.kspem.utils.showTwoWayDialog
 import ru.avem.kspem.utils.sleep
 import ru.avem.kspem.view.expViews.expViewsMPT.LoadViewMPT
 import ru.avem.stand.utils.autoformat
+import tornadofx.runLater
 import kotlin.concurrent.thread
 import kotlin.math.abs
 
@@ -102,14 +105,14 @@ class LoadControllerMPT : CustomController() {
     @Volatile
     var unmStarted = false
 
-    var timerLoad = 0.0
-
-    var timerLoadNom = 0.0
-
     override fun start() {
         model.clearTables()
         super.start()
         // (value-4)*0.625
+
+        runLater {
+            model.btnSaveDot.isDisable = true
+        }
 
         timerLoad = objectModel!!.timeMVZ.toDouble()
         timerLoadNom = objectModel!!.timeRUNNING.toDouble()
@@ -438,7 +441,9 @@ class LoadControllerMPT : CustomController() {
             appendMessageToLog(LogTag.DEBUG, "Разгон НМ...")
 
             fDelta = rotateSpeed / (3000 / 50)
-            if (rotateSpeedSet < 1450) fDelta * 2
+            if (rotateSpeedSet < 1450) {
+                fDelta * 2
+            }
 
             var u = 3
             val maxU = 380 / 50 * fDelta
@@ -482,11 +487,15 @@ class LoadControllerMPT : CustomController() {
             regulationTo(amperageSet)
 
             appendMessageToLog(LogTag.MESSAGE, "Регулировка до номинальной нагрузки завершена")
+            runLater {
+                model.btnSaveDot.isDisable = false
+            }
         }
 
         regulateStarted = false
         loadNomStarted = true
 
+        var timerLoadNom = timerLoadNom
         if (isExperimentRunning) {
             appendMessageToLog(LogTag.MESSAGE, "Выдержка ${timerLoadNom.autoformat()} секунд")
             while (isExperimentRunning && timerLoadNom > 0) {
@@ -503,6 +512,9 @@ class LoadControllerMPT : CustomController() {
         regulate12Started = true
 
         if (isExperimentRunning) {
+            runLater {
+                model.btnSaveDot.isDisable = true
+            }
             appendMessageToLog(LogTag.MESSAGE, "Регулировка до номинальной нагрузки * 1.2")
             thread(isDaemon = true) {
                 while (isExperimentRunning && regulate12Started) {
@@ -516,12 +528,14 @@ class LoadControllerMPT : CustomController() {
             }
             regulationTo(amperageSet * 1.2)
             appendMessageToLog(LogTag.MESSAGE, "Регулировка до номинальной нагрузки * 1.2 завершена")
+            runLater {
+                model.btnSaveDot.isDisable = false
+            }
         }
 
         regulate12Started = false
 
-        unmStarted = true
-
+        var timerLoad = timerLoad
         if (isExperimentRunning) {
             appendMessageToLog(LogTag.MESSAGE, "Выдержка ${timerLoad.autoformat()} секунд")
             while (isExperimentRunning && timerLoad > 0) {
@@ -534,17 +548,21 @@ class LoadControllerMPT : CustomController() {
             model.data.timeExp.value = ""
         }
 
-        unmStarted = false
-
-        if (Singleton.sparking1.isNotEmpty()) {
-            for (i in 0 until Singleton.sparking1.size) {
-                appendMessageToLog(LogTag.MESSAGE, "Время измерения. точка $i = ${Singleton.sparkingTime[i]}")
-                appendMessageToLog(LogTag.MESSAGE, "Степень искрения 1 узла. точка $i = ${Singleton.sparking1[i]}")
-                appendMessageToLog(LogTag.MESSAGE, "Степень искрения 2 узла. точка $i = ${Singleton.sparking2[i]}")
-                appendMessageToLog(LogTag.MESSAGE, "Степень искрения 3 узла. точка $i = ${Singleton.sparking3[i]}")
-                appendMessageToLog(LogTag.MESSAGE, "Степень искрения 4 узла. точка $i = ${Singleton.sparking4[i]}")
+        if (isExperimentRunning) {
+            runLater {
+                model.btnSaveDot.isDisable = true
             }
         }
+
+//        if (Singleton.sparking1.isNotEmpty()) {
+//            for (i in 0 until Singleton.sparking1.size) {
+//                appendMessageToLog(LogTag.MESSAGE, "Время измерения. точка $i = ${Singleton.sparkingTime[i]}")
+//                appendMessageToLog(LogTag.MESSAGE, "Степень искрения 1 узла. точка $i = ${Singleton.sparking1[i]}")
+//                appendMessageToLog(LogTag.MESSAGE, "Степень искрения 2 узла. точка $i = ${Singleton.sparking2[i]}")
+//                appendMessageToLog(LogTag.MESSAGE, "Степень искрения 3 узла. точка $i = ${Singleton.sparking3[i]}")
+//                appendMessageToLog(LogTag.MESSAGE, "Степень искрения 4 узла. точка $i = ${Singleton.sparking4[i]}")
+//            }
+//        }
 
         saveData()
 
@@ -559,6 +577,8 @@ class LoadControllerMPT : CustomController() {
         pr102.arn(false)
         pr102.tvn(false)
 
+        unmStarted = true
+
         var timer = 30.0
         if (isExperimentRunning) {
             appendMessageToLog(LogTag.MESSAGE, "Обдув УНМ 30 секунд")
@@ -572,6 +592,7 @@ class LoadControllerMPT : CustomController() {
             model.data.timeExp.value = "0.0"
         }
 
+        unmStarted = false
         isExperimentRunning = false
         finalizeExperiment()
 

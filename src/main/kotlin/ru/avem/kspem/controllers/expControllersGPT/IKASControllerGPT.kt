@@ -1,4 +1,4 @@
-package ru.avem.kspem.controllers.expControllersMPT
+package ru.avem.kspem.controllers.expControllersGPT
 
 import ru.avem.kspem.communication.model.CommunicationModel
 import ru.avem.kspem.communication.model.devices.avem.ikas.IKAS8Model
@@ -8,15 +8,15 @@ import ru.avem.kspem.data.protocolModel
 import ru.avem.kspem.utils.LogTag
 import ru.avem.kspem.utils.showTwoWayDialog
 import ru.avem.kspem.utils.sleep
-import ru.avem.kspem.view.expViews.expViewsMPT.IKASViewMPT
+import ru.avem.kspem.view.expViews.expViewsGPT.IKASViewGPT
 import ru.avem.stand.utils.autoformat
 import ru.avem.stand.utils.toDoubleOrDefault
 import java.util.*
 
 
-class IKASControllerMPT : CustomController() {
+class IKASControllerGPT : CustomController() {
 
-    override val model: IKASViewMPT by inject()
+    override val model: IKASViewGPT by inject()
     override val name = model.name
     var status = 0
     var measuredR = 0.0
@@ -64,7 +64,7 @@ class IKASControllerMPT : CustomController() {
         }
 
         var isClicked = false
-//        if (isExperimentRunning) {
+        if (isExperimentRunning) {
             showTwoWayDialog(
                 title = "Внимание!",
                 text = "Подключите измерительные провода ИКАС <A> и <N> к обмотке возбуждения",
@@ -79,7 +79,7 @@ class IKASControllerMPT : CustomController() {
                 },
                 currentWindow = primaryStage.scene.window
             )
-//        }
+        }
 
         while (isExperimentRunning && !isClicked) {
             sleep(100)

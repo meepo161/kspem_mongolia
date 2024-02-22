@@ -308,8 +308,8 @@ class ObjectEditorWindow : View("Редактор объектов испыта�
                         validator.addValidator(this) {
                             if (it?.toDoubleOrNull() == null) {
                                 error("Обязательное поле")
-                            } else if ((it.toDouble()) < 0 || (it.toDouble()) > 35000) {
-                                error("Значение не в диапазоне 500 — 35000")
+                            } else if ((it.toDouble()) < 0 || (it.toDouble()) > 3200) {
+                                error("Значение не в диапазоне 0 — 3200")
                             } else null
                         }
                     }

@@ -1,16 +1,20 @@
-package ru.avem.kspem.view.expViews.expViewsMPT
+package ru.avem.kspem.view.expViews.expViewsGPT
 
 import javafx.beans.property.SimpleStringProperty
 import javafx.beans.property.StringProperty
 import javafx.geometry.Pos
 import javafx.scene.control.TableView
 import javafx.scene.layout.Priority
+import ru.avem.kspem.utils.createScreenShot
+import ru.avem.kspem.utils.showTwoWayDialog
+import ru.avem.kspem.view.ExpView
+import ru.avem.kspem.view.MainView
 import tornadofx.*
 
 
-class IKASViewMPT : View() {
+class IKASViewGPT : View() {
     val name = "Измерение сопротивления обмотки  постоянному току в практически холодном состоянии"
-    val data = IKASDataMPT()
+    val data = IKASDataGPT()
 
     override fun onDock() {
         super.onDock()
@@ -34,10 +38,10 @@ class IKASViewMPT : View() {
                 minHeight = 120.0
                 maxHeight = 120.0
                 isMouseTransparent = true
-                column("R ОВ, Ом", IKASDataMPT::R1.getter).isEditable = false
-                column("R ОЯ, Ом", IKASDataMPT::R2.getter).isEditable = false
-                column("t воздуха, °C", IKASDataMPT::tempAmb.getter).isEditable = false
-                column("t ОИ, °C", IKASDataMPT::tempOI.getter).isEditable = false
+                column("R ОВ, Ом", IKASDataGPT::R1.getter).isEditable = false
+                column("R ОЯ, Ом", IKASDataGPT::R2.getter).isEditable = false
+                column("t воздуха, °C", IKASDataGPT::tempAmb.getter).isEditable = false
+                column("t ОИ, °C", IKASDataGPT::tempOI.getter).isEditable = false
                 columnResizePolicy = TableView.CONSTRAINED_RESIZE_POLICY
             }/*
         label("Приведенные к 20°C")
@@ -59,7 +63,7 @@ class IKASViewMPT : View() {
                 minHeight = 120.0
                 maxHeight = 120.0
                 isMouseTransparent = true
-                column("Результат", IKASDataMPT::result.getter).isEditable = false
+                column("Результат", IKASDataGPT::result.getter).isEditable = false
                 columnResizePolicy = TableView.CONSTRAINED_RESIZE_POLICY
             }
     }
@@ -72,7 +76,7 @@ class IKASViewMPT : View() {
     }
 }
 
-data class IKASDataMPT(
+data class IKASDataGPT(
     val tempAmb: StringProperty = SimpleStringProperty(""),
     val tempOI: StringProperty = SimpleStringProperty(""),
     val R1: StringProperty = SimpleStringProperty(""),
